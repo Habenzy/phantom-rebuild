@@ -1,0 +1,46 @@
+/*------------------------- Main footer container/wraper styling------------- */
+
+.footer {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 20vw;
+}
+
+.footer a {
+  color: rgb(195, 247, 9);
+  font-size: 12pt;
+}
+
+/*--------------------- styling targetting both logo images------------------ */
+
+.social {
+  background-color: white;
+  border-radius: 13%;
+  width: 35px;
+  justify-content: space-around;
+  display: flex;
+}
+
+.footer p {
+  color: white;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+
+/* ------------------------- Styling for container of social media logo images-------------- */
+
+.social_images {
+  flex-direction: row;
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
+  margin: 20px 0px;
+}
+
+/*---------------modifying border for instagram logo only to match Facebook logo--------------- */
+
+#insta {
+  border-radius: 35%;
+}

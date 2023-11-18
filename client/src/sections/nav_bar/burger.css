@@ -1,0 +1,39 @@
+/*-----------------Burger Nav Bar container ------------------- */
+.burgerNavBar {
+  overflow: hidden;
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu {
+  display: flex;
+}
+
+/*-------------- Style the links inside the navigation bar------- */
+
+.burgerNavBar a {
+  float: right;
+  color: rgb(195, 247, 9);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+/* ------------Change the color of links on hover------------ */
+.burgerNavBar a:hover {
+  background-color: #ddd;
+  color: black;
+}
+/* -----------Add an active class to highlight the current page------ */
+.burgerNavBar a.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+li {
+  list-style: none;
+}
+
