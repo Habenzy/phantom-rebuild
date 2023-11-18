@@ -15,11 +15,11 @@ function App() {
       <div className="App">
         <Burger />
         <Nav />
-        {/* <AuthProvider> Only provides signed in user info*/}
+        <AuthProvider>
           <Routes>
-            <Route exact path="/" component={Home} />
+            <Route exact path="/" element={<Home />} />
           </Routes>
-        {/* </AuthProvider> */}
+        </AuthProvider>
         <Footer />
       </div>
     </Router>
