@@ -1,0 +1,120 @@
+/* -----Main Season page container styling-------- */
+/* ---------- Styling for container , font color and background color---------- */
+.season_container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding-bottom: 10px;
+  background-color: #1d2433;
+  color: white;
+  align-items: center;
+}
+/*-----------------------Headers style, font color and margin adjustment----------- */
+.season_container h1 {
+  margin: 20px 0px 30px 0px;
+  color: rgb(195, 247, 9);
+  font-size: 38pt;
+}
+
+.season_container h3 {
+  font-size: 22pt;
+  font-style: italic ;
+}
+
+.season_container .date {
+  font-size: 13pt;
+  text-decoration: none;
+  margin-bottom: 0;
+}
+
+.season_container .blurb {
+  font-size: 16pt;
+  margin: 0px 300px;
+  text-decoration: none;
+  color: white;
+}
+.season_container .artist {
+  color: rgb(195, 247, 9);
+  font-size: 18pt;
+  text-decoration: none;
+}
+
+.season_container .line {
+  border: solid 1px;
+  border-color: #ffae57;
+  border-left: none;
+  border-right: none;
+  width: 60vw;
+  height: 5px;
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.season_container img {
+  width: 35vw;
+}
+
+@media screen and (min-width: 200px) and (max-width: 600px) {
+  .season_container h1 {
+    font-size: 28pt;
+    margin-top: 15px;
+  }
+
+  .artist {
+    margin: 0;
+  }
+
+  .season_container h3 {
+    font-size: 20pt;
+    margin: 0px 5px;
+  }
+  .season_container .blurb {
+    font-size: 14pt;
+    margin: 0px 15px;
+    text-decoration: none;
+    color: white;
+  }
+
+  .season_container img {
+    width: 80vw;
+  }
+}
+
+/* Season event styles */
+
+.season_button{
+  border:none;
+  background-color: #ffae57;
+  color:#1d2433;
+  width: 80px;
+  height: 30px;
+  border-radius: 6%;
+}
+/* Form Button Animation */
+.season_button:hover{
+  transition: transform 0.3s ease-out;
+  transform:scale(1.1);
+}
+
+@media screen and (min-width: 601px) {
+  .season_container .blurb {
+    margin: 0px 100px;
+  }
+
+  .season_container img {
+    width: 50vw;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .season_container img {
+    width: 40vw;
+  }
+
+  .season_container .blurb {
+    margin: 0px 200px;
+  }
+
+
+}
