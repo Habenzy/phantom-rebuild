@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&family=IM+Fell+English+SC&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&family=IM+Fell+English+SC&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica&display=swap");
 
 * {
   font-family: "IM Fell DW Pica";
@@ -7,11 +7,11 @@
   padding: 0px;
   box-sizing: border-box;
 }
-.App{
+.App {
   background-color: #1d2433;
 }
 p {
-  font-family: 'IM Fell Double Pica';
+  font-family: "IM Fell Double Pica";
 }
 
 @media screen and (min-width: 600px) {
@@ -20,11 +20,11 @@ p {
   }
 
   #burgerbar {
-    display:none !important;
+    display: none !important;
   }
 
   .burgerNavBar li {
-    display:none;
+    display: none;
   }
 
   .burgerLogo {
@@ -46,7 +46,7 @@ a.buy-ticket:hover {
 }
 
 @media screen and (max-width: 600px) {
-  .menuNavBar{
+  .menuNavBar {
     display: none !important;
   }
 }

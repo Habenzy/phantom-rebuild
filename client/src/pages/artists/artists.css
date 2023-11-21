@@ -1,0 +1,142 @@
+/* -------------Individual artist container styling ------------ */
+.artistsContainer .line {
+  border: solid 1px;
+  border-color: #ffae57;
+  border-left: none;
+  border-right: none;
+  width: 60vw;
+  height: 5px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.artistsContainer {
+  background-color: #1d2433;
+  color: white;
+  padding-bottom: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14pt;
+  margin: 0px 40px;
+}
+
+.artistsContainer h1 {
+  margin: 20px 0px 30px 0px;
+  color: rgb(195, 247, 9);
+  font-size: 38pt;
+}
+
+.artistsContainer h3 {
+  font-size: 22pt;
+}
+
+.artistsContainer img {
+  height: auto;
+  width: 30vw;
+  margin: 0px 5px;
+}
+
+.artistImageContainer {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.textContainer a {
+  text-decoration: none;
+  margin-left: 15px;
+  color: rgb(195, 247, 9);
+}
+
+.textContainer {
+  margin-top: 20px;
+  width: 90vw;
+  text-align: justify;
+  margin: 0px 10px 15px 10px;
+}
+
+.artistContact {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.textContainer p {
+  text-decoration: none;
+  color: white;
+  margin: 15px 100px;
+}
+
+.textContainer h5 {
+  text-align: center;
+}
+
+/* -----------------------Screen resizing styling--------------- */
+
+@media screen and (min-width: 200px) and (max-width: 600px) {
+  .artistsContainer h1 {
+    font-size: 28pt;
+  }
+
+  .artistsContainer h3 {
+    font-size: 20pt;
+    margin: 5px 0px;
+  }
+
+  .artistsContainer h5 {
+    font-size: 12pt;
+  }
+
+  .textContainer p {
+    font-size: 12pt;
+    margin: 0px 5px;
+    text-decoration: none;
+    color: white;
+  }
+
+  .artistsContainer .line {
+    margin-top: 0px;
+    margin-bottom: 10px;
+  }
+
+  .artistImageContainer img {
+    width: 100%;
+    margin: 10px 0px;
+  }
+
+  .artistImageContainer {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .artistImageContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  .artistImageContainer img {
+    width: 75%;
+    margin: 10px 10px;
+  }
+  .textContainer {
+    font-size: 14pt;
+  }
+
+  .textContainer h5 {
+    font-size: 14pt;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .artistImageContainer {
+    flex-direction: row;
+  }
+
+  .artistImageContainer img {
+    margin: 10px;
+    width: 33%;
+  }
+}

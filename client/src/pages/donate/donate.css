@@ -31,13 +31,13 @@
   font-size: 38pt;
   text-decoration: none;
   border-radius: 50%;
-  margin: 5px
+  margin: 5px;
 }
 
 .donate h1.donate-link:hover {
   color: #1d2433;
   background-color: rgb(195, 247, 9);
-  cursor: pointer
+  cursor: pointer;
 }
 
 .donateWrapper {

@@ -21,7 +21,7 @@ function Nav() {
            
            <li><Link to="/Season">Season</Link></li>
            
-        <li><Link to="/AllArtist">Artists</Link></li> 
+        <li><Link to="/Artists">Artists</Link></li> 
      
        
       </nav>

@@ -20,7 +20,7 @@ const BurgerNav = (props) => {
             <li onClick={props.handleModal}><Link to="/About">About</Link></li>
             <li onClick={props.handleModal}><Link to="/Donate">Donate</Link></li>
             <li onClick={props.handleModal}><Link to="/Season">Season</Link></li>
-            <li onClick={props.handleModal}><Link to="/AllArtist">Artists</Link></li>
+            <li onClick={props.handleModal}><Link to="/Artists">Artists</Link></li>
             </nav>
           </div >
   )

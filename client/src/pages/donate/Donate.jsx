@@ -4,18 +4,16 @@ import { db } from "../../config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 function Donate(props) {
-  let [donorList, setDonorList] = useState([])
+  let [donorList, setDonorList] = useState([]);
 
   useEffect(() => {
-    const donorsRef = query(
-      collection(db, "donors")
-    );
-      getDocs(donorsRef).then(allDonors => {
-        console.log(allDonors.docs[0].data())
-        let allDonorsArr = allDonors.docs.map((donor) => donor.data().name);
-        setDonorList(allDonorsArr)
-      })
-  }, [])
+    const donorsRef = query(collection(db, "donors"));
+    getDocs(donorsRef).then((allDonors) => {
+      console.log(allDonors.docs[0].data());
+      let allDonorsArr = allDonors.docs.map((donor) => donor.data().name);
+      setDonorList(allDonorsArr);
+    });
+  }, []);
 
   return (
     <div className="donate">
@@ -71,9 +69,7 @@ function Donate(props) {
             SPONSORS!
           </p>
           <br />
-          <div className="sponsorsList">
-            {donorList}
-          </div>
+          <div className="sponsorsList">{donorList}</div>
           <div className="line"></div>
           <div className="sponsorHowTo">
             <div>

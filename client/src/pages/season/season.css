@@ -19,7 +19,7 @@
 
 .season_container h3 {
   font-size: 22pt;
-  font-style: italic ;
+  font-style: italic;
 }
 
 .season_container .date {
@@ -83,18 +83,18 @@
 
 /* Season event styles */
 
-.season_button{
-  border:none;
+.season_button {
+  border: none;
   background-color: #ffae57;
-  color:#1d2433;
+  color: #1d2433;
   width: 80px;
   height: 30px;
   border-radius: 6%;
 }
 /* Form Button Animation */
-.season_button:hover{
+.season_button:hover {
   transition: transform 0.3s ease-out;
-  transform:scale(1.1);
+  transform: scale(1.1);
 }
 
 @media screen and (min-width: 601px) {
@@ -115,6 +115,4 @@
   .season_container .blurb {
     margin: 0px 200px;
   }
-
-
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-import barnImg from "../../assets/barn3crop.jpg"
-import "./home.css"
+import barnImg from "../../assets/barn3crop.jpg";
+import "./home.css";
 
 function Home(props) {
   return (
@@ -111,4 +111,4 @@ function Home(props) {
   );
 }
 
-export default Home
+export default Home;
