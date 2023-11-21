@@ -10,6 +10,7 @@ import Home from "./pages/home/Home";
 import Season from "./pages/season/Season";
 import Donate from "./pages/donate/Donate";
 import ArtistsList from "./pages/artists/Artists";
+import About from "./pages/about/About";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route path="/Season" element={<Season />} />
-            {/* <Route path="/About" element={About} /> */}
+            <Route path="/About" element={<About />} />
             <Route path="/Artists" element={<ArtistsList />} />
             <Route path="/Donate" element={<Donate />} />
           </Routes>
