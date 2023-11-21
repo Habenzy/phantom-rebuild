@@ -8,6 +8,7 @@ import Nav from './sections/nav_bar/Nav'
 import Footer from './sections/footer/Footer';
 import Home from './pages/home/Home'
 import Season from "./pages/season/Season"
+import Donate from './pages/donate/Donate';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
             <Route path="/Season" element={<Season />} />
             {/* <Route path="/About" element={About} /> */}
             {/* <Route path="/Artists" element={AllArtist} /> */}
-            {/* <Route path="/Donate" element={Donate} /> */}
+            <Route path="/Donate" element={<Donate />} />
           </Routes>
         </AuthProvider>
         <Footer />

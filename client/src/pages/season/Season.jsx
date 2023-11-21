@@ -119,7 +119,6 @@ function Season(props) {
   let [allShows, setAllShows] = useState(null);
 
   async function seeAllShows() {
-    console.log(db)
     const showsRef = query(
       collection(db, "shows"),
       where("status", "==", "booked")
