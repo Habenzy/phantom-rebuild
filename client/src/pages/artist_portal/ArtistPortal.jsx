@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { Form, Button, Card, Container } from "react-bootstrap";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { collection, doc, query, setDoc, getDoc } from "firebase/firestore";
+import { collection, doc, query, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 function LoginPortal(props) {
   const [email, setEmail] = useState("");
@@ -163,6 +163,7 @@ function ArtistProfile(props) {
   const [artistYouTube, setArtistYouTube] = useState("");
   const [artistInstagram, setArtistInstagram] = useState("");
   const [artistSpotify, setArtistSpotify] = useState("");
+  const [shows, setShows] = useState([])
 
   useEffect(() => {
     let profileRef = query(doc(db, "artists", auth.currentUser.uid))
@@ -194,6 +195,29 @@ function ArtistProfile(props) {
     }
   }
 
+  let updateProfile = async (evt) => {
+    evt.preventDefault()
+
+    try{
+      let profRef = doc(db, "artists", auth.currentUser.uid)
+
+      await updateDoc(profRef, {
+        artist: artist,
+        contact: contactName,
+        phone: phone,
+        email: email,
+        bio: bio,
+        web: artistWebsite,
+        fb: artistFacebook,
+        insta: artistInstagram,
+        spotify: artistSpotify,
+        youtube: artistYouTube
+      })
+    }catch(err) {
+      console.error(err.message)
+    }
+  }
+
   return (
     <div>
       <button onClick={logOut}>Log Out</button>
@@ -212,8 +236,27 @@ function ArtistProfile(props) {
 
       {submitProp && <ProposalForm user={props.user} />}
       {/* Show/edit artist info */}
-      <form></form>
+      <form>
+        <input type="text" value={artist} onChange={(evt) => {setArtist(evt.target.value)}} />
+        <input type="text" value={contactName} onChange={(evt) => {setContactName(evt.target.value)}} />
+        <input type="text" value={phone} onChange={(evt) => {setArtist(evt.target.value)}} />
+        <input type="text" value={email} onChange={(evt) => {setPhone(evt.target.value)}} />
+        <input type="text" value={bio} onChange={(evt) => {setBio(evt.target.value)}} />
+        <input type="text" value={artistWebsite} onChange={(evt) => {setArtistWebsite(evt.target.value)}} />
+        <input type="text" value={artistFacebook} onChange={(evt) => {setArtistFacebook(evt.target.value)}} />
+        <input type="text" value={artistInstagram} onChange={(evt) => {setArtistInstagram(evt.target.value)}} />
+        <input type="text" value={artistSpotify} onChange={(evt) => {setArtistSpotify(evt.target.value)}} />
+        <input type="text" value={artistYouTube} onChange={(evt) => {setArtistYouTube(evt.target.value)}} />
+
+        <button onClick={updateProfile}>Update your information</button>
+      </form>
       {/* List all active/archived shows for artist */}
+      {shows.map((show, i) => {
+        return (
+          <div key={i} className="show-container">
+          </div>
+        )
+      })}
     </div>
   );
 }
