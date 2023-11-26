@@ -43,7 +43,12 @@ function Footer() {
         </form>
       </div>
       <div className="footerLinks">
-        <Link to="/ProposalForm">Submit a Show Proposal</Link>
+        <p>Have a show proposal for us?</p>
+        <Link to="/ArtistPortal">
+          <button className="artist-login">
+            Sign in to Your Artist Profile
+          </button>
+        </Link>
       </div>
 
       <div>

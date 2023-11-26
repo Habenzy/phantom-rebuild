@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 20vw;
+  min-height: 20vw;
 }
 
 .footer a {
@@ -13,6 +13,18 @@
   font-size: 12pt;
 }
 
+.artist-login {
+  font-size: 1.7rem;
+  background-color: rgb(195, 247, 9);
+  border-radius: 50%;
+  padding: 12px;
+}
+
+.artist-login:hover {
+  cursor: pointer;
+  box-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #0af,
+  0 0 82px #0af, 0 0 92px #0af, 0 0 102px #0af, 0 0 151px #0af;
+}
 /*--------------------- styling targetting both logo images------------------ */
 
 .social {
@@ -27,6 +39,7 @@
   color: white;
   margin-bottom: 10px;
   text-decoration: none;
+  text-align: center;
 }
 
 /* ------------------------- Styling for container of social media logo images-------------- */
@@ -34,8 +47,9 @@
 .social_images {
   flex-direction: row;
   display: flex;
-  width: 100px;
-  justify-content: space-between;
+  width: 30vw;
+  justify-content: space-around;
+  align-items: center;
   margin: 20px 0px;
 }
 
