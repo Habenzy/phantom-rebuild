@@ -303,15 +303,15 @@ function ProposalForm(props) {
             ? setDoc(doc(db, "shows", props.show.id), showObj)
                 .then((res) => {
                   console.log(res);
-                  //add show ID to artist show list, and update artist profile
+                  //alert that update was successful
                 })
                 .catch((err) => {
                   console.error(err.message);
                 })
             : addDoc(collection(db, "shows"), showObj)
                 .then((res) => {
-                  console.log(res);
-                  //add show ID to artist show list, and update artist profile
+                  console.log("Show added successfully");
+                  
                 })
                 .catch((err) => {
                   console.error(err.message);
