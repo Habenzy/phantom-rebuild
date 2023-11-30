@@ -74,8 +74,6 @@ function ProposalForm(props) {
   }
   */
 
-  const [thisShow, setThisShow] = useState(props.show);
-
   // create state objects to hold values from input form
   const [title, setTitle] = useState(props.show.title || "");
   const [type, setType] = useState(props.show.type || "");
@@ -121,7 +119,17 @@ function ProposalForm(props) {
 
   return (
     <form className="show-proposal-form">
-      {/* still need fields for "dates" "status" and "blurb" */}
+      {/* still need fields for "dates" and "blurb" */}
+      <select value={status} onChange={(evt) => setStatus(evt.target.value)}>
+        <option value="proposed">Proposed</option>
+        <option value="booked">Booked</option>
+        <option value="archived">Archived</option>
+      </select>
+      <div>
+      {/* add dates, and set dates in date array when entered */}
+      </div>
+      <label htmlFor="blurb">The Show description that will appear on our site</label>
+      <input type="text" name="blurb" value={blurb} onChange={(evt) => setBlurb(evt.target.value)} />
       <label htmlFor="title">Enter the name of show</label>
       <input
         type="text"
