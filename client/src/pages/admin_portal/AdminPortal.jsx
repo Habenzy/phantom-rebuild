@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { db, auth, storage } from "../../config/firebase";
 import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signOut,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import {
@@ -465,7 +461,7 @@ function AdminPanel(props) {
 
   useEffect(() => {
     //fetch all user data
-    let usersRef = query(collection(db, "users"));
+    let usersRef = query(collection(db, "artists"));
     getDocs(usersRef)
       .then((usersRes) => {
         const allUsers = usersRes.docs.map((userData) => {
@@ -473,6 +469,7 @@ function AdminPanel(props) {
           userInfo.id = userData.id;
           return userInfo;
         });
+        console.log(allUsers)
         setArtists(allUsers);
       })
       .catch((err) => console.error(err.message));

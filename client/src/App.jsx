@@ -12,6 +12,7 @@ import Donate from "./pages/donate/Donate";
 import ArtistsList from "./pages/artists/Artists";
 import About from "./pages/about/About";
 import ArtistPortal from "./pages/artist_portal/ArtistPortal";
+import AdminPortal from "./pages/admin_portal/AdminPortal";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/Artists" element={<ArtistsList />} />
             <Route path="/Donate" element={<Donate />} />
             <Route path="/ArtistPortal" element={<ArtistPortal />}/>
+            <Route path="/adminDash" element={<AdminPortal />} />
           </Routes>
         </AuthProvider>
         <Footer />
