@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { db, auth, storage } from "../../config/firebase";
-import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import {
   collection,
   doc,
@@ -65,15 +63,38 @@ function LoginPortal(props) {
   );
 }
 
-function ProposalForm(props) {
-  /* Example object for "dates" array
-  {
-    date: unix timestamp
-    ticketLink: url string
-    soldOut: boolean
-  }
-  */
+function DateField(props) {
+  const [dateTime, setDateTime] = useState(props.date.date || "");
+  const [ticketLink, setTicketLink] = useState(props.date.ticketLink || "");
+  const [soldOut, setSoldOut] = useState(false);
 
+  return (
+    <div className="date-time-field">
+      <form>
+        <label htmlFor="date-time">Choose a showtime</label>
+        <input
+          type="date"
+          name="date-time"
+          value={dateTime}
+          onChange={(evt) => setDateTime(evt.target.value)}
+        />
+        <label htmlFor="ticket-link">Link to tickets for this show time</label>
+        <input
+        name="ticket-link"
+          type="text"
+          value={ticketLink}
+          onChange={(evt) => {
+            setTicketLink(evt.target.value);
+          }}
+        />
+        <label htmlFor="sold-out">Show is Sold out</label>
+        <input name="sold-out" type="checkbox" value={soldOut} onChange={setSoldOut(true)} />
+      </form>
+    </div>
+  );
+}
+
+function ProposalForm(props) {
   // create state objects to hold values from input form
   const [title, setTitle] = useState(props.show.title || "");
   const [type, setType] = useState(props.show.type || "");
@@ -117,19 +138,52 @@ function ProposalForm(props) {
     }
   };
 
+  const addShowTime = () => {
+    // generate new blank date object in array
+    /* Example object for "dates" array
+  {
+    date: unix timestamp
+    ticketLink: url string
+    soldOut: boolean
+  }
+  */
+    let updatedArr = dates.contact([
+      {
+        date: Date.now(),
+        ticketLink: "",
+        soldOut: false,
+      },
+    ]);
+
+    setDates(updatedArr);
+  };
+
   return (
     <form className="show-proposal-form">
-      {/* still need fields for "dates" and "blurb" */}
+      {/* still need fields for "dates" */}
       <select value={status} onChange={(evt) => setStatus(evt.target.value)}>
         <option value="proposed">Proposed</option>
         <option value="booked">Booked</option>
         <option value="archived">Archived</option>
       </select>
       <div>
-      {/* add dates, and set dates in date array when entered */}
+        {/* add dates, and set dates in date array when entered */}
+        <button onClick={addShowTime}>Add a new Show Time</button>
+        {dates.map((date, i) => {
+          return (
+            <DateField key={i} date={date} allDates={dates} update={setDates} />
+          );
+        })}
       </div>
-      <label htmlFor="blurb">The Show description that will appear on our site</label>
-      <input type="text" name="blurb" value={blurb} onChange={(evt) => setBlurb(evt.target.value)} />
+      <label htmlFor="blurb">
+        The Show description that will appear on our site
+      </label>
+      <input
+        type="text"
+        name="blurb"
+        value={blurb}
+        onChange={(evt) => setBlurb(evt.target.value)}
+      />
       <label htmlFor="title">Enter the name of show</label>
       <input
         type="text"
@@ -262,7 +316,6 @@ function ProposalForm(props) {
 }
 
 function ArtistProfile(props) {
-
   const [artist, setArtist] = useState(props.user.artist || "");
   const [phone, setPhone] = useState(props.user.phone || "");
   const [email, setEmail] = useState(props.user.email || "");
@@ -270,7 +323,9 @@ function ArtistProfile(props) {
   const [artistWebsite, setArtistWebsite] = useState(props.user.web || "");
   const [artistFacebook, setArtistFacebook] = useState(props.user.fb || "");
   const [artistYouTube, setArtistYouTube] = useState(props.user.youtube || "");
-  const [artistInstagram, setArtistInstagram] = useState(props.user.insta || "");
+  const [artistInstagram, setArtistInstagram] = useState(
+    props.user.insta || ""
+  );
   const [artistSpotify, setArtistSpotify] = useState(props.user.spotify || "");
 
   let updateProfile = async (evt) => {
@@ -306,9 +361,7 @@ function ArtistProfile(props) {
           setArtist(evt.target.value);
         }}
       />
-      <label htmlFor="phone">
-        Primary Phone #
-      </label>
+      <label htmlFor="phone">Primary Phone #</label>
       <input
         name="phone"
         type="text"
@@ -335,9 +388,7 @@ function ArtistProfile(props) {
           setBio(evt.target.value);
         }}
       />
-      <label htmlFor="website">
-        Artist Website
-      </label>
+      <label htmlFor="website">Artist Website</label>
       <input
         name="website"
         type="text"
@@ -355,9 +406,7 @@ function ArtistProfile(props) {
           setArtistFacebook(evt.target.value);
         }}
       />
-      <label htmlFor="insta">
-        Artist Instagram
-      </label>
+      <label htmlFor="insta">Artist Instagram</label>
       <input
         name="insta"
         type="text"
@@ -366,9 +415,7 @@ function ArtistProfile(props) {
           setArtistInstagram(evt.target.value);
         }}
       />
-      <label htmlFor="spotify">
-        Artist Spotify
-      </label>
+      <label htmlFor="spotify">Artist Spotify</label>
       <input
         name="spotify"
         type="text"
@@ -377,9 +424,7 @@ function ArtistProfile(props) {
           setArtistSpotify(evt.target.value);
         }}
       />
-      <label htmlFor="youtube">
-        Artist Youtube
-      </label>
+      <label htmlFor="youtube">Artist Youtube</label>
       <input
         type="text"
         value={artistYouTube}
@@ -397,9 +442,11 @@ function ProfileEditor(props) {
   return (
     <div>
       {props.users.map((user, i) => {
-        return <div key={i}>
-          <ArtistProfile user={user} />
-        </div>;
+        return (
+          <div key={i}>
+            <ArtistProfile user={user} />
+          </div>
+        );
       })}
     </div>
   );
@@ -477,7 +524,7 @@ function AdminPanel(props) {
           userInfo.id = userData.id;
           return userInfo;
         });
-        console.log(allUsers)
+        console.log(allUsers);
         setArtists(allUsers);
       })
       .catch((err) => console.error(err.message));
