@@ -126,14 +126,6 @@ function LoginPortal(props) {
 }
 
 function ProposalForm(props) {
-  /* Example object for "dates" array
-  {
-    date: unix timestamp
-    ticketLink: url string
-    soldOut: boolean
-  }
-  */
-
   const [thisShow, setThisShow] = useState(props.show);
 
   // create state objects to hold values from input form
@@ -311,7 +303,6 @@ function ProposalForm(props) {
             : addDoc(collection(db, "shows"), showObj)
                 .then((res) => {
                   console.log("Show added successfully");
-                  
                 })
                 .catch((err) => {
                   console.error(err.message);
@@ -361,9 +352,9 @@ function ArtistProfile(props) {
     );
     getDocs(showsRef).then((shows) => {
       const userShows = shows.docs.map((showData) => {
-        let showInfo = showData.data()
-        showInfo.id = showData.id
-        return showInfo
+        let showInfo = showData.data();
+        showInfo.id = showData.id;
+        return showInfo;
       });
       console.log(userShows);
       setShows(userShows);

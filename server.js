@@ -12,10 +12,10 @@ app.use(express.static(path.resolve("./client/dist")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// path home
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve("./client/dist/index.html"));
-});
+
+app.get("/whitelist", (req, res) => {
+  res.json(["RYqbo8w0w7TTMqXsaNnNh1uPFBA3"])
+})
 
 //--------------------email sending functionality---------------------//
 const transporter = nodemailer.createTransport({
@@ -67,6 +67,12 @@ app.post("/send", (req, res) => {
     console.log("Message sent: %s", info.messageId);
   });
 });
+
+// path home
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve("./client/dist/index.html"));
+});
+
 
 // start the server
 app.listen(port, () => {
