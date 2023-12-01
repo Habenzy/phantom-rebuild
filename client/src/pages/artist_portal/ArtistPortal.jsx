@@ -24,7 +24,7 @@ const nullShow = {
   title: "title",
   type: "type",
   blurb: "blurb",
-  status: "status",
+  status: "proposed",
   dates: [],
   artists: [],
   contactName: "contactName",
@@ -34,8 +34,6 @@ const nullShow = {
   description: "description",
   imageLg: "",
   imageLgName: "",
-  image1: "",
-  image1Name: "",
   image2: "",
   image2Name: "",
   image3: "",
@@ -147,6 +145,7 @@ function ProposalForm(props) {
   const [img3Url, setImg3Url] = useState("");
 
   const imgUploader = async (img, targetProp) => {
+    console.log("uploading image")
     console.log(img);
     const imgRef = ref(storage, img.name);
     try {

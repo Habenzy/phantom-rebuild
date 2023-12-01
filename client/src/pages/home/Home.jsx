@@ -1,9 +1,51 @@
 import { useState, useEffect } from "react";
-
+import { db } from "../../config/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import barnImg from "../../assets/barn3crop.jpg";
 import "./home.css";
 
 function Home(props) {
+  const [shows, setShows] = useState([]);
+  const [featureImg, setFeatureImg] = useState(barnImg);
+
+  function collectAllIdsAndDocs(doc) {
+    return { id: doc.id, ...doc.data() };
+  }
+
+  async function getCurrentShows() {
+    const showsRef = query(
+      collection(db, "shows"),
+      where("status", "==", "booked")
+    );
+    try {
+      const showSnapshot = await getDocs(showsRef);
+
+      const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
+      let upcoming = allShowsArray.filter((show) => {
+        console.log("Dates for", show.title)
+        console.log(show.dates)
+        let lastShow = new Date(show.dates[show.dates.length - 1].date)
+        console.log(lastShow)
+        return lastShow > Date.now();
+      });
+
+      console.log(allShowsArray)
+      console.log(upcoming);
+
+      setShows(upcoming);
+      if (upcoming.length) {
+        setFeatureImg(upcoming[0].imageLg);
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  useEffect(() => {
+    console.log("fetching shows")
+    getCurrentShows();
+  }, []);
+
   return (
     // This is the entire page container
     <div className="homeContainer">
@@ -27,86 +69,49 @@ function Home(props) {
       {/* Main show container */}
       <div className="currentPlay">
         <div id="nowPlaying">
-          <img id="homeImage" src={barnImg} alt="Now Showing" />
+          <img id="homeImage" src={featureImg} alt="Now Showing" />
         </div>
         <div className="currentPlayText">
-          <h2>Shows Coming Soon!</h2>
-          {/* FUTURE UPDATE: change this to a .map function */}
-          {/* {allShows.length >= 1 && splashShowNum === 0 ? (
-            <div>Showtimes coming soon.</div>
-          ) : (
-            console.log("showtimes coming soon...")
-          )}
-          {splashShowNum >= 1 ? changeDate(splashDates[0]) : console.log()}
-          {splashShowNum >= 2 ? <br /> : console.log()}
-          {splashShowNum >= 2 ? changeDate(splashDates[1]) : console.log()}
-          {splashShowNum >= 3 ? <br /> : console.log()}
-          {splashShowNum >= 3 ? changeDate(splashDates[2]) : console.log()}
-          {splashShowNum >= 4 ? <br /> : console.log()}
-          {splashShowNum >= 4 ? changeDate(splashDates[3]) : console.log()}
-          {splashShowNum >= 5 ? <br /> : console.log()}
-          {splashShowNum >= 5 ? changeDate(splashDates[4]) : console.log()}
-          {splashShowNum >= 6 ? <br /> : console.log()}
-          {splashShowNum >= 6 ? changeDate(splashDates[5]) : console.log()}
-          <br />
-          {/* Artist Info button */}
-          {/* {splashId ? (
-            <div>
-              <button onClick={showSplashArtist}>- Artist Info -</button>
-              <a 
-                href='https://sevendaystickets.com/organizations/phantom-theater'
-                target="_blank"
-              >
-                Buy Tickets
-              </a>
-            </div>
-          ) : (
-            console.log()
-          )} } */}
+          <h2>{shows.length ? shows[0].title : "Show Times Coming Soon!"}</h2>
+          {shows.length ? shows[0].dates.map((date, i) => {
+            return (
+              <div className="ticket-time" key={i}>
+                <p>{new Date(date.date).toLocaleString("en-US", { timezone: "EST" })}</p>
+                <a href={date.ticketLink} target="_blank" rel="noreferrer">
+                  Buy Tickets
+                </a>
+              </div>
+            );
+          }) : ""}
         </div>
       </div>
 
       {/* fires only if there is a next show */}
-      {/* {nextId ? (
+      {shows[1] ? (
         // Next show container
         <div className="whatNext">
           <div className="whatNextImg">
-            <img id="nextImage" src={nextImage} alt={"show pic"} />
+            <img id="nextImage" src={shows[1].imageLg} alt={"show pic"} />
           </div>
           <div className="whatNextText">
-            <h2>{`${nextTitle}`}</h2>
-           
-            {nextShowNum === 0 ? (
-              <div>See you next season!</div>
-            ) : (
-              console.log()
-            )}
-            {nextShowNum >= 1 ? changeDate(nextDates[0]) : console.log()}
-            {nextShowNum >= 2 ? <br /> : console.log()}
-            {nextShowNum >= 2 ? changeDate(nextDates[1]) : console.log()}
-            {nextShowNum >= 3 ? <br /> : console.log()}
-            {nextShowNum >= 3 ? changeDate(nextDates[2]) : console.log()}
-            {nextShowNum >= 4 ? <br /> : console.log()}
-            {nextShowNum >= 4 ? changeDate(nextDates[3]) : console.log()}
-            {nextShowNum >= 5 ? <br /> : console.log()}
-            {nextShowNum >= 5 ? changeDate(nextDates[4]) : console.log()}
-            {nextShowNum >= 6 ? <br /> : console.log()}
-            {nextShowNum >= 6 ? changeDate(nextDates[5]) : console.log()}
-            <br />
-           
-            <button onClick={showNextArtist}>- Artist Info -</button>
-            <a
-              href='https://sevendaystickets.com/organizations/phantom-theater'
-
-              target="_blank"
-            >
-              Buy Tickets
-            </a>
+            <h2>{shows[1].title}</h2>
+            {shows[1].dates.map((date, i) => {
+              return (
+                <div className="ticket-time" key={i}>
+                  <p>
+                    {new Date(date.date).toLocaleString("en-US", { timezone: "EST" })}
+                  </p>
+                  <a href={date.ticketLink} target="_blank" rel="noreferrer">
+                    Buy Tickets
+                  </a>
+                </div>
+              );
+            })}
           </div>
         </div>
       ) : (
         ""
-      )} */}
+      )}
     </div>
   );
 }

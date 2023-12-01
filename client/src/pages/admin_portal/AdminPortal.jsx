@@ -68,28 +68,71 @@ function DateField(props) {
   const [ticketLink, setTicketLink] = useState(props.date.ticketLink || "");
   const [soldOut, setSoldOut] = useState(false);
 
+  // useEffect(() => {
+  //   console.log(typeof dateTime);
+  //   if (typeof dateTime === "object") {
+  //     let year =  `${dateTime.getFullYear()}`;
+  //     let month = `${dateTime.getMonth()}`;
+  //     let day =   `${dateTime.getDate()}`;
+  //     let hour =  `${dateTime.getHours()}`;
+  //     let minutes = `${dateTime.getMinutes()}`;
+  //     console.log(month)
+  //     let formattedDate = `${year}-${
+  //       month.length === 2 ? month : "0" + month
+  //     }-${day.length === 2 ? day : "0" + day}T${
+  //       hour.length === 2 ? hour : "0" + hour
+  //     }:${minutes.length === 2 ? minutes : "0" + minutes}`;
+  //     console.log(formattedDate);
+  //     setDateTime(formattedDate);
+  //   }
+  // }, []);
+
   return (
     <div className="date-time-field">
-      <form>
-        <label htmlFor="date-time">Choose a showtime</label>
-        <input
-          type="date"
-          name="date-time"
-          value={dateTime}
-          onChange={(evt) => setDateTime(evt.target.value)}
-        />
-        <label htmlFor="ticket-link">Link to tickets for this show time</label>
-        <input
+      <label htmlFor="date-time">Choose a showtime</label>
+      <input
+        type="datetime-local"
+        name="date-time"
+        value={dateTime}
+        onChange={(evt) => {
+          console.log("setting date as")
+          console.log(evt.target.value)
+          setDateTime(evt.target.value);
+        }}
+      />
+      <label htmlFor="ticket-link">Link to tickets for this show time</label>
+      <input
         name="ticket-link"
-          type="text"
-          value={ticketLink}
-          onChange={(evt) => {
-            setTicketLink(evt.target.value);
-          }}
-        />
-        <label htmlFor="sold-out">Show is Sold out</label>
-        <input name="sold-out" type="checkbox" value={soldOut} onChange={setSoldOut(true)} />
-      </form>
+        type="text"
+        value={ticketLink}
+        onChange={(evt) => {
+          setTicketLink(evt.target.value);
+        }}
+      />
+      <label htmlFor="sold-out">Show is Sold out</label>
+      <input
+        name="sold-out"
+        type="checkbox"
+        value={soldOut}
+        onChange={() => {
+          setSoldOut(true);
+        }}
+      />
+      <button
+        className="submit"
+        onClick={(evt) => {
+          console.log(dateTime)
+          evt.preventDefault();
+          const upDate = props.allDates.toSpliced(props.index, 1, {
+            date: dateTime,
+            ticketLink: ticketLink,
+            soldOut: soldOut,
+          });
+          props.update(upDate);
+        }}
+      >
+        Add Show Time
+      </button>
     </div>
   );
 }
@@ -115,6 +158,7 @@ function ProposalForm(props) {
   const [img3Url, setImg3Url] = useState("");
 
   const imgUploader = async (img, targetProp) => {
+    console.log("uploading img")
     console.log(img);
     const imgRef = ref(storage, img.name);
     try {
@@ -140,14 +184,8 @@ function ProposalForm(props) {
 
   const addShowTime = () => {
     // generate new blank date object in array
-    /* Example object for "dates" array
-  {
-    date: unix timestamp
-    ticketLink: url string
-    soldOut: boolean
-  }
-  */
-    let updatedArr = dates.contact([
+
+    let updatedArr = dates.concat([
       {
         date: Date.now(),
         ticketLink: "",
@@ -168,10 +206,23 @@ function ProposalForm(props) {
       </select>
       <div>
         {/* add dates, and set dates in date array when entered */}
-        <button onClick={addShowTime}>Add a new Show Time</button>
+        <button
+          onClick={(evt) => {
+            evt.preventDefault();
+            addShowTime();
+          }}
+        >
+          Add a new Show Time
+        </button>
         {dates.map((date, i) => {
           return (
-            <DateField key={i} date={date} allDates={dates} update={setDates} />
+            <DateField
+              key={i}
+              index={i}
+              date={date}
+              allDates={dates}
+              update={setDates}
+            />
           );
         })}
       </div>
@@ -454,7 +505,7 @@ function ProfileEditor(props) {
 
 function ShowEditor(props) {
   const [showList, setShowList] = useState(props.shows);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     filter === "all"
@@ -470,10 +521,11 @@ function ShowEditor(props) {
           setFilter(evt.target.value);
         }}
       >
+        <option value="">Which Shows Would you like to see?</option>
         <option value="all">Display all shows and proposals</option>
         <option value="proposed">Display show Proposals only</option>
         <option value="booked">Display Booked shows only</option>
-        <option value="archived">Display archived shows only</option>
+        <option value="archived">Display Archived shows only</option>
       </select>
       {showList.map((show, i) => {
         return <ProposalForm key={i} show={show} />;
@@ -483,19 +535,21 @@ function ShowEditor(props) {
 }
 
 function AdminPanel(props) {
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState(true);
   const [view, setView] = useState("shows");
+  const [newDonor, setNewDonor] = useState("");
   const [allShows, setAllShows] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [donors, setDonors] = useState([]);
 
   useEffect(() => {
-    fetch("/whitelist")
-      .then((res) => res.json())
-      .then((list) => {
-        list.includes(auth.currentUser.uid)
-          ? setAuthorized(true)
-          : setAuthorized(false);
-      });
+    // fetch("/whitelist")
+    //   .then((res) => res.json())
+    //   .then((list) => {
+    //     list.includes(auth.currentUser.uid)
+    //       ? setAuthorized(true)
+    //       : setAuthorized(false);
+    //   });
   }, []);
 
   useEffect(() => {
@@ -530,6 +584,22 @@ function AdminPanel(props) {
       .catch((err) => console.error(err.message));
   }, []);
 
+  useEffect(() => {
+    //fetch all user data
+    let donorsRef = query(collection(db, "donors"));
+    getDocs(donorsRef)
+      .then((donorsRes) => {
+        const alldonors = donorsRes.docs.map((donorData) => {
+          let donorInfo = donorData.data();
+          donorInfo.id = donorData.id;
+          return donorInfo;
+        });
+        console.log(alldonors);
+        setDonors(alldonors);
+      })
+      .catch((err) => console.error(err.message));
+  }, []);
+
   return (
     <div>
       {!authorized ? (
@@ -555,6 +625,28 @@ function AdminPanel(props) {
           ) : (
             <ProfileEditor users={artists} />
           )}
+          <div className="sponsor-list">
+            <ul>
+              {donors.map((donor, i) => {
+                return (
+                  <li className="donor" key={i}>
+                    <p>{donor.name}</p>
+                    <button>Delete</button>
+                  </li>
+                );
+              })}
+            </ul>
+            <label htmlFor="add-donor">Add Donor</label>
+            <input
+              type="text"
+              name="add-donor"
+              value={newDonor}
+              onChange={(evt) => {
+                evt.preventDefault();
+                setNewDonor(evt.target.value);
+              }}
+            />
+          </div>
         </div>
       )}
     </div>
