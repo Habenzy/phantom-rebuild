@@ -34,7 +34,7 @@ function SeasonEvent(props) {
       {props.dates.map((showtime, i) => {
         return (
           <div className="ticket-card" key={i}>
-            <p>{showtime.date.toLocaleString("en-US", { timeZone: "EST" })}</p>
+            <p>{new Date(showtime.date).toLocaleString("en-US", { timezone: "EST" })}</p>
             <br></br>
 
             <a
