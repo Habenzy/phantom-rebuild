@@ -77,6 +77,7 @@ function Season(props) {
       <h1>Season 2023</h1>
       {allShows
         ? allShows.map((show) => {
+          console.log(show)
             return (
               <SeasonEvent
                 key={show.id}
