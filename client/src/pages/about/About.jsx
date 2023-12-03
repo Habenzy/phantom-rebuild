@@ -3,7 +3,7 @@
 import Barn from "../../assets/barn4.jpg";
 import Map from "../../assets/map.png";
 import Tracy from "../../assets/tracyMartin.jpg";
-import "./About.css";
+import "./about.css";
 
 //------About Page component function containing Phantom Theater information
 // and sponsor list. -----------------------------------------------------------
