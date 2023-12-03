@@ -134,9 +134,9 @@ function ProposalForm(props) {
   const [image2, setImage2] = useState(props.show.image2 || "");
   const [image3, setImage3] = useState(props.show.image3 || "");
 
-  const [imgLgUrl, setImgLgUrl] = useState("");
-  const [img2Url, setImg2Url] = useState("");
-  const [img3Url, setImg3Url] = useState("");
+  const [imgLgUrl, setImgLgUrl] = useState(props.show.imageLg || "");
+  const [img2Url, setImg2Url] = useState(props.show.image2 || "");
+  const [img3Url, setImg3Url] = useState(props.show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
     const imgRef = ref(storage, img.name);
@@ -259,6 +259,7 @@ function ProposalForm(props) {
       <label htmlFor="splash-img">
         Add a cover image to be displayed on our homepage
       </label>
+    {props.show.imageLg && <image src={props.show.imageLg} />}
       <input
         type="file"
         name="splash-img"
@@ -278,6 +279,7 @@ function ProposalForm(props) {
         the form)
       </button>
       <label htmlFor="img-2">Add additional images for show (optional)</label>
+      {props.show.image2 && <image src={props.show.image2} />}
       <input
         type="file"
         name="img-2"
@@ -297,6 +299,7 @@ function ProposalForm(props) {
         the show details)
       </button>
       <label htmlFor="img-3">Add additional images for show (optional)</label>
+      {props.show.image3 && <image src={props.show.image3} />}
       <input
         type="file"
         name="img-3"
@@ -335,10 +338,12 @@ function ProposalForm(props) {
           setDoc(doc(db, "shows", props.show.id), showObj)
             .then((res) => {
               console.log(res);
+              alert("Show updated successfully")
               //alert that update was successful
             })
             .catch((err) => {
               console.error(err.message);
+              alert("Something went wrong...")
             });
         }}
       >
