@@ -11,8 +11,10 @@ import {
   addDoc,
   where,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import "./admin_portal.css"
 
 function LoginPortal(props) {
   const [email, setEmail] = useState("");
@@ -33,7 +35,7 @@ function LoginPortal(props) {
 
   return (
     <div>
-      <form>
+      <form className="login-form">
         <input
           type="text"
           name="email"
@@ -68,25 +70,6 @@ function DateField(props) {
   const [ticketLink, setTicketLink] = useState(props.date.ticketLink || "");
   const [soldOut, setSoldOut] = useState(false);
 
-  // useEffect(() => {
-  //   console.log(typeof dateTime);
-  //   if (typeof dateTime === "object") {
-  //     let year =  `${dateTime.getFullYear()}`;
-  //     let month = `${dateTime.getMonth()}`;
-  //     let day =   `${dateTime.getDate()}`;
-  //     let hour =  `${dateTime.getHours()}`;
-  //     let minutes = `${dateTime.getMinutes()}`;
-  //     console.log(month)
-  //     let formattedDate = `${year}-${
-  //       month.length === 2 ? month : "0" + month
-  //     }-${day.length === 2 ? day : "0" + day}T${
-  //       hour.length === 2 ? hour : "0" + hour
-  //     }:${minutes.length === 2 ? minutes : "0" + minutes}`;
-  //     console.log(formattedDate);
-  //     setDateTime(formattedDate);
-  //   }
-  // }, []);
-
   return (
     <div className="date-time-field">
       <label htmlFor="date-time">Choose a showtime</label>
@@ -95,8 +78,6 @@ function DateField(props) {
         name="date-time"
         value={dateTime}
         onChange={(evt) => {
-          console.log("setting date as")
-          console.log(evt.target.value)
           setDateTime(evt.target.value);
         }}
       />
@@ -105,6 +86,7 @@ function DateField(props) {
         name="ticket-link"
         type="text"
         value={ticketLink}
+        placeholder="Ticket Link"
         onChange={(evt) => {
           setTicketLink(evt.target.value);
         }}
@@ -121,7 +103,6 @@ function DateField(props) {
       <button
         className="submit"
         onClick={(evt) => {
-          console.log(dateTime)
           evt.preventDefault();
           const upDate = props.allDates.toSpliced(props.index, 1, {
             date: dateTime,
@@ -158,8 +139,6 @@ function ProposalForm(props) {
   const [img3Url, setImg3Url] = useState("");
 
   const imgUploader = async (img, targetProp) => {
-    console.log("uploading img")
-    console.log(img);
     const imgRef = ref(storage, img.name);
     try {
       let imgUpload = await uploadBytes(imgRef, img);
@@ -197,6 +176,8 @@ function ProposalForm(props) {
   };
 
   return (
+    <div className="show-form-container">
+      <h2>{title}</h2>
     <form className="show-proposal-form">
       {/* still need fields for "dates" */}
       <select value={status} onChange={(evt) => setStatus(evt.target.value)}>
@@ -214,6 +195,7 @@ function ProposalForm(props) {
         >
           Add a new Show Time
         </button>
+        <h4>Show Times</h4>
         {dates.map((date, i) => {
           return (
             <DateField
@@ -312,7 +294,7 @@ function ProposalForm(props) {
         }}
       >
         Upload image to the Database (please do this <b>before</b> submitting
-        the form)
+        the show details)
       </button>
       <label htmlFor="img-3">Add additional images for show (optional)</label>
       <input
@@ -331,7 +313,7 @@ function ProposalForm(props) {
         }}
       >
         Upload image to the Database (please do this <b>before</b> submitting
-        the form)
+        the show details)
       </button>
       <button
         className="submit-show"
@@ -363,6 +345,8 @@ function ProposalForm(props) {
         Submit show details
       </button>
     </form>
+    <div className="spacer"></div>
+    </div>
   );
 }
 
@@ -402,7 +386,9 @@ function ArtistProfile(props) {
   };
 
   return (
-    <form>
+    <div className="artist-container">
+      <h2>{artist}</h2>
+    <form className="artist-profile-form">
       <label htmlFor="artist">Artist's Name</label>
       <input
         name="artist"
@@ -486,6 +472,8 @@ function ArtistProfile(props) {
 
       <button onClick={updateProfile}>Update artist information</button>
     </form>
+    <div className="spacer"></div>
+    </div>
   );
 }
 
@@ -535,7 +523,7 @@ function ShowEditor(props) {
 }
 
 function AdminPanel(props) {
-  const [authorized, setAuthorized] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
   const [view, setView] = useState("shows");
   const [newDonor, setNewDonor] = useState("");
   const [allShows, setAllShows] = useState([]);
@@ -543,13 +531,13 @@ function AdminPanel(props) {
   const [donors, setDonors] = useState([]);
 
   useEffect(() => {
-    // fetch("/whitelist")
-    //   .then((res) => res.json())
-    //   .then((list) => {
-    //     list.includes(auth.currentUser.uid)
-    //       ? setAuthorized(true)
-    //       : setAuthorized(false);
-    //   });
+    fetch("/whitelist")
+      .then((res) => res.json())
+      .then((list) => {
+        list.includes(auth.currentUser.uid)
+          ? setAuthorized(true)
+          : setAuthorized(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -628,15 +616,21 @@ function AdminPanel(props) {
           <div className="sponsor-list">
             <ul>
               {donors.map((donor, i) => {
+                console.log(donor)
                 return (
                   <li className="donor" key={i}>
                     <p>{donor.name}</p>
-                    <button>Delete</button>
+                    <button onClick={(evt) => {
+                      evt.preventDefault();
+                      deleteDoc(doc(db, "donors", donor.id)).then(res => {
+                        alert(`Donor ${donor.name} removed from database (refresh page to see changes to donor list)`)
+                      })
+                    }}>Delete</button>
                   </li>
                 );
               })}
             </ul>
-            <label htmlFor="add-donor">Add Donor</label>
+            <label htmlFor="add-donor">New Donor</label>
             <input
               type="text"
               name="add-donor"
@@ -646,6 +640,16 @@ function AdminPanel(props) {
                 setNewDonor(evt.target.value);
               }}
             />
+            <button onClick={(evt) => {
+              evt.preventDefault();
+              let newDoc = doc(collection(db, "donors"))
+
+              setDoc(newDoc, {name: newDonor.toUpperCase(), id:newDoc.id}).then(res => {
+                setNewDonor("")
+              }).catch(err => {
+                console.error(err.message)
+              })
+            }}>Add Donor</button>
           </div>
         </div>
       )}

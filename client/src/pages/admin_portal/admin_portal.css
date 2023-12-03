@@ -1,0 +1,139 @@
+/* Login Form */
+
+.login-form {
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form input {
+  font-size: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.login-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.login-buttons-container button {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+
+.login-buttons-container button:hover {
+  cursor: pointer;
+}
+
+.login-form p {
+  color: white;
+}
+
+/* Show edit form */
+h1, h3 {
+color: white;
+text-align: center;
+}
+
+.add-show-button {
+  font-size: 1.5rem;
+  margin-left: 75vw;
+  border-radius: 5px
+}
+
+.add-show-button:hover {
+  cursor: pointer;
+}
+
+.show-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.show-proposal-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 80vw;
+}
+
+.spacer {
+  height: 20px;
+  border-top: 2px solid white;
+  margin-top: 20px;
+  width: 100%
+}
+
+.show-form-container h2 {
+  color: white;
+  margin-bottom: 5px;
+}
+
+.show-form-container h4 {
+  color: white;
+  margin-bottom: 3px;
+}
+
+.show-form-container label {
+  background-color: aliceblue;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 2px
+}
+
+.show-form-container input {
+  font-size: 1.15rem;
+}
+
+.show-form-container button {
+  margin: 2px;
+  padding: 5px;
+  font-size: 1.15rem;
+  border-radius: 5px;
+}
+
+.show-form-container button:hover {
+  cursor: pointer
+}
+
+/* Artist Edit Form */
+
+.artist-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.artist-profile-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 80vw;
+}
+
+.artist-container label {
+  background-color: aliceblue;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 2px
+}
+
+.artist-container input {
+  font-size: 1.15rem;
+}
+
+.artist-container button {
+  margin: 2px;
+  padding: 5px;
+  font-size: 1.15rem;
+  border-radius: 5px;
+}
+
+.artist-container button:hover {
+  cursor: pointer
+}

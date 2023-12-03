@@ -14,7 +14,7 @@ app.use(express.json());
 
 
 app.get("/whitelist", (req, res) => {
-  res.json(["RYqbo8w0w7TTMqXsaNnNh1uPFBA3"])
+  res.json(["9edwDVEW1pQAIetlxUSz6k16bmv2"])
 })
 
 //--------------------email sending functionality---------------------//

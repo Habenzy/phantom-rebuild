@@ -86,7 +86,7 @@ function LoginPortal(props) {
   };
 
   return (
-    <div>
+    <div className="login-form">
       <form>
         <input
           type="text"
@@ -110,6 +110,7 @@ function LoginPortal(props) {
           <button className="login-button" onClick={login}>
             Log In
           </button>
+          <p>OR</p>
           <p>
             Don't have an account?{" "}
             <button className="login-button" onClick={signUp}>
@@ -170,8 +171,9 @@ function ProposalForm(props) {
   };
 
   return (
+    <div className="show-form-container">
     <form className="show-proposal-form">
-      <label htmlFor="title">Enter the name of your show</label>
+      <label htmlFor="title">Enter the name of your show (REQUIRED)</label>
       <input
         type="text"
         name="title"
@@ -201,7 +203,7 @@ function ProposalForm(props) {
           setType(evt.target.value);
         }}
       />
-      <label htmlFor="description">Tell us a little about your show</label>
+      <label htmlFor="description">Tell us a little about your show (REQUIRED)</label>
       <input
         type="text"
         name="description"
@@ -211,7 +213,7 @@ function ProposalForm(props) {
         }}
       />
       <label htmlFor="splash-img">
-        Add a cover image to be displayed on our homepage
+        Add a cover image to be displayed on our homepage (REQUIRED)
       </label>
       <input
         type="file"
@@ -275,6 +277,7 @@ function ProposalForm(props) {
       </button>
       <button
         className="submit-show"
+        disabled={!(title && description && imgLgUrl)}
         onClick={(evt) => {
           evt.preventDefault();
           const showObj = {
@@ -311,6 +314,7 @@ function ProposalForm(props) {
         Submit your show details
       </button>
     </form>
+    </div>
   );
 }
 
@@ -401,6 +405,7 @@ function ArtistProfile(props) {
         Here you can manage your artist profile, and submit show proposals!
       </h3>
       <button
+      className="add-show-button"
         onClick={(evt) => {
           evt.preventDefault();
           setSubmitProp(true);
@@ -411,7 +416,8 @@ function ArtistProfile(props) {
 
       {submitProp && <ProposalForm user={props.user} show={nullShow} />}
       {/* Show/edit artist info */}
-      <form>
+      <div className="artist-container">
+      <form className="artist-profile-form">
         <label htmlFor="artist">What should we call you?</label>
         <input
           name="artist"
@@ -505,12 +511,17 @@ function ArtistProfile(props) {
 
         <button onClick={updateProfile}>Update your information</button>
       </form>
+      </div>
       {/* List all active/archived shows for artist */}
+      <div className="spacer"></div>
+      <h1>Submitted Shows</h1>
+      <div className="spacer"></div>
       {shows.map((show, i) => {
         return (
           <div key={i} className="show-container">
-            <h1 className="show-title">{show.title}</h1>
+            <h1 className="show-title">{show.title} - {show.status}</h1>
             <ProposalForm show={show} edit={true} />
+            <div className="spacer"></div>
           </div>
         );
       })}
