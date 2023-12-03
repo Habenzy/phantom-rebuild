@@ -19,6 +19,8 @@ const firebaseConfig = {
   measurementId: import.meta.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
+console.log(import.meta.REACT_APP_FIREBASE_API_KEY)
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
