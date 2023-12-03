@@ -259,7 +259,7 @@ function ProposalForm(props) {
       <label htmlFor="splash-img">
         Add a cover image to be displayed on our homepage
       </label>
-    {props.show.imageLg && <image src={props.show.imageLg} />}
+    {props.show.imageLg && <img src={props.show.imageLg} />}
       <input
         type="file"
         name="splash-img"
@@ -279,7 +279,7 @@ function ProposalForm(props) {
         the form)
       </button>
       <label htmlFor="img-2">Add additional images for show (optional)</label>
-      {props.show.image2 && <image src={props.show.image2} />}
+      {props.show.image2 && <img src={props.show.image2} />}
       <input
         type="file"
         name="img-2"
@@ -299,7 +299,7 @@ function ProposalForm(props) {
         the show details)
       </button>
       <label htmlFor="img-3">Add additional images for show (optional)</label>
-      {props.show.image3 && <image src={props.show.image3} />}
+      {props.show.image3 && <img src={props.show.image3} />}
       <input
         type="file"
         name="img-3"
