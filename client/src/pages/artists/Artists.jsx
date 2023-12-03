@@ -6,6 +6,7 @@ import facebookIcon from "../../assets/facebookb.png";
 import youtubeIcon from "../../assets/youtube.png";
 import instagramIcon from "../../assets/instagramColor.png";
 import spotifyIcon from "../../assets/spotify.png";
+import "./artists.css"
 
 function ArtistsList(props) {
   const [allArtists, setAllArtists] = useState([]);

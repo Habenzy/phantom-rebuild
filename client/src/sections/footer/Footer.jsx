@@ -1,4 +1,4 @@
-import "./Footer.css";
+import "./footer.css";
 import Facebook from "../../assets/facebook.png";
 import Instagram from "../../assets/instagram.png";
 import { Link } from "react-router-dom";
