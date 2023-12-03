@@ -156,8 +156,10 @@ function ProposalForm(props) {
           setImg3Url(imgUrl);
           break;
       }
+      alert("Image uploaded to the Database")
     } catch (err) {
       console.error(err.message);
+      alert("something went wrong")
     }
   };
 
@@ -325,7 +327,7 @@ function ProposalForm(props) {
           const showObj = {
             title: title,
             type: type,
-            blurb: description,
+            blurb: blurb,
             status: status,
             dates: dates,
             artists: artists,
