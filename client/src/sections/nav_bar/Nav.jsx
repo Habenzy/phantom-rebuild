@@ -1,5 +1,5 @@
 import Logo from "../../assets/Logo.jpg";
-import "/Nav.css";
+import "./nav.css";
 import { Link } from "react-router-dom";
 
 
