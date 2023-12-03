@@ -125,8 +125,6 @@ function LoginPortal(props) {
 }
 
 function ProposalForm(props) {
-  const [thisShow, setThisShow] = useState(props.show);
-
   // create state objects to hold values from input form
   const [title, setTitle] = useState(props.show.title || "");
   const [type, setType] = useState(props.show.type || "");
@@ -165,6 +163,7 @@ function ProposalForm(props) {
           setImg3Url(imgUrl);
           break;
       }
+      alert("Image uploaded to Database")
     } catch (err) {
       console.error(err.message);
     }
@@ -298,13 +297,14 @@ function ProposalForm(props) {
                 .then((res) => {
                   console.log(res);
                   //alert that update was successful
+                  alert("Show Updated Successfully")
                 })
                 .catch((err) => {
                   console.error(err.message);
                 })
             : addDoc(collection(db, "shows"), showObj)
                 .then((res) => {
-                  console.log("Show added successfully");
+                  alert("Show added successfully");
                 })
                 .catch((err) => {
                   console.error(err.message);

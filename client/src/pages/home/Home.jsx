@@ -24,6 +24,7 @@ function Home(props) {
       let upcoming = allShowsArray.filter((show) => {
         console.log("Dates for", show.title)
         console.log(show.dates)
+        // sort dates and put tem in order
         let lastShow = new Date(show.dates[show.dates.length - 1].date)
         console.log(lastShow)
         return lastShow > Date.now();
