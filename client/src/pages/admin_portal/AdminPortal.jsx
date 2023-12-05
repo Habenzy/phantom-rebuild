@@ -101,7 +101,7 @@ function DateField(props) {
         }}
       />
       <button
-        className="submit"
+        className="submit highlight"
         onClick={(evt) => {
           evt.preventDefault();
           const upDate = props.allDates.toSpliced(props.index, 1, {
@@ -112,7 +112,7 @@ function DateField(props) {
           props.update(upDate);
         }}
       >
-        Add Show Time
+        Confirm Show Time
       </button>
     </div>
   );
@@ -249,15 +249,7 @@ function ProposalForm(props) {
           setType(evt.target.value);
         }}
       />
-      <label htmlFor="description">Tell us a little about show</label>
-      <input
-        type="text"
-        name="description"
-        value={description}
-        onChange={(evt) => {
-          setDescription(evt.target.value);
-        }}
-      />
+      <p>{description}</p>
       <label htmlFor="splash-img">
         Add a cover image to be displayed on our homepage
       </label>
@@ -271,7 +263,7 @@ function ProposalForm(props) {
         }}
       />
       <button
-        className="img-uploader"
+        className="img-uploader highlight"
         onClick={(evt) => {
           evt.preventDefault();
           imgUploader(imageLg, "splash");
@@ -291,7 +283,7 @@ function ProposalForm(props) {
         }}
       />
       <button
-        className="img-uploader"
+        className="img-uploader highlight"
         onClick={(evt) => {
           evt.preventDefault();
           imgUploader(image2, "2");
@@ -311,7 +303,7 @@ function ProposalForm(props) {
         }}
       />
       <button
-        className="img-uploader"
+        className="img-uploader highlight"
         onClick={(evt) => {
           evt.preventDefault();
           imgUploader(image3, "3");

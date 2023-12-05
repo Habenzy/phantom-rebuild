@@ -139,9 +139,9 @@ function ProposalForm(props) {
   const [image2, setImage2] = useState(props.show.image2 || "");
   const [image3, setImage3] = useState(props.show.image3 || "");
 
-  const [imgLgUrl, setImgLgUrl] = useState("");
-  const [img2Url, setImg2Url] = useState("");
-  const [img3Url, setImg3Url] = useState("");
+  const [imgLgUrl, setImgLgUrl] = useState(props.show.imageLg || "");
+  const [img2Url, setImg2Url] = useState(props.show.image2 || "");
+  const [img3Url, setImg3Url] = useState(props.show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
     console.log("uploading image")
@@ -223,7 +223,7 @@ function ProposalForm(props) {
         }}
       />
       <button
-        className="img-uploader"
+        className="img-uploader highlight"
         onClick={(evt) => {
           evt.preventDefault();
           imgUploader(imageLg, "splash");
@@ -244,7 +244,7 @@ function ProposalForm(props) {
         }}
       />
       <button
-        className="img-uploader"
+        className="img-uploader highlight"
         onClick={(evt) => {
           evt.preventDefault();
           imgUploader(image2, "2");
@@ -265,7 +265,7 @@ function ProposalForm(props) {
         }}
       />
       <button
-        className="img-uploader"
+        className="img-uploader highlight"
         onClick={(evt) => {
           evt.preventDefault();
           imgUploader(image3, "3");
@@ -305,6 +305,7 @@ function ProposalForm(props) {
             : addDoc(collection(db, "shows"), showObj)
                 .then((res) => {
                   alert("Show added successfully");
+                  props.setSubmitProp ? props.setSubmitProp(false) : console.log("previous show")
                 })
                 .catch((err) => {
                   console.error(err.message);
@@ -414,7 +415,7 @@ function ArtistProfile(props) {
         Create Show Proposal
       </button>
 
-      {submitProp && <ProposalForm user={props.user} show={nullShow} />}
+      {submitProp && <ProposalForm user={props.user} show={nullShow} setSubmitProp={setSubmitProp}/>}
       {/* Show/edit artist info */}
       <div className="artist-container">
       <form className="artist-profile-form">
