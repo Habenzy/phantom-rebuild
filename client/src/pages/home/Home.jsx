@@ -1,9 +1,33 @@
 import { useState, useEffect } from "react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 import { db } from "../../config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import barnImg from "../../assets/barn3crop.jpg";
 import "./home.css";
+
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const months = [
+  "Jan",
+  "Feb",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "Sept",
+  "October",
+  "Nov",
+  "Dec",
+];
 
 function Home(props) {
   const [shows, setShows] = useState([]);
@@ -23,16 +47,17 @@ function Home(props) {
 
       const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
       let upcoming = allShowsArray.filter((show) => {
-        console.log("Dates for", show.title)
-        console.log(show.dates)
+        //console.log("Dates for", show.title)
+        //console.log(show.dates)
+        console.log(show.dates[show.dates.length - 1].date);
         // sort dates and put tem in order
-        let lastShow = new Date(show.dates[show.dates.length - 1].date)
-        console.log(lastShow)
+        let lastShow = new Date(show.dates[show.dates.length - 1].date);
+        console.log(lastShow);
         return lastShow > Date.now();
       });
 
-      console.log(allShowsArray)
-      console.log(upcoming);
+      //console.log(allShowsArray)
+      //console.log(upcoming);
 
       setShows(upcoming);
       if (upcoming.length) {
@@ -44,7 +69,7 @@ function Home(props) {
   }
 
   useEffect(() => {
-    console.log("fetching shows")
+    console.log("fetching shows");
     getCurrentShows();
   }, []);
 
@@ -75,17 +100,26 @@ function Home(props) {
         </div>
         <div className="currentPlayText">
           <h2>{shows.length ? shows[0].title : "Show Times Coming Soon!"}</h2>
-          <Link to={`/Season#${shows[0].id}`}>More Info</Link>
-          {shows.length ? shows[0].dates.map((date, i) => {
-            return (
-              <div className="ticket-time" key={i}>
-                <p>{new Date(date.date).toLocaleString("en-US", { timezone: "EST" })}</p>
-                <a href={date.ticketLink} target="_blank" rel="noreferrer">
-                  Buy Tickets
-                </a>
-              </div>
-            );
-          }) : ""}
+          {/* <Link to={`/Season#${shows[0].id}`}>More Info</Link> */}
+          {shows.length
+            ? shows[0].dates.map((date, i) => {
+                console.log(new Date(date.date));
+                return (
+                  <div className="ticket-time" key={i}>
+                    <p>{`${daysOfWeek[new Date(date.date).getDay()]} ${
+                      months[new Date(date.date).getMonth()]
+                    } ${new Date(date.date).getDate()}, ${
+                      new Date(date.date).getHours() > 12
+                        ? new Date(date.date).getHours() - 12
+                        : new Date(date.date).getHours()
+                    }:0${new Date(date.date).getMinutes()}`}</p>
+                    <a href={date.ticketLink} target="_blank" rel="noreferrer">
+                      Buy Tickets
+                    </a>
+                  </div>
+                );
+              })
+            : ""}
         </div>
       </div>
 
@@ -103,7 +137,9 @@ function Home(props) {
               return (
                 <div className="ticket-time" key={i}>
                   <p>
-                    {new Date(date.date).toLocaleString("en-US", { timezone: "EST" })}
+                    {new Date(date.date).toLocaleString("en-US", {
+                      timezone: "EST",
+                    })}
                   </p>
                   <a href={date.ticketLink} target="_blank" rel="noreferrer">
                     Buy Tickets

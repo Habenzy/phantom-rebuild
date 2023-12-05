@@ -3,6 +3,30 @@ import "./season.css";
 import { db } from "../../config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const months = [
+  "Jan",
+  "Feb",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "Sept",
+  "October",
+  "Nov",
+  "Dec",
+];
+
 function SeasonEvent(props) {
   const [showArtists, setShowArtists] = useState([]);
 
@@ -31,16 +55,20 @@ function SeasonEvent(props) {
       })}
       <p className="blurb">{props.blurb}</p>
       <br />
-      {props.dates.map((showtime, i) => {
+      {props.dates.map((date, i) => {
         return (
           <div className="ticket-card" key={i}>
             <p>
-              {new Date(showtime.date).toLocaleString("en-US", {
-                timezone: "EST",
-              })}
+              {`${daysOfWeek[new Date(date.date).getDay()]} ${
+                months[new Date(date.date).getMonth()]
+              } ${new Date(date.date).getDate()}, ${
+                new Date(date.date).getHours() > 12
+                  ? new Date(date.date).getHours() - 12
+                  : new Date(date.date).getHours()
+              }:0${new Date(date.date).getMinutes()}`}
             </p>
             <br></br>
-            {showtime > Date.now() && (
+            {new Date(date.date) > Date.now() && (
               <a
                 href={
                   props.ticketUrl
@@ -83,6 +111,7 @@ function Season(props) {
 
       if (!allShows.length) {
         allShowsArray.sort((a, b) => (a.dates[0] > b.dates[0] ? 1 : -1));
+        console.log(allShowsArray);
         setAllShows(allShowsArray);
       }
     } catch (err) {
