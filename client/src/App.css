@@ -7,11 +7,18 @@
   padding: 0px;
   box-sizing: border-box;
 }
+
 .App {
   background-color: #1d2433;
 }
+
 p {
   font-family: "IM Fell Double Pica";
+}
+
+.highlight {
+  background-color: rgb(195, 247, 9);
+  color: black;
 }
 
 @media screen and (min-width: 600px) {

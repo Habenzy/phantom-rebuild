@@ -34,21 +34,26 @@ function SeasonEvent(props) {
       {props.dates.map((showtime, i) => {
         return (
           <div className="ticket-card" key={i}>
-            <p>{new Date(showtime.date).toLocaleString("en-US", { timezone: "EST" })}</p>
+            <p>
+              {new Date(showtime.date).toLocaleString("en-US", {
+                timezone: "EST",
+              })}
+            </p>
             <br></br>
-
-            <a
-              href={
-                props.ticketUrl
-                  ? props.ticketUrl
-                  : `https://sevendaystickets.com/organizations/phantom-theater`
-              }
-              target="_blank"
-              className="buy-ticket"
-              rel="noreferrer"
-            >
-              Buy Tickets
-            </a>
+            {showtime > Date.now() && (
+              <a
+                href={
+                  props.ticketUrl
+                    ? props.ticketUrl
+                    : `https://sevendaystickets.com/organizations/phantom-theater`
+                }
+                target="_blank"
+                className="buy-ticket"
+                rel="noreferrer"
+              >
+                Buy Tickets
+              </a>
+            )}
           </div>
         );
       })}
