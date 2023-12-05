@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {Link} from "react-router-dom"
 import { db } from "../../config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import barnImg from "../../assets/barn3crop.jpg";
@@ -74,6 +75,7 @@ function Home(props) {
         </div>
         <div className="currentPlayText">
           <h2>{shows.length ? shows[0].title : "Show Times Coming Soon!"}</h2>
+          <Link to={`/Season#${shows[0].id}`}>More Info</Link>
           {shows.length ? shows[0].dates.map((date, i) => {
             return (
               <div className="ticket-time" key={i}>
@@ -96,6 +98,7 @@ function Home(props) {
           </div>
           <div className="whatNextText">
             <h2>{shows[1].title}</h2>
+            <Link to={`/Season#${shows[1].id}`}>More Info</Link>
             {shows[1].dates.map((date, i) => {
               return (
                 <div className="ticket-time" key={i}>

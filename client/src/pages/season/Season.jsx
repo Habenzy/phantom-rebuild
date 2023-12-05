@@ -20,7 +20,7 @@ function SeasonEvent(props) {
   }, []);
 
   return (
-    <div className="season_container">
+    <div className="season_container" id={props.id}>
       <h3> {props.title} </h3>
       <br />
       <img src={props.imageLg} alt="show-image" />
