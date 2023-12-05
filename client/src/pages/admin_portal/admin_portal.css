@@ -137,3 +137,20 @@ text-align: center;
 .artist-container button:hover {
   cursor: pointer
 }
+
+.sponsor-list {
+  display: flex;
+    flex-direction: column;
+    width: 100vw;
+    align-items: center;
+    color: white;
+}
+
+.sponsor-list ul {
+  width: 20vw
+}
+
+.sponsor-list li {
+  display:flex;
+  border-bottom: 2px double white
+}
