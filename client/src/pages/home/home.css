@@ -61,6 +61,10 @@
   border-radius: 50%;
 }
 
+.buy-tickets {
+  color: rgb(195, 247, 9);
+  background-color: rgb(3, 3, 3);
+}
 /*------------------------ next playing image and text styling------------------------ */
 
 .whatNext {

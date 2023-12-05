@@ -113,7 +113,7 @@ function Home(props) {
                         ? new Date(date.date).getHours() - 12
                         : new Date(date.date).getHours()
                     }:0${new Date(date.date).getMinutes()}`}</p>
-                    <a href={date.ticketLink} target="_blank" rel="noreferrer">
+                    <a href={date.ticketLink} target="_blank" rel="noreferrer" className="buy-tickets">
                       Buy Tickets
                     </a>
                   </div>
