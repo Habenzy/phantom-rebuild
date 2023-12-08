@@ -110,7 +110,7 @@ function Season(props) {
       const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
 
       if (!allShows.length) {
-        allShowsArray.sort((a, b) => (a.dates[0] > b.dates[0] ? 1 : -1));
+        allShowsArray.sort((a, b) => (new Date(a.dates[0].date) > new Date(b.dates[0].date) ? 1 : -1));
         console.log(allShowsArray);
         setAllShows(allShowsArray);
       }
