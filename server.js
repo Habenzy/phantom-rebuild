@@ -14,7 +14,7 @@ app.use(express.json());
 
 
 app.get("/whitelist", (req, res) => {
-  res.json(["9edwDVEW1pQAIetlxUSz6k16bmv2", "iI6jlDK0NAeE6efm8S9mNeYnTIn1", "QIbBmAyJa9OQ64cDJBZj8ej9cgH3", "FBCQzBAltsMLm4bsZl3pmFYcvz93", "aKD6KZYvyRa1IdhVXcKdLAXDfto1"])
+  res.json(["9edwDVEW1pQAIetlxUSz6k16bmv2", "iI6jlDK0NAeE6efm8S9mNeYnTIn1", "QIbBmAyJa9OQ64cDJBZj8ej9cgH3", "FBCQzBAltsMLm4bsZl3pmFYcvz93", "aKD6KZYvyRa1IdhVXcKdLAXDfto1", "mK0ahKx3TjSQWsYVaOJGGpTRelQ2"])
 })
 
 //--------------------email sending functionality---------------------//
