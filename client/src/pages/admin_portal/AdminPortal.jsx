@@ -197,7 +197,8 @@ function ProposalForm(props) {
           >
             Add a new Show Time
           </button>
-          <h4>Show Times</h4>
+          <h3>Show Times</h3>
+          <h4>Please hit the "Confirm Show Time" button after choosing a new showtime</h4>
           {dates.map((date, i) => {
             return (
               <DateField
@@ -251,7 +252,7 @@ function ProposalForm(props) {
             setType(evt.target.value);
           }}
         />
-        <p>{description}</p>
+        <p className="internal-description">{description}</p>
         <label htmlFor="splash-img">
           Add a cover image to be displayed on our homepage
         </label>
@@ -655,7 +656,7 @@ function AdminPanel(props) {
                 evt.preventDefault();
                 let newDoc = doc(collection(db, "donors"));
 
-                setDoc(newDoc, { name: newDonor.toUpperCase(), id: newDoc.id })
+                setDoc(newDoc, { name: newDonor, id: newDoc.id })
                   .then((res) => {
                     setNewDonor("");
                   })

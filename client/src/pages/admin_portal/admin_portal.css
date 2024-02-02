@@ -123,6 +123,10 @@ text-align: center;
   }
 }
 
+.internal-description {
+  color: white;
+}
+
 /* Artist Edit Form */
 
 .artist-container {
