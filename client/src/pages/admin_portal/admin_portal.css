@@ -106,7 +106,7 @@ text-align: center;
 }
 
 .flashing {
-  animation: buttonFlash 1500ms infinite;
+  animation: buttonFlash 2000ms infinite;
 }
 
 @keyframes buttonFlash {
@@ -114,8 +114,12 @@ text-align: center;
     background-color: #c3f709;
   }
 
-  100% {
+  50% {
     background-color: white;
+  }
+
+  100% {
+    background-color: #c3f709;
   }
 }
 

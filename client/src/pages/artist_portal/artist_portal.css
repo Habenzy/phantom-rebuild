@@ -103,15 +103,19 @@
 }
 
 .flashing {
-  animation: button-flash 1500 infinite;
+  animation: buttonFlash 2000ms infinite;
 }
 
-@keyframes button-flash {
+@keyframes buttonFlash {
   0% {
     background-color: #c3f709;
   }
 
-  100% {
+  50% {
     background-color: white;
+  }
+
+  100% {
+    background-color: #c3f709;
   }
 }

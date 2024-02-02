@@ -228,7 +228,7 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${imageLg && "flashing"}`}
+          className={`img-uploader highlight ${imageLg && !imgLgUrl ? "flashing" : ""}`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(imageLg, "splash");
@@ -250,7 +250,7 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${image2 && "flashing"}`}
+          className={`img-uploader highlight ${image2 && !img2Url ? "flashing" : ""}`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image2, "2");
@@ -272,7 +272,7 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${image3 && "flashing"}`}
+          className={`img-uploader highlight ${image3 && !img3Url ? "flashing" : ""}`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image3, "3");
