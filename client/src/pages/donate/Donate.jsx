@@ -10,7 +10,9 @@ function Donate(props) {
     const donorsRef = query(collection(db, "donors"));
     getDocs(donorsRef).then((allDonors) => {
       console.log(allDonors.docs[0].data());
-      let allDonorsArr = allDonors.docs.map((donor) => donor.data().name);
+      let allDonorsArr = allDonors.docs.map((donor) => donor.data().name).sort((curr, next) => {
+        return curr > next ? 1 : -1
+      });
       setDonorList(allDonorsArr);
     });
   }, []);
