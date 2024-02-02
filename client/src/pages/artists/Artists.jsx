@@ -27,14 +27,10 @@ function ArtistsList(props) {
             return (
               <div key={i} className="artistsContainer">
                 <h3>{artist.name}</h3>
-                <img className="profile-pic" src={artist.picUrl} />
-                <div className="artistImageContainer">
-                  {artist.image1 ? <img src={artist.image1} alt="" /> : ""}
-                  {artist.image2 ? <img src={artist.image2} alt="" /> : ""}
-                  {artist.image3 ? <img src={artist.image3} alt="" /> : ""}
-                </div>
+                
 
                 <div className="textContainer">
+                <img className="profile-pic" src={artist.picUrl} />
                   <div id="bioFormat">{artist.bio}</div>
                   <h5> {artist.email}</h5>
                   <div className="artistContact">
