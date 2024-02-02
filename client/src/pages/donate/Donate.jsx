@@ -71,7 +71,7 @@ function Donate(props) {
             SPONSORS!
           </p>
           <br />
-          <div className="sponsorsList">{donorList}</div>
+          <div className="sponsorsList">{donorList.map((donorName, i) => <p key={i}>{donorName}</p>)}</div>
           <div className="line"></div>
           <div className="sponsorHowTo">
             <div>
