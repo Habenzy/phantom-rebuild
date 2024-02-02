@@ -98,6 +98,12 @@
   grid-column-gap: 20px;
 }
 
+.sponsorsList p {
+  align-self: center;
+  text-align: center;
+  justify-self: center;
+}
+
 .sponsorsWrapper .thankYou {
   text-align: center;
   color: white;
