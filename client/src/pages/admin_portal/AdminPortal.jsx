@@ -14,7 +14,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import "./admin_portal.css"
+import "./admin_portal.css";
 
 function LoginPortal(props) {
   const [email, setEmail] = useState("");
@@ -156,10 +156,10 @@ function ProposalForm(props) {
           setImg3Url(imgUrl);
           break;
       }
-      alert("Image uploaded to the Database")
+      alert("Image uploaded to the Database");
     } catch (err) {
       console.error(err.message);
-      alert("something went wrong")
+      alert("something went wrong");
     }
   };
 
@@ -180,171 +180,176 @@ function ProposalForm(props) {
   return (
     <div className="show-form-container">
       <h2>{title}</h2>
-    <form className="show-proposal-form">
-      {/* still need fields for "dates" */}
-      <select value={status} onChange={(evt) => setStatus(evt.target.value)}>
-        <option value="proposed">Proposed</option>
-        <option value="booked">Booked</option>
-        <option value="archived">Archived</option>
-      </select>
-      <div>
-        {/* add dates, and set dates in date array when entered */}
+      <form className="show-proposal-form">
+        {/* still need fields for "dates" */}
+        <select value={status} onChange={(evt) => setStatus(evt.target.value)}>
+          <option value="proposed">Proposed</option>
+          <option value="booked">Booked</option>
+          <option value="archived">Archived</option>
+        </select>
+        <div>
+          {/* add dates, and set dates in date array when entered */}
+          <button
+            onClick={(evt) => {
+              evt.preventDefault();
+              addShowTime();
+            }}
+          >
+            Add a new Show Time
+          </button>
+          <h4>Show Times</h4>
+          {dates.map((date, i) => {
+            return (
+              <DateField
+                key={i}
+                index={i}
+                date={date}
+                allDates={dates}
+                update={setDates}
+              />
+            );
+          })}
+        </div>
+        <label htmlFor="blurb">
+          The Show description that will appear on our site
+        </label>
+        <input
+          type="text"
+          name="blurb"
+          value={blurb}
+          onChange={(evt) => setBlurb(evt.target.value)}
+        />
+        <label htmlFor="title">Enter the name of show</label>
+        <input
+          type="text"
+          name="title"
+          value={title}
+          onChange={(evt) => {
+            setTitle(evt.target.value);
+          }}
+        />
+        <label htmlFor="contact">
+          Who is the primary contact for the show?
+        </label>
+        <input
+          type="text"
+          value={contact}
+          name="contact"
+          onChange={(evt) => {
+            setContact(evt.target.value);
+          }}
+        />
+        <label htmlFor="type">
+          What type of show are you bringing to the barn (e.g. "dance" "theater"
+          "music" etc.)
+        </label>
+        <input
+          type="text"
+          name="type"
+          value={type}
+          onChange={(evt) => {
+            setType(evt.target.value);
+          }}
+        />
+        <p>{description}</p>
+        <label htmlFor="splash-img">
+          Add a cover image to be displayed on our homepage
+        </label>
+        {props.show.imageLg && <img src={props.show.imageLg} />}
+        <input
+          className="image-field"
+          type="file"
+          name="splash-img"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            setImageLg(img);
+          }}
+        />
         <button
+          className={`img-uploader highlight ${imageLg && "flashing"}`}
           onClick={(evt) => {
             evt.preventDefault();
-            addShowTime();
+            imgUploader(imageLg, "splash");
           }}
         >
-          Add a new Show Time
+          Upload image to the Database (please do this <b>before</b> submitting
+          the form)
         </button>
-        <h4>Show Times</h4>
-        {dates.map((date, i) => {
-          return (
-            <DateField
-              key={i}
-              index={i}
-              date={date}
-              allDates={dates}
-              update={setDates}
-            />
-          );
-        })}
-      </div>
-      <label htmlFor="blurb">
-        The Show description that will appear on our site
-      </label>
-      <input
-        type="text"
-        name="blurb"
-        value={blurb}
-        onChange={(evt) => setBlurb(evt.target.value)}
-      />
-      <label htmlFor="title">Enter the name of show</label>
-      <input
-        type="text"
-        name="title"
-        value={title}
-        onChange={(evt) => {
-          setTitle(evt.target.value);
-        }}
-      />
-      <label htmlFor="contact">Who is the primary contact for the show?</label>
-      <input
-        type="text"
-        value={contact}
-        name="contact"
-        onChange={(evt) => {
-          setContact(evt.target.value);
-        }}
-      />
-      <label htmlFor="type">
-        What type of show are you bringing to the barn (e.g. "dance" "theater"
-        "music" etc.)
-      </label>
-      <input
-        type="text"
-        name="type"
-        value={type}
-        onChange={(evt) => {
-          setType(evt.target.value);
-        }}
-      />
-      <p>{description}</p>
-      <label htmlFor="splash-img">
-        Add a cover image to be displayed on our homepage
-      </label>
-    {props.show.imageLg && <img src={props.show.imageLg} />}
-      <input
-        type="file"
-        name="splash-img"
-        onChange={(evt) => {
-          const img = evt.target.files[0];
-          setImageLg(img);
-        }}
-      />
-      <button
-        className="img-uploader highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          imgUploader(imageLg, "splash");
-        }}
-      >
-        Upload image to the Database (please do this <b>before</b> submitting
-        the form)
-      </button>
-      <label htmlFor="img-2">Add additional images for show (optional)</label>
-      {props.show.image2 && <img src={props.show.image2} />}
-      <input
-        type="file"
-        name="img-2"
-        onChange={(evt) => {
-          const img = evt.target.files[0];
-          setImage2(img);
-        }}
-      />
-      <button
-        className="img-uploader highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          imgUploader(image2, "2");
-        }}
-      >
-        Upload image to the Database (please do this <b>before</b> submitting
-        the show details)
-      </button>
-      <label htmlFor="img-3">Add additional images for show (optional)</label>
-      {props.show.image3 && <img src={props.show.image3} />}
-      <input
-        type="file"
-        name="img-3"
-        onChange={(evt) => {
-          const img = evt.target.files[0];
-          setImage3(img);
-        }}
-      />
-      <button
-        className="img-uploader highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          imgUploader(image3, "3");
-        }}
-      >
-        Upload image to the Database (please do this <b>before</b> submitting
-        the show details)
-      </button>
-      <button
-        className="submit-show"
-        onClick={(evt) => {
-          evt.preventDefault();
-          const showObj = {
-            title: title,
-            type: type,
-            blurb: blurb,
-            status: status,
-            dates: dates,
-            artists: artists,
-            contactName: contact,
-            description: description,
-            imageLg: imgLgUrl,
-            image2: img2Url,
-            image3: img3Url,
-          };
-          setDoc(doc(db, "shows", props.show.id), showObj)
-            .then((res) => {
-              console.log(res);
-              alert("Show updated successfully")
-              //alert that update was successful
-            })
-            .catch((err) => {
-              console.error(err.message);
-              alert("Something went wrong...")
-            });
-        }}
-      >
-        Submit show details
-      </button>
-    </form>
-    <div className="spacer"></div>
+        <label htmlFor="img-2">Add additional images for show (optional)</label>
+        {props.show.image2 && <img src={props.show.image2} />}
+        <input
+          type="file"
+          name="img-2"
+          className="image-field"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            setImage2(img);
+          }}
+        />
+        <button
+          className={`img-uploader highlight ${image2 && "flashing"}`}
+          onClick={(evt) => {
+            evt.preventDefault();
+            imgUploader(image2, "2");
+          }}
+        >
+          Upload image to the Database (please do this <b>before</b> submitting
+          the show details)
+        </button>
+        <label htmlFor="img-3">Add additional images for show (optional)</label>
+        {props.show.image3 && <img src={props.show.image3} />}
+        <input
+          type="file"
+          name="img-3"
+          className="image-field"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            setImage3(img);
+          }}
+        />
+        <button
+          className={`img-uploader highlight ${image3 && "flashing"}`}
+          onClick={(evt) => {
+            evt.preventDefault();
+            imgUploader(image3, "3");
+          }}
+        >
+          Upload image to the Database (please do this <b>before</b> submitting
+          the show details)
+        </button>
+        <button
+          className="submit-show"
+          onClick={(evt) => {
+            evt.preventDefault();
+            const showObj = {
+              title: title,
+              type: type,
+              blurb: blurb,
+              status: status,
+              dates: dates,
+              artists: artists,
+              contactName: contact,
+              description: description,
+              imageLg: imgLgUrl,
+              image2: img2Url,
+              image3: img3Url,
+            };
+            setDoc(doc(db, "shows", props.show.id), showObj)
+              .then((res) => {
+                console.log(res);
+                alert("Show updated successfully");
+                //alert that update was successful
+              })
+              .catch((err) => {
+                console.error(err.message);
+                alert("Something went wrong...");
+              });
+          }}
+        >
+          Submit show details
+        </button>
+      </form>
+      <div className="spacer"></div>
     </div>
   );
 }
@@ -387,91 +392,91 @@ function ArtistProfile(props) {
   return (
     <div className="artist-container">
       <h2>{artist}</h2>
-    <form className="artist-profile-form">
-      <label htmlFor="artist">Artist's Name</label>
-      <input
-        name="artist"
-        type="text"
-        value={artist}
-        onChange={(evt) => {
-          setArtist(evt.target.value);
-        }}
-      />
-      <label htmlFor="phone">Primary Phone #</label>
-      <input
-        name="phone"
-        type="text"
-        value={phone}
-        onChange={(evt) => {
-          setPhone(evt.target.value);
-        }}
-      />
-      <label htmlFor="email">Primary Email</label>
-      <input
-        name="email"
-        type="email"
-        value={email}
-        onChange={(evt) => {
-          setEmail(evt.target.value);
-        }}
-      />
-      <label htmlFor="bio">Artist Bio</label>
-      <input
-        name="bio"
-        type="text"
-        value={bio}
-        onChange={(evt) => {
-          setBio(evt.target.value);
-        }}
-      />
-      <label htmlFor="website">Artist Website</label>
-      <input
-        name="website"
-        type="text"
-        value={artistWebsite}
-        onChange={(evt) => {
-          setArtistWebsite(evt.target.value);
-        }}
-      />
-      <label htmlFor="fb">Artist Facebook</label>
-      <input
-        name="fb"
-        type="text"
-        value={artistFacebook}
-        onChange={(evt) => {
-          setArtistFacebook(evt.target.value);
-        }}
-      />
-      <label htmlFor="insta">Artist Instagram</label>
-      <input
-        name="insta"
-        type="text"
-        value={artistInstagram}
-        onChange={(evt) => {
-          setArtistInstagram(evt.target.value);
-        }}
-      />
-      <label htmlFor="spotify">Artist Spotify</label>
-      <input
-        name="spotify"
-        type="text"
-        value={artistSpotify}
-        onChange={(evt) => {
-          setArtistSpotify(evt.target.value);
-        }}
-      />
-      <label htmlFor="youtube">Artist Youtube</label>
-      <input
-        type="text"
-        value={artistYouTube}
-        onChange={(evt) => {
-          setArtistYouTube(evt.target.value);
-        }}
-      />
+      <form className="artist-profile-form">
+        <label htmlFor="artist">Artist's Name</label>
+        <input
+          name="artist"
+          type="text"
+          value={artist}
+          onChange={(evt) => {
+            setArtist(evt.target.value);
+          }}
+        />
+        <label htmlFor="phone">Primary Phone #</label>
+        <input
+          name="phone"
+          type="text"
+          value={phone}
+          onChange={(evt) => {
+            setPhone(evt.target.value);
+          }}
+        />
+        <label htmlFor="email">Primary Email</label>
+        <input
+          name="email"
+          type="email"
+          value={email}
+          onChange={(evt) => {
+            setEmail(evt.target.value);
+          }}
+        />
+        <label htmlFor="bio">Artist Bio</label>
+        <input
+          name="bio"
+          type="text"
+          value={bio}
+          onChange={(evt) => {
+            setBio(evt.target.value);
+          }}
+        />
+        <label htmlFor="website">Artist Website</label>
+        <input
+          name="website"
+          type="text"
+          value={artistWebsite}
+          onChange={(evt) => {
+            setArtistWebsite(evt.target.value);
+          }}
+        />
+        <label htmlFor="fb">Artist Facebook</label>
+        <input
+          name="fb"
+          type="text"
+          value={artistFacebook}
+          onChange={(evt) => {
+            setArtistFacebook(evt.target.value);
+          }}
+        />
+        <label htmlFor="insta">Artist Instagram</label>
+        <input
+          name="insta"
+          type="text"
+          value={artistInstagram}
+          onChange={(evt) => {
+            setArtistInstagram(evt.target.value);
+          }}
+        />
+        <label htmlFor="spotify">Artist Spotify</label>
+        <input
+          name="spotify"
+          type="text"
+          value={artistSpotify}
+          onChange={(evt) => {
+            setArtistSpotify(evt.target.value);
+          }}
+        />
+        <label htmlFor="youtube">Artist Youtube</label>
+        <input
+          type="text"
+          value={artistYouTube}
+          onChange={(evt) => {
+            setArtistYouTube(evt.target.value);
+          }}
+        />
 
-      <button onClick={updateProfile}>Update artist information</button>
-    </form>
-    <div className="spacer"></div>
+        <button onClick={updateProfile}>Update artist information</button>
+      </form>
+      <div className="spacer"></div>
     </div>
   );
 }
@@ -615,16 +620,22 @@ function AdminPanel(props) {
           <div className="sponsor-list">
             <ul>
               {donors.map((donor, i) => {
-                console.log(donor)
+                console.log(donor);
                 return (
                   <li className="donor" key={i}>
                     <p>{donor.name}</p>
-                    <button onClick={(evt) => {
-                      evt.preventDefault();
-                      deleteDoc(doc(db, "donors", donor.id)).then(res => {
-                        alert(`Donor ${donor.name} removed from database (refresh page to see changes to donor list)`)
-                      })
-                    }}>Delete</button>
+                    <button
+                      onClick={(evt) => {
+                        evt.preventDefault();
+                        deleteDoc(doc(db, "donors", donor.id)).then((res) => {
+                          alert(
+                            `Donor ${donor.name} removed from database (refresh page to see changes to donor list)`
+                          );
+                        });
+                      }}
+                    >
+                      Delete
+                    </button>
                   </li>
                 );
               })}
@@ -639,16 +650,22 @@ function AdminPanel(props) {
                 setNewDonor(evt.target.value);
               }}
             />
-            <button onClick={(evt) => {
-              evt.preventDefault();
-              let newDoc = doc(collection(db, "donors"))
+            <button
+              onClick={(evt) => {
+                evt.preventDefault();
+                let newDoc = doc(collection(db, "donors"));
 
-              setDoc(newDoc, {name: newDonor.toUpperCase(), id:newDoc.id}).then(res => {
-                setNewDonor("")
-              }).catch(err => {
-                console.error(err.message)
-              })
-            }}>Add Donor</button>
+                setDoc(newDoc, { name: newDonor.toUpperCase(), id: newDoc.id })
+                  .then((res) => {
+                    setNewDonor("");
+                  })
+                  .catch((err) => {
+                    console.error(err.message);
+                  });
+              }}
+            >
+              Add Donor
+            </button>
           </div>
         </div>
       )}

@@ -144,7 +144,7 @@ function ProposalForm(props) {
   const [img3Url, setImg3Url] = useState(props.show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
-    console.log("uploading image")
+    console.log("uploading image");
     console.log(img);
     const imgRef = ref(storage, img.name);
     try {
@@ -163,7 +163,7 @@ function ProposalForm(props) {
           setImg3Url(imgUrl);
           break;
       }
-      alert("Image uploaded to Database")
+      alert("Image uploaded to Database");
     } catch (err) {
       console.error(err.message);
     }
@@ -171,150 +171,159 @@ function ProposalForm(props) {
 
   return (
     <div className="show-form-container">
-    <form className="show-proposal-form">
-      <label htmlFor="title">Enter the name of your show (REQUIRED)</label>
-      <input
-        type="text"
-        name="title"
-        value={title}
-        onChange={(evt) => {
-          setTitle(evt.target.value);
-        }}
-      />
-      <label htmlFor="contact">Who is the primary contact for the show?</label>
-      <input
-        type="text"
-        value={contact}
-        name="contact"
-        onChange={(evt) => {
-          setContact(evt.target.value);
-        }}
-      />
-      <label htmlFor="type">
-        What type of show are you bringing to the barn (e.g. "dance" "theater"
-        "music" etc.)
-      </label>
-      <input
-        type="text"
-        name="type"
-        value={type}
-        onChange={(evt) => {
-          setType(evt.target.value);
-        }}
-      />
-      <label htmlFor="description">Tell us a little about your show (REQUIRED)</label>
-      <input
-        type="text"
-        name="description"
-        value={description}
-        onChange={(evt) => {
-          setDescription(evt.target.value);
-        }}
-      />
-      <label htmlFor="splash-img">
-        Add a cover image to be displayed on our homepage (REQUIRED)
-      </label>
-      <input
-        type="file"
-        name="splash-img"
-        onChange={(evt) => {
-          const img = evt.target.files[0];
-          setImageLg(img);
-        }}
-      />
-      <button
-        className="img-uploader highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          imgUploader(imageLg, "splash");
-        }}
-      >
-        Upload your image to the Database (please do this <b>before</b>{" "}
-        submitting the form)
-      </button>
-      <label htmlFor="img-2">
-        Add additional images for your show (optional)
-      </label>
-      <input
-        type="file"
-        name="img-2"
-        onChange={(evt) => {
-          const img = evt.target.files[0];
-          setImage2(img);
-        }}
-      />
-      <button
-        className="img-uploader highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          imgUploader(image2, "2");
-        }}
-      >
-        Upload your image to the Database (please do this <b>before</b>{" "}
-        submitting the form)
-      </button>
-      <label htmlFor="img-3">
-        Add additional images for your show (optional)
-      </label>
-      <input
-        type="file"
-        name="img-3"
-        onChange={(evt) => {
-          const img = evt.target.files[0];
-          setImage3(img);
-        }}
-      />
-      <button
-        className="img-uploader highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          imgUploader(image3, "3");
-        }}
-      >
-        Upload your image to the Database (please do this <b>before</b>{" "}
-        submitting the form)
-      </button>
-      <button
-        className="submit-show"
-        disabled={!(title && description && imgLgUrl)}
-        onClick={(evt) => {
-          evt.preventDefault();
-          const showObj = {
-            title: title,
-            type: type,
-            blurb: description,
-            status: status,
-            dates: dates,
-            artists: artists,
-            contactName: contact,
-            description: description,
-            imageLg: imgLgUrl,
-            image2: img2Url,
-            image3: img3Url,
-          };
-          props.edit
-            ? setDoc(doc(db, "shows", props.show.id), showObj)
-                .then((res) => {
-                  console.log(res);
-                  //alert that update was successful
-                  alert("Show Updated Successfully")
-                })
-                .catch((err) => {
-                  console.error(err.message);
-                })
-            : addDoc(collection(db, "shows"), showObj)
-                .then((res) => {
-                  alert("Show added successfully");
-                  props.setSubmitProp ? props.setSubmitProp(false) : console.log("previous show")
-                })
-                .catch((err) => {
-                  console.error(err.message);
-                });
-        }}
-      >
-        Submit your show details
-      </button>
-    </form>
+      <form className="show-proposal-form">
+        <label htmlFor="title">Enter the name of your show (REQUIRED)</label>
+        <input
+          type="text"
+          name="title"
+          value={title}
+          onChange={(evt) => {
+            setTitle(evt.target.value);
+          }}
+        />
+        <label htmlFor="contact">
+          Who is the primary contact for the show?
+        </label>
+        <input
+          type="text"
+          value={contact}
+          name="contact"
+          onChange={(evt) => {
+            setContact(evt.target.value);
+          }}
+        />
+        <label htmlFor="type">
+          What type of show are you bringing to the barn (e.g. "dance" "theater"
+          "music" etc.)
+        </label>
+        <input
+          type="text"
+          name="type"
+          value={type}
+          onChange={(evt) => {
+            setType(evt.target.value);
+          }}
+        />
+        <label htmlFor="description">
+          Tell us a little about your show (REQUIRED)
+        </label>
+        <input
+          type="text"
+          name="description"
+          value={description}
+          onChange={(evt) => {
+            setDescription(evt.target.value);
+          }}
+        />
+        <label htmlFor="splash-img">
+          Add a cover image to be displayed on our homepage (REQUIRED)
+        </label>
+        <input
+          className="image-field"
+          type="file"
+          name="splash-img"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            setImageLg(img);
+          }}
+        />
+        <button
+          className={`img-uploader highlight ${imageLg && "flashing"}`}
+          onClick={(evt) => {
+            evt.preventDefault();
+            imgUploader(imageLg, "splash");
+          }}
+        >
+          Upload your image to the Database (please do this <b>before</b>{" "}
+          submitting the form)
+        </button>
+        <label htmlFor="img-2">
+          Add additional images for your show (optional)
+        </label>
+        <input
+          className="image-field"
+          type="file"
+          name="img-2"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            setImage2(img);
+          }}
+        />
+        <button
+          className={`img-uploader highlight ${image2 && "flashing"}`}
+          onClick={(evt) => {
+            evt.preventDefault();
+            imgUploader(image2, "2");
+          }}
+        >
+          Upload your image to the Database (please do this <b>before</b>{" "}
+          submitting the form)
+        </button>
+        <label htmlFor="img-3">
+          Add additional images for your show (optional)
+        </label>
+        <input
+          className="image-field"
+          type="file"
+          name="img-3"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            setImage3(img);
+          }}
+        />
+        <button
+          className={`img-uploader highlight ${image3 && "flashing"}`}
+          onClick={(evt) => {
+            evt.preventDefault();
+            imgUploader(image3, "3");
+          }}
+        >
+          Upload your image to the Database (please do this <b>before</b>{" "}
+          submitting the form)
+        </button>
+        <button
+          className="submit-show"
+          disabled={!(title && description && imgLgUrl)}
+          onClick={(evt) => {
+            evt.preventDefault();
+            const showObj = {
+              title: title,
+              type: type,
+              blurb: description,
+              status: status,
+              dates: dates,
+              artists: artists,
+              contactName: contact,
+              description: description,
+              imageLg: imgLgUrl,
+              image2: img2Url,
+              image3: img3Url,
+            };
+            props.edit
+              ? setDoc(doc(db, "shows", props.show.id), showObj)
+                  .then((res) => {
+                    console.log(res);
+                    //alert that update was successful
+                    alert("Show Updated Successfully");
+                  })
+                  .catch((err) => {
+                    console.error(err.message);
+                  })
+              : addDoc(collection(db, "shows"), showObj)
+                  .then((res) => {
+                    alert("Show added successfully");
+                    props.setSubmitProp
+                      ? props.setSubmitProp(false)
+                      : console.log("previous show");
+                  })
+                  .catch((err) => {
+                    console.error(err.message);
+                  });
+          }}
+        >
+          Submit your show details
+        </button>
+      </form>
     </div>
   );
 }
@@ -406,7 +415,7 @@ function ArtistProfile(props) {
         Here you can manage your artist profile, and submit show proposals!
       </h3>
       <button
-      className="add-show-button"
+        className="add-show-button"
         onClick={(evt) => {
           evt.preventDefault();
           setSubmitProp(true);
@@ -415,103 +424,109 @@ function ArtistProfile(props) {
         Create Show Proposal
       </button>
 
-      {submitProp && <ProposalForm user={props.user} show={nullShow} setSubmitProp={setSubmitProp}/>}
+      {submitProp && (
+        <ProposalForm
+          user={props.user}
+          show={nullShow}
+          setSubmitProp={setSubmitProp}
+        />
+      )}
       {/* Show/edit artist info */}
       <div className="artist-container">
-      <form className="artist-profile-form">
-        <label htmlFor="artist">What should we call you?</label>
-        <input
-          name="artist"
-          type="text"
-          value={artist}
-          onChange={(evt) => {
-            setArtist(evt.target.value);
-          }}
-        />
-        <label htmlFor="phone">
-          What is a good phone number to reach you at?
-        </label>
-        <input
-          name="phone"
-          type="text"
-          value={phone}
-          onChange={(evt) => {
-            setPhone(evt.target.value);
-          }}
-        />
-        <label htmlFor="email">What's your primary email?</label>
-        <input
-          name="email"
-          type="email"
-          value={email}
-          onChange={(evt) => {
-            setEmail(evt.target.value);
-          }}
-        />
-        <label htmlFor="bio">Tell us a little about yourself</label>
-        <input
-          name="bio"
-          type="text"
-          value={bio}
-          onChange={(evt) => {
-            setBio(evt.target.value);
-          }}
-        />
-        <label htmlFor="website">
-          Enter the URL for your personal website (if you have one)
-        </label>
-        <input
-          name="website"
-          type="text"
-          value={artistWebsite}
-          onChange={(evt) => {
-            setArtistWebsite(evt.target.value);
-          }}
-        />
-        <label htmlFor="fb">Share your facebook if you want</label>
-        <input
-          name="fb"
-          type="text"
-          value={artistFacebook}
-          onChange={(evt) => {
-            setArtistFacebook(evt.target.value);
-          }}
-        />
-        <label htmlFor="insta">
-          Got an instagram? We'd love to link it on your profile!
-        </label>
-        <input
-          name="insta"
-          type="text"
-          value={artistInstagram}
-          onChange={(evt) => {
-            setArtistInstagram(evt.target.value);
-          }}
-        />
-        <label htmlFor="spotify">
-          Share your favorite tunes, link to your Spotify
-        </label>
-        <input
-          name="spotify"
-          type="text"
-          value={artistSpotify}
-          onChange={(evt) => {
-            setArtistSpotify(evt.target.value);
-          }}
-        />
-        <label htmlFor="youtube">
-          Got a youtube channel? We can link that in too...
-        </label>
-        <input
-          type="text"
-          value={artistYouTube}
-          onChange={(evt) => {
-            setArtistYouTube(evt.target.value);
-          }}
-        />
+        <form className="artist-profile-form">
+          <label htmlFor="artist">What should we call you?</label>
+          <input
+            name="artist"
+            type="text"
+            value={artist}
+            onChange={(evt) => {
+              setArtist(evt.target.value);
+            }}
+          />
+          <label htmlFor="phone">
+            What is a good phone number to reach you at?
+          </label>
+          <input
+            name="phone"
+            type="text"
+            value={phone}
+            onChange={(evt) => {
+              setPhone(evt.target.value);
+            }}
+          />
+          <label htmlFor="email">What's your primary email?</label>
+          <input
+            name="email"
+            type="email"
+            value={email}
+            onChange={(evt) => {
+              setEmail(evt.target.value);
+            }}
+          />
+          <label htmlFor="bio">Tell us a little about yourself</label>
+          <input
+            name="bio"
+            type="text"
+            value={bio}
+            onChange={(evt) => {
+              setBio(evt.target.value);
+            }}
+          />
+          <label htmlFor="website">
+            Enter the URL for your personal website (if you have one)
+          </label>
+          <input
+            name="website"
+            type="text"
+            value={artistWebsite}
+            onChange={(evt) => {
+              setArtistWebsite(evt.target.value);
+            }}
+          />
+          <label htmlFor="fb">Share your facebook if you want</label>
+          <input
+            name="fb"
+            type="text"
+            value={artistFacebook}
+            onChange={(evt) => {
+              setArtistFacebook(evt.target.value);
+            }}
+          />
+          <label htmlFor="insta">
+            Got an instagram? We'd love to link it on your profile!
+          </label>
+          <input
+            name="insta"
+            type="text"
+            value={artistInstagram}
+            onChange={(evt) => {
+              setArtistInstagram(evt.target.value);
+            }}
+          />
+          <label htmlFor="spotify">
+            Share your favorite tunes, link to your Spotify
+          </label>
+          <input
+            name="spotify"
+            type="text"
+            value={artistSpotify}
+            onChange={(evt) => {
+              setArtistSpotify(evt.target.value);
+            }}
+          />
+          <label htmlFor="youtube">
+            Got a youtube channel? We can link that in too...
+          </label>
+          <input
+            type="text"
+            value={artistYouTube}
+            onChange={(evt) => {
+              setArtistYouTube(evt.target.value);
+            }}
+          />
 
-        <button onClick={updateProfile}>Update your information</button>
-      </form>
+          <button onClick={updateProfile}>Update your information</button>
+        </form>
       </div>
       {/* List all active/archived shows for artist */}
       <div className="spacer"></div>
@@ -520,7 +535,9 @@ function ArtistProfile(props) {
       {shows.map((show, i) => {
         return (
           <div key={i} className="show-container">
-            <h1 className="show-title">{show.title} - {show.status}</h1>
+            <h1 className="show-title">
+              {show.title} - {show.status}
+            </h1>
             <ProposalForm show={show} edit={true} />
             <div className="spacer"></div>
           </div>

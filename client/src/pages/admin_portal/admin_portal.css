@@ -101,6 +101,24 @@ text-align: center;
   cursor: pointer
 }
 
+.image-field {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.flashing {
+  animation: button-flash 1500 infinite;
+}
+
+@keyframes button-flash {
+  0% {
+    background-color: #c3f709;
+  }
+
+  100% {
+    background-color: white;
+  }
+}
+
 /* Artist Edit Form */
 
 .artist-container {

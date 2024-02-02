@@ -15,7 +15,7 @@
   height: 20px;
   border-top: 2px solid white;
   margin-top: 20px;
-  width: 100%
+  width: 100%;
 }
 
 .show-form-container h2 {
@@ -33,7 +33,7 @@
   border-radius: 5px;
   padding: 5px;
   margin-top: 10px;
-  margin-bottom: 2px
+  margin-bottom: 2px;
 }
 
 .show-form-container input {
@@ -48,7 +48,7 @@
 }
 
 .show-form-container button:hover {
-  cursor: pointer
+  cursor: pointer;
 }
 
 /* Artist Edit Form */
@@ -80,7 +80,7 @@
   border-radius: 5px;
   padding: 5px;
   margin-top: 10px;
-  margin-bottom: 2px
+  margin-bottom: 2px;
 }
 
 .artist-container input {
@@ -95,5 +95,23 @@
 }
 
 .artist-container button:hover {
-  cursor: pointer
+  cursor: pointer;
+}
+
+.image-field {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.flashing {
+  animation: button-flash 1500 infinite;
+}
+
+@keyframes button-flash {
+  0% {
+    background-color: #c3f709;
+  }
+
+  100% {
+    background-color: white;
+  }
 }
