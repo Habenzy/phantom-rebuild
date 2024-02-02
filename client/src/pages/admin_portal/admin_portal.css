@@ -106,10 +106,10 @@ text-align: center;
 }
 
 .flashing {
-  animation: button-flash 1500 infinite;
+  animation: buttonFlash 1500ms infinite;
 }
 
-@keyframes button-flash {
+@keyframes buttonFlash {
   0% {
     background-color: #c3f709;
   }
