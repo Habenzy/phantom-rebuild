@@ -445,6 +445,7 @@ function ArtistProfile(props) {
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>
+      <p>If you are copy/pasting info please delete and retype the last character so our system recognizes the input.</p>
       <button
         className="add-show-button"
         onClick={(evt) => {
