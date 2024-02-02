@@ -65,11 +65,6 @@ function Donate(props) {
         </div>
         <div className="sponsorsWrapper">
           <h1>Friends of the Artists</h1>
-          <p className="thankYou">
-            PHANTOM THEATER IS PROUD TO COUNT MANY LOCAL BUSINESSES AND
-            INDIVIDUALS AS FRIENDS AND SUPPORTERS. THANK YOU TO ALL OUR
-            SPONSORS!
-          </p>
           <br />
           <div className="sponsorsList">{donorList.map((donorName, i) => <p key={i}>{donorName}</p>)}</div>
           <div className="line"></div>
