@@ -438,7 +438,7 @@ function ArtistProfile(props) {
     <div>
       <button onClick={logOut}>Log Out</button>
       <h1>Welcome {artist} to your Phantom Theater Artist portal</h1>
-      <image src={picUrl} className="profile-pic" />
+      <img src={picUrl} className="profile-pic" />
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>

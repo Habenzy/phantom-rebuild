@@ -27,7 +27,7 @@ function ArtistsList(props) {
             return (
               <div key={i} className="artistsContainer">
                 <h3>{artist.name}</h3>
-
+                <img className="profile-pic" src={artist.picUrl} />
                 <div className="artistImageContainer">
                   {artist.image1 ? <img src={artist.image1} alt="" /> : ""}
                   {artist.image2 ? <img src={artist.image2} alt="" /> : ""}

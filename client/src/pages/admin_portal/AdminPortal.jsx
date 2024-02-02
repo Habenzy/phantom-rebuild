@@ -422,6 +422,7 @@ function ArtistProfile(props) {
   return (
     <div className="artist-container">
       <h2>{artist}</h2>
+      <img src={picUrl} className="profile-pic" />
       <form className="artist-profile-form">
         <label htmlFor="splash-img">Upload Artist's Profile Picture</label>
         <input
