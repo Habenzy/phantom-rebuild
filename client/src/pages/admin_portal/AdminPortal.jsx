@@ -659,6 +659,7 @@ function AdminPanel(props) {
                 setDoc(newDoc, { name: newDonor, id: newDoc.id })
                   .then((res) => {
                     setNewDonor("");
+                    alert("New donor added, refresh the page to see the updated list")
                   })
                   .catch((err) => {
                     console.error(err.message);
