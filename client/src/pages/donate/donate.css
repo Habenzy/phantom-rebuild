@@ -95,6 +95,7 @@
   -moz-column-width: 150px;
   column-width: 150px;
   column-gap: 20px;
+  color: rgb(195, 247, 9);
 }
 
 .sponsorsWrapper .thankYou {
