@@ -228,7 +228,9 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${imageLg && !imgLgUrl ? "flashing" : ""}`}
+          className={`img-uploader highlight ${
+            imageLg && !imgLgUrl ? "flashing" : ""
+          }`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(imageLg, "splash");
@@ -250,7 +252,9 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${image2 && !img2Url ? "flashing" : ""}`}
+          className={`img-uploader highlight ${
+            image2 && !img2Url ? "flashing" : ""
+          }`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image2, "2");
@@ -272,7 +276,9 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${image3 && !img3Url ? "flashing" : ""}`}
+          className={`img-uploader highlight ${
+            image3 && !img3Url ? "flashing" : ""
+          }`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image3, "3");
@@ -340,8 +346,8 @@ function ArtistProfile(props) {
   const [artistInstagram, setArtistInstagram] = useState("");
   const [artistSpotify, setArtistSpotify] = useState("");
   const [shows, setShows] = useState([]);
-  const [artistPic, setArtistPic] = useState("")
-  const [picUrl, setPicUrl] = useState("")
+  const [artistPic, setArtistPic] = useState("");
+  const [picUrl, setPicUrl] = useState("");
 
   useEffect(() => {
     let profileRef = query(doc(db, "artists", auth.currentUser.uid));
@@ -356,6 +362,7 @@ function ArtistProfile(props) {
       setArtistInstagram(info.insta || "");
       setArtistYouTube(info.youtube || "");
       setArtistSpotify(info.spotify || "");
+      setPicUrl(info.picUrl || "");
     });
   }, []);
 
@@ -403,6 +410,7 @@ function ArtistProfile(props) {
         insta: artistInstagram,
         spotify: artistSpotify,
         youtube: artistYouTube,
+        picUrl: picUrl,
       });
     } catch (err) {
       console.error(err.message);
@@ -418,11 +426,11 @@ function ArtistProfile(props) {
       console.log(imgUpload);
       let imgUrl = await getDownloadURL(imgUpload.ref);
       console.log(imgUrl);
-      setPicUrl(imgUrl)
+      setPicUrl(imgUrl);
       alert("Image uploaded to Database");
     } catch (err) {
       console.error(err.message);
-      alert("Something went wrong. Tell Bob...")
+      alert("Something went wrong. Tell Bob...");
     }
   };
 
@@ -430,6 +438,7 @@ function ArtistProfile(props) {
     <div>
       <button onClick={logOut}>Log Out</button>
       <h1>Welcome {artist} to your Phantom Theater Artist portal</h1>
+      <image src={picUrl} className="profile-pic" />
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>
@@ -453,28 +462,28 @@ function ArtistProfile(props) {
       {/* Show/edit artist info */}
       <div className="artist-container">
         <form className="artist-profile-form">
-        <label htmlFor="splash-img">
-          Upload Your Profile Picture
-        </label>
-        <input
-          className="image-field"
-          type="file"
-          name="splash-img"
-          onChange={(evt) => {
-            const img = evt.target.files[0];
-            imgUploader(img);
-          }}
-        />
-        <button
-          className={`img-uploader highlight ${artistPic && !picUrl ? "flashing" : ""}`}
-          onClick={(evt) => {
-            evt.preventDefault();
-            imgUploader(artistPic);
-          }}
-        >
-          Upload your image to the Database (please do this <b>before</b>{" "}
-          submitting the form)
-        </button>
+          <label htmlFor="splash-img">Upload Your Profile Picture</label>
+          <input
+            className="image-field"
+            type="file"
+            name="splash-img"
+            onChange={(evt) => {
+              const img = evt.target.files[0];
+              setArtistPic(img);
+            }}
+          />
+          <button
+            className={`img-uploader highlight ${
+              artistPic && !picUrl ? "flashing" : ""
+            }`}
+            onClick={(evt) => {
+              evt.preventDefault();
+              imgUploader(artistPic);
+            }}
+          >
+            Upload your image to the Database (please do this <b>before</b>{" "}
+            submitting the form)
+          </button>
           <label htmlFor="artist">What should we call you?</label>
           <input
             name="artist"

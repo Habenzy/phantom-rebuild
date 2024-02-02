@@ -198,7 +198,10 @@ function ProposalForm(props) {
             Add a new Show Time
           </button>
           <h3>Show Times</h3>
-          <h4>Please hit the "Confirm Show Time" button after choosing a new showtime</h4>
+          <h4>
+            Please hit the "Confirm Show Time" button after choosing a new
+            showtime
+          </h4>
           {dates.map((date, i) => {
             return (
               <DateField
@@ -267,7 +270,9 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${imageLg && !imgLgUrl ? "flashing" : ""}`}
+          className={`img-uploader highlight ${
+            imageLg && !imgLgUrl ? "flashing" : ""
+          }`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(imageLg, "splash");
@@ -288,7 +293,9 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${image2 && !img2Url ? "flashing": ""}`}
+          className={`img-uploader highlight ${
+            image2 && !img2Url ? "flashing" : ""
+          }`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image2, "2");
@@ -309,7 +316,9 @@ function ProposalForm(props) {
           }}
         />
         <button
-          className={`img-uploader highlight ${image3 && !img3Url ? "flashing" : ""}`}
+          className={`img-uploader highlight ${
+            image3 && !img3Url ? "flashing" : ""
+          }`}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image3, "3");
@@ -367,6 +376,8 @@ function ArtistProfile(props) {
     props.user.insta || ""
   );
   const [artistSpotify, setArtistSpotify] = useState(props.user.spotify || "");
+  const [artistPic, setArtistPic] = useState("");
+  const [picUrl, setPicUrl] = useState(props.user.picUrl || "");
 
   let updateProfile = async (evt) => {
     evt.preventDefault();
@@ -384,9 +395,27 @@ function ArtistProfile(props) {
         insta: artistInstagram,
         spotify: artistSpotify,
         youtube: artistYouTube,
+        picUrl: picUrl,
       });
     } catch (err) {
       console.error(err.message);
+    }
+  };
+
+  const imgUploader = async (img) => {
+    console.log("uploading image");
+    console.log(img);
+    const imgRef = ref(storage, img.name);
+    try {
+      let imgUpload = await uploadBytes(imgRef, img);
+      console.log(imgUpload);
+      let imgUrl = await getDownloadURL(imgUpload.ref);
+      console.log(imgUrl);
+      setPicUrl(imgUrl);
+      alert("Image uploaded to Database");
+    } catch (err) {
+      console.error(err.message);
+      alert("Something went wrong. Tell Bob...");
     }
   };
 
@@ -394,6 +423,28 @@ function ArtistProfile(props) {
     <div className="artist-container">
       <h2>{artist}</h2>
       <form className="artist-profile-form">
+        <label htmlFor="splash-img">Upload Artist's Profile Picture</label>
+        <input
+          className="image-field"
+          type="file"
+          name="splash-img"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            setArtistPic(img);
+          }}
+        />
+        <button
+          className={`img-uploader highlight ${
+            artistPic && !picUrl ? "flashing" : ""
+          }`}
+          onClick={(evt) => {
+            evt.preventDefault();
+            imgUploader(artistPic);
+          }}
+        >
+          Upload your image to the Database (please do this <b>before</b>{" "}
+          submitting the form)
+        </button>
         <label htmlFor="artist">Artist's Name</label>
         <input
           name="artist"
@@ -659,7 +710,9 @@ function AdminPanel(props) {
                 setDoc(newDoc, { name: newDonor, id: newDoc.id })
                   .then((res) => {
                     setNewDonor("");
-                    alert("New donor added, refresh the page to see the updated list")
+                    alert(
+                      "New donor added, refresh the page to see the updated list"
+                    );
                   })
                   .catch((err) => {
                     console.error(err.message);
