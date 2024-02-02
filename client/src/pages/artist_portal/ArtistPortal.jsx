@@ -412,8 +412,11 @@ function ArtistProfile(props) {
         youtube: artistYouTube,
         picUrl: picUrl,
       });
+
+      alert("profile successfully updated")
     } catch (err) {
       console.error(err.message);
+      alert("something went wrong...")
     }
   };
 
