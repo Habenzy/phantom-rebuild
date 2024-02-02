@@ -55,6 +55,10 @@
   align-items: center;
 }
 
+.donateWrapper a {
+  text-decoration: none;
+}
+
 .donateWrapper h3 {
   font-size: 22pt;
 }
