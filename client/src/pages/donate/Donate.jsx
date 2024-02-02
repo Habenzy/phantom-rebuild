@@ -62,7 +62,7 @@ function Donate(props) {
           </p>
         </div>
         <div className="sponsorsWrapper">
-          <h1>Sponsors</h1>
+          <h1>Friends of the Artists</h1>
           <p className="thankYou">
             PHANTOM THEATER IS PROUD TO COUNT MANY LOCAL BUSINESSES AND
             INDIVIDUALS AS FRIENDS AND SUPPORTERS. THANK YOU TO ALL OUR
