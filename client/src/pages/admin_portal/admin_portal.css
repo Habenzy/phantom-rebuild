@@ -109,6 +109,11 @@ text-align: center;
   animation: buttonFlash 2000ms infinite;
 }
 
+.profile-pic {
+  max-width: 200px;
+  border-radius: 50px;
+}
+
 @keyframes buttonFlash {
   0% {
     background-color: #c3f709;
