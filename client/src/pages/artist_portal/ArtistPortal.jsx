@@ -340,6 +340,8 @@ function ArtistProfile(props) {
   const [artistInstagram, setArtistInstagram] = useState("");
   const [artistSpotify, setArtistSpotify] = useState("");
   const [shows, setShows] = useState([]);
+  const [artistPic, setArtistPic] = useState("")
+  const [picUrl, setPicUrl] = useState("")
 
   useEffect(() => {
     let profileRef = query(doc(db, "artists", auth.currentUser.uid));
@@ -407,6 +409,23 @@ function ArtistProfile(props) {
     }
   };
 
+  const imgUploader = async (img) => {
+    console.log("uploading image");
+    console.log(img);
+    const imgRef = ref(storage, img.name);
+    try {
+      let imgUpload = await uploadBytes(imgRef, img);
+      console.log(imgUpload);
+      let imgUrl = await getDownloadURL(imgUpload.ref);
+      console.log(imgUrl);
+      setPicUrl(imgUrl)
+      alert("Image uploaded to Database");
+    } catch (err) {
+      console.error(err.message);
+      alert("Something went wrong. Tell Bob...")
+    }
+  };
+
   return (
     <div>
       <button onClick={logOut}>Log Out</button>
@@ -434,6 +453,28 @@ function ArtistProfile(props) {
       {/* Show/edit artist info */}
       <div className="artist-container">
         <form className="artist-profile-form">
+        <label htmlFor="splash-img">
+          Upload Your Profile Picture
+        </label>
+        <input
+          className="image-field"
+          type="file"
+          name="splash-img"
+          onChange={(evt) => {
+            const img = evt.target.files[0];
+            imgUploader(img);
+          }}
+        />
+        <button
+          className={`img-uploader highlight ${artistPic && !picUrl ? "flashing" : ""}`}
+          onClick={(evt) => {
+            evt.preventDefault();
+            imgUploader(artistPic);
+          }}
+        >
+          Upload your image to the Database (please do this <b>before</b>{" "}
+          submitting the form)
+        </button>
           <label htmlFor="artist">What should we call you?</label>
           <input
             name="artist"
