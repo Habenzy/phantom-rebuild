@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { db, auth, storage } from "../../config/firebase";
 import {
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
   signOut,
   signInWithEmailAndPassword,
 } from "firebase/auth";
@@ -171,6 +169,7 @@ function ProposalForm(props) {
 
   return (
     <div className="show-form-container">
+    <div className="spacer"></div>
       <form className="show-proposal-form">
         <label htmlFor="title">Enter the name of your show (REQUIRED)</label>
         <input
@@ -330,6 +329,7 @@ function ProposalForm(props) {
           Submit your show details
         </button>
       </form>
+      <div className="spacer"></div>
     </div>
   );
 }
