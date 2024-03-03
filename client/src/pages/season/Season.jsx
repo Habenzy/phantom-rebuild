@@ -48,6 +48,8 @@ function SeasonEvent(props) {
       <h3> {props.title} </h3>
       <br />
       <img src={props.imageLg} alt="show-image" />
+      {props.image2 && <img src={props.image2} alt="show-image" />}
+      {props.image3 && <img src={props.image3} alt="show-image" />}
       <br />
       <p>{props.contact}</p>
       {showArtists.map((artist, i) => {
@@ -110,7 +112,9 @@ function Season(props) {
       const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
 
       if (!allShows.length) {
-        allShowsArray.sort((a, b) => (new Date(a.dates[0].date) > new Date(b.dates[0].date) ? 1 : -1));
+        allShowsArray.sort((a, b) =>
+          new Date(a.dates[0].date) > new Date(b.dates[0].date) ? 1 : -1
+        );
         console.log(allShowsArray);
         setAllShows(allShowsArray);
       }
@@ -155,6 +159,8 @@ function Season(props) {
                 artists={show.artists}
                 blurb={show.blurb}
                 imageLg={show.imageLg}
+                image2={show.image2}
+                image3={show.image3}
                 allArtists={allArtists}
                 contact={show.contactName}
               ></SeasonEvent>
