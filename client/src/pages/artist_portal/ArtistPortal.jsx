@@ -17,6 +17,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import './artist_portal.css'
 
 const nullShow = {
   title: "title",
