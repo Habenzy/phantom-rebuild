@@ -1,4 +1,10 @@
 /* Show edit form */
+
+p {
+  color: white;
+  text-align: center;
+}
+
 .show-form-container {
   display: flex;
   flex-direction: column;
@@ -73,11 +79,6 @@
 .artist-container h4 {
   color: white;
   margin-bottom: 3px;
-}
-
-.directions {
-  color: white;
-  text-align: center;
 }
 
 .artist-container label {
