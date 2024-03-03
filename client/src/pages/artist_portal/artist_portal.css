@@ -75,6 +75,11 @@
   margin-bottom: 3px;
 }
 
+.directions {
+  color: white;
+  text-align: center;
+}
+
 .artist-container label {
   background-color: aliceblue;
   border-radius: 5px;
@@ -109,6 +114,11 @@
 .profile-pic {
   max-width: 200px;
   border-radius: 50px;
+}
+
+.ticket-time p {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
 }
 
 @keyframes buttonFlash {

@@ -287,7 +287,7 @@ function ProposalForm(props) {
           submitting the form)
         </button>
         <button
-          className="submit-show"
+          className={`submit-show ${(title && description && imgLgUrl) && "flashing"}`}
           disabled={!(title && description && imgLgUrl)}
           onClick={(evt) => {
             evt.preventDefault();
@@ -445,7 +445,7 @@ function ArtistProfile(props) {
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>
-      <p>If you are copy/pasting info please delete and retype the last character so our system recognizes the input.</p>
+      <p className="directions">If you are copy/pasting info please delete and retype the last character so our system recognizes the input.</p>
       <button
         className="add-show-button"
         onClick={(evt) => {
