@@ -36,5 +36,6 @@ nav.menu a {
 li {
   list-style: none;
   margin: 7px;
+  border-radius: 10%;
 }
 
