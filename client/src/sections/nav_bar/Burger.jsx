@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import Logo from "../../assets/Logo.jpg"
 import BurgerIcon from "../../assets/burgericon.jpg"
+import "./burger.css"
 
 
 
