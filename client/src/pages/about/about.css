@@ -83,6 +83,10 @@
   margin-top: 0px;
 }
 
+.aboutWrapper figure img {
+  max-width: 100vw;
+}
+
 .board {
   -webkit-column-count: 2;
   -moz-column-count: 2;
