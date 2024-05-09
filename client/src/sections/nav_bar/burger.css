@@ -29,7 +29,7 @@ img.burgerLogoImg {
   max-width: 20vw;
 }
 
-nav.menu a {
+.burgerNavBar a {
   background-color: rgb(194, 247, 9);
   font-size: 1.4rem;
   margin: 7px 8px;
