@@ -123,7 +123,7 @@ function Season(props) {
             document.getElementById(location.hash.slice(1)).scrollIntoView()
             
             //window.scroll({top: location.hash, behavior: "smooth"})
-          }, 2000)
+          }, 1500)
           
         }
       }
