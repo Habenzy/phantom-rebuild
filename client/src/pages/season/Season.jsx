@@ -117,6 +117,8 @@ function Season(props) {
         );
         console.log(allShowsArray);
         setAllShows(allShowsArray);
+        console.log("window path")
+        console.log(location.pathname)
       }
     } catch (err) {
       console.error(err.message);
