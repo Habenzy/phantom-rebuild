@@ -55,12 +55,14 @@ function Home(props) {
         console.log(lastShow);
         return lastShow > Date.now();
       });
-
-      //console.log(allShowsArray)
+      console.log("all shows")
+      console.log(allShowsArray)
       //console.log(upcoming);
 
       setShows(upcoming);
       if (upcoming.length) {
+        console.log("upcoming")
+        console.log(upcoming)
         setFeatureImg(upcoming[0].imageLg);
       }
     } catch (err) {
@@ -103,7 +105,7 @@ function Home(props) {
           {/* <Link to={`/Season#${shows[0].id}`}>More Info</Link> */}
           {shows.length
             ? shows[0].dates.map((date, i) => {
-                console.log(new Date(date.date));
+                //console.log(new Date(date.date));
                 return (
                   <div className="ticket-time" key={i}>
                     <p>{`${daysOfWeek[new Date(date.date).getDay()]} ${
