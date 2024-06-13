@@ -118,9 +118,9 @@ function Season(props) {
         setAllShows(allShowsArray);
         if(location.hash) {
           console.log("scrolling to " + location.hash)
-          // window.scroll({top: location.hash, behavior: "smooth"})
           setTimeout(() => {
-            document.getElementById(location.hash).scrollIntoView()
+            // document.getElementById(location.hash).scrollIntoView()
+            window.scroll({top: location.hash, behavior: "smooth"})
           }, 500)
           
         }
