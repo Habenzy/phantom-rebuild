@@ -118,7 +118,7 @@ function Season(props) {
         setAllShows(allShowsArray);
         if(location.hash) {
           console.log("scrolling to " + location.hash)
-          window.scrollTo(location.hash)
+          window.scroll(location.hash)
         }
       }
     } catch (err) {
