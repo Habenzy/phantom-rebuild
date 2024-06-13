@@ -115,10 +115,7 @@ function Season(props) {
         allShowsArray.sort((a, b) =>
           new Date(a.dates[0].date) > new Date(b.dates[0].date) ? 1 : -1
         );
-        console.log(allShowsArray);
         setAllShows(allShowsArray);
-        console.log("window hash")
-      
         if(location.hash) {
           window.scrollTo(location.hash)
         }

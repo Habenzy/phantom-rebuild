@@ -105,7 +105,7 @@ function Home(props) {
         </div>
         <div className="currentPlayText">
           <h2>{shows.length ? shows[0].title : "Show Times Coming Soon!"}</h2>
-          {/* <Link to={`/Season#${shows[0].id}`}>More Info</Link> */}
+          {shows.length && <Link to={`/Season#${shows[0].id}`}>More Info</Link>}
           {shows.length
             ? shows[0].dates.map((date, i) => {
                 //console.log(new Date(date.date));
