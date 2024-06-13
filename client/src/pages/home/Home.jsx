@@ -57,7 +57,7 @@ function Home(props) {
       });
 
       upcoming.sort((prev, next) => {
-        return (new Date(next.dates[next.dates.length - 1].date) - new Date(prev.dates[prev.dates.length - 1].date))
+        return (new Date(prev.dates[prev.dates.length - 1].date) - new Date(next.dates[next.dates.length - 1].date))
       })
 
       console.log("upcoming")
