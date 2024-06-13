@@ -119,7 +119,10 @@ function Season(props) {
         if(location.hash) {
           console.log("scrolling to " + location.hash)
           // window.scroll({top: location.hash, behavior: "smooth"})
-          document.getElementById(location.hash).scrollIntoView()
+          setTimeout(() => {
+            document.getElementById(location.hash).scrollIntoView()
+          }, 500)
+          
         }
       }
     } catch (err) {
