@@ -55,14 +55,17 @@ function Home(props) {
         console.log(lastShow);
         return lastShow > Date.now();
       });
-      console.log("all shows")
-      console.log(allShowsArray)
-      //console.log(upcoming);
+
+      upcoming.sort((prev, next) => {
+        new Date(next.dates[next.dates.length - 1].date) - new Date(prev.dates[prev.dates.length - 1].date)
+      })
+
+      console.log("upcoming")
+        console.log(upcoming)
 
       setShows(upcoming);
       if (upcoming.length) {
-        console.log("upcoming")
-        console.log(upcoming)
+        
         setFeatureImg(upcoming[0].imageLg);
       }
     } catch (err) {
