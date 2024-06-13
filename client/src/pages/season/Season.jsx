@@ -118,7 +118,10 @@ function Season(props) {
         console.log(allShowsArray);
         setAllShows(allShowsArray);
         console.log("window hash")
-        console.log(location.hash)
+      
+        if(location.hash) {
+          window.scrollTo(location.hash)
+        }
       }
     } catch (err) {
       console.error(err.message);
