@@ -118,7 +118,7 @@ function Season(props) {
         setAllShows(allShowsArray);
         if(location.hash) {
           console.log("scrolling to " + location.hash)
-          window.scroll(location.hash)
+          window.scroll({top: location.hash, behavior: "smooth"})
         }
       }
     } catch (err) {
