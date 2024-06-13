@@ -55,6 +55,10 @@
   width: 35vw;
 }
 
+.ticket-card {
+  margin-bottom: 7px;
+}
+
 @media screen and (min-width: 200px) and (max-width: 600px) {
   .season_container h1 {
     font-size: 28pt;
