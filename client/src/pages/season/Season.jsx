@@ -117,11 +117,12 @@ function Season(props) {
         );
         setAllShows(allShowsArray);
         if(location.hash) {
-          console.log("scrolling to " + location.hash)
+          
           setTimeout(() => {
             // document.getElementById(location.hash).scrollIntoView()
+            console.log("scrolling to " + location.hash)
             window.scroll({top: location.hash, behavior: "smooth"})
-          }, 500)
+          }, 1500)
           
         }
       }
