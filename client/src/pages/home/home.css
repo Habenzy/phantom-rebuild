@@ -50,6 +50,14 @@
 .currentPlayText a {
   background-color: rgb(3, 3, 3);
   border-radius: 50%;
+  color: rgb(195, 247, 9);
+}
+
+.whatNextText a:visited,
+.currentPlayText a:visited {
+  background-color: rgb(3, 3, 3);
+  border-radius: 50%;
+  color: rgb(195, 247, 9);
 }
 
 .whatNextText button,
