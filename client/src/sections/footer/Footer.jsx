@@ -52,7 +52,7 @@ function Footer() {
       </div>
 
       <div>
-        <p>Copyright Phantom Theater 2020</p>
+        <p>Copyright Phantom Theater 2024</p>
       </div>
       <Link to="/adminDash">Admin Login</Link>
     </div>
