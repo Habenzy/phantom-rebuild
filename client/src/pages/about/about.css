@@ -53,7 +53,7 @@
 
 .aboutImage1 {
   margin: 20px 10px 0 0;
-  height: 40vw;
+  max-width: 55vw;
 }
 
 .aboutImage2 {
@@ -160,7 +160,8 @@
   }
 
   .aboutImage1 {
-    height: 70vw;
+    height: auto;
+    min-width: 80vw;
     margin: 0px 0px 10px 10px;
   }
 
@@ -244,7 +245,7 @@
   }
 
   .aboutImage1 {
-    height: 25vw;
+    height: auto;
   }
   .aboutWrapper {
     margin: 0px 150px 0 150px;
