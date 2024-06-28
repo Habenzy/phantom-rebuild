@@ -1,6 +1,6 @@
 //-------------------------------------Imports--------------------------
 
-import Barn from "../../assets/barn4.jpg";
+import Barn from "../../assets/phantom_daytime_barn.jpg";
 import Map from "../../assets/map.png";
 import Tracy from "../../assets/tracyMartin.jpg";
 import "./about.css";
