@@ -47,14 +47,12 @@ function About() {
         <div className="board">
           Beth Binns Schoellkopf
           <br /> Laura Brines
-          <br /> Dan Eckstein <br /> Janet Hubbard-Brown <br />
-          Dana Jinkins <br />
+          <br /> Dan Eckstein <br />
           Sheryl Kurland-Platt
           <br />
           Lexi Leacock <br /> Tracy Martin
           <br /> Mary Moffroid
-          <br /> Sucosh Norton
-          <br /> Julia Purinton
+          <br /> Claudia Becker
           <br /> Jim Sanford
           <br /> Kate Youngdahl <br /> Bob Stauss <br /> Lucas Bates <br></br>
           Mary Chris DeBelina
