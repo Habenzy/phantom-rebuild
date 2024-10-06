@@ -117,7 +117,7 @@ function Home(props) {
                       new Date(date.date).getHours() > 12
                         ? new Date(date.date).getHours() - 12
                         : new Date(date.date).getHours()
-                    }:0${new Date(date.date).getMinutes()}`}</p>
+                    }:${new Date(date.date).getMinutes() > 9 ? new Date(date.date).getMinutes() : "0" + new Date(date.date).getMinutes()}`}</p>
                     <a href={date.ticketLink || "https://theaterengine.com/companies/1"} target="_blank" rel="noreferrer" className="buy-tickets">
                       Buy Tickets
                     </a>
