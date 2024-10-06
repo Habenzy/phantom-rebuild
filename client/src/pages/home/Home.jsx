@@ -57,15 +57,17 @@ function Home(props) {
       });
 
       upcoming.sort((prev, next) => {
-        return (new Date(prev.dates[prev.dates.length - 1].date) - new Date(next.dates[next.dates.length - 1].date))
-      })
+        return (
+          new Date(prev.dates[prev.dates.length - 1].date) -
+          new Date(next.dates[next.dates.length - 1].date)
+        );
+      });
 
-      console.log("upcoming")
-        console.log(upcoming)
+      console.log("upcoming");
+      console.log(upcoming);
 
       setShows(upcoming);
       if (upcoming.length) {
-        
         setFeatureImg(upcoming[0].imageLg);
       }
     } catch (err) {
@@ -117,8 +119,20 @@ function Home(props) {
                       new Date(date.date).getHours() > 12
                         ? new Date(date.date).getHours() - 12
                         : new Date(date.date).getHours()
-                    }:${new Date(date.date).getMinutes() > 9 ? new Date(date.date).getMinutes() : "0" + new Date(date.date).getMinutes()}`}</p>
-                    <a href={date.ticketLink || "https://theaterengine.com/companies/1"} target="_blank" rel="noreferrer" className="buy-tickets">
+                    }:${
+                      new Date(date.date).getMinutes() > 9
+                        ? new Date(date.date).getMinutes()
+                        : "0" + new Date(date.date).getMinutes()
+                    } ${new Date(date.date).getHours() > 12 ? "pm" : "am"}`}</p>
+                    <a
+                      href={
+                        date.ticketLink ||
+                        "https://theaterengine.com/companies/1"
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="buy-tickets"
+                    >
                       Buy Tickets
                     </a>
                   </div>
@@ -146,7 +160,13 @@ function Home(props) {
                       timezone: "EST",
                     })}
                   </p>
-                  <a href={date.ticketLink || "https://theaterengine.com/companies/1"} target="_blank" rel="noreferrer">
+                  <a
+                    href={
+                      date.ticketLink || "https://theaterengine.com/companies/1"
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Buy Tickets
                   </a>
                 </div>
