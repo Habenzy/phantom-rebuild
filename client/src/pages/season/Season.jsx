@@ -53,8 +53,9 @@ function SeasonEvent(props) {
       <br />
       <p>{props.contact}</p>
       {showArtists.map((artist, i) => {
-        return <p key={i}>{artist.name}</p>;
+        return <h4 key={i}>{artist.name}</h4>;
       })}
+      <br />
       <p className="blurb">{props.blurb}</p>
       <br />
       {props.dates.map((date, i) => {

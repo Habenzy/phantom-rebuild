@@ -205,7 +205,7 @@ function ProposalForm(props) {
           }}
         />
         <label htmlFor="description">
-          Tell us a little about your show (REQUIRED)
+          Show description for internal use. What's the run time, major themes, target demographic, etc? (REQUIRED)
         </label>
         <input
           type="text"
@@ -216,7 +216,7 @@ function ProposalForm(props) {
           }}
         />
         <label htmlFor="splash-img">
-          Add a cover image to be displayed on our homepage (REQUIRED)
+          Add a cover image to be displayed on our homepage, only use wordless images please! (REQUIRED)
         </label>
         <input
           className="image-field"
@@ -496,7 +496,7 @@ function ArtistProfile(props) {
               Upload your image to the Database (please do this <b>before</b>{" "}
               submitting the form)
             </button>
-            <label htmlFor="artist">What should we call you? *</label>
+            <label htmlFor="artist">Displayed name *</label>
             <input
               name="artist"
               type="text"
