@@ -118,13 +118,13 @@
   }
 
   .season_container img {
-    width: 50vw;
+    width: 30vw;
   }
 }
 
 @media screen and (min-width: 1000px) {
   .season_container img {
-    width: 40vw;
+    width: 30vw;
   }
 
   .season_container .blurb {
