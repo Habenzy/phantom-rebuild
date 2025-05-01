@@ -45,17 +45,33 @@ function About() {
         <h4>BOARD OF DIRECTORS</h4>
 
         <div className="board">
-          Beth Binns Schoellkopf
-          <br /> Laura Brines
-          <br /> Dan Eckstein <br />
+          Lucas Bates
+          <br />
+          Claudia Becker
+          <br />
+          Ramsey Bolton
+          <br />
+          Laura Brines
+          <br />
+          Mary Chris DeBelina
+          <br />
+          Dan Eckstein
+          <br />
           Sheryl Kurland-Platt
           <br />
-          Lexi Leacock <br /> Tracy Martin
-          <br /> Mary Moffroid
-          <br /> Claudia Becker
-          <br /> Jim Sanford
-          <br /> Kate Youngdahl <br /> Bob Stauss <br /> Lucas Bates <br></br>
-          Mary Chris DeBelina
+          Lexi Leacock
+          <br />
+          Tracy Martin
+          <br />
+          Mary Moffroid
+          <br />
+          Jim Sanford
+          <br />
+          Beth Binns Schoellkopf
+          <br />
+          Bob Stauss
+          <br />
+          Kate Youngdahl
         </div>
 
         <h4>ARTISTIC DIRECTOR: Tracy Martin</h4>

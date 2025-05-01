@@ -17,7 +17,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import './artist_portal.css'
+import "./artist_portal.css";
 
 const nullShow = {
   title: "title",
@@ -170,7 +170,7 @@ function ProposalForm(props) {
 
   return (
     <div className="show-form-container">
-    <div className="spacer"></div>
+      <div className="spacer"></div>
       <form className="show-proposal-form">
         <label htmlFor="title">Enter the name of your show (REQUIRED)</label>
         <input
@@ -288,7 +288,9 @@ function ProposalForm(props) {
           submitting the form)
         </button>
         <button
-          className={`submit-show ${(title && description && imgLgUrl) && "flashing"}`}
+          className={`submit-show ${
+            title && description && imgLgUrl && "flashing"
+          }`}
           disabled={!(title && description && imgLgUrl)}
           onClick={(evt) => {
             evt.preventDefault();
@@ -414,10 +416,10 @@ function ArtistProfile(props) {
         picUrl: picUrl,
       });
 
-      alert("profile successfully updated")
+      alert("profile successfully updated");
     } catch (err) {
       console.error(err.message);
-      alert("something went wrong...")
+      alert("something went wrong...");
     }
   };
 
@@ -446,142 +448,148 @@ function ArtistProfile(props) {
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>
-      <p className="directions">If you are copy/pasting info please delete and retype the last character so our system recognizes the input.</p>
-      <button
-        className="add-show-button"
-        onClick={(evt) => {
-          evt.preventDefault();
-          setSubmitProp(true);
-        }}
-      >
-        Create Show Proposal
-      </button>
+      <h4>Fields with a * are displayed on your profile in the "Artists" section</h4>
+      <p className="directions">
+        If you are copy/pasting info please delete and retype the last character
+        so our system recognizes the input.
+      </p>
+      <div id="proposal-container">
+        <button
+          className="add-show-button"
+          onClick={(evt) => {
+            evt.preventDefault();
+            setSubmitProp(true);
+          }}
+        >
+          Create Show Proposal
+        </button>
 
-      {submitProp && (
-        <ProposalForm
-          user={props.user}
-          show={nullShow}
-          setSubmitProp={setSubmitProp}
-        />
-      )}
-      {/* Show/edit artist info */}
-      <div className="artist-container">
-        <form className="artist-profile-form">
-          <label htmlFor="splash-img">Upload Your Profile Picture</label>
-          <input
-            className="image-field"
-            type="file"
-            name="splash-img"
-            onChange={(evt) => {
-              const img = evt.target.files[0];
-              setArtistPic(img);
-            }}
+        {submitProp && (
+          <ProposalForm
+            user={props.user}
+            show={nullShow}
+            setSubmitProp={setSubmitProp}
           />
-          <button
-            className={`img-uploader highlight ${
-              artistPic && !picUrl ? "flashing" : ""
-            }`}
-            onClick={(evt) => {
-              evt.preventDefault();
-              imgUploader(artistPic);
-            }}
-          >
-            Upload your image to the Database (please do this <b>before</b>{" "}
-            submitting the form)
-          </button>
-          <label htmlFor="artist">What should we call you?</label>
-          <input
-            name="artist"
-            type="text"
-            value={artist}
-            onChange={(evt) => {
-              setArtist(evt.target.value);
-            }}
-          />
-          <label htmlFor="phone">
-            What is a good phone number to reach you at?
-          </label>
-          <input
-            name="phone"
-            type="text"
-            value={phone}
-            onChange={(evt) => {
-              setPhone(evt.target.value);
-            }}
-          />
-          <label htmlFor="email">What's your primary email?</label>
-          <input
-            name="email"
-            type="email"
-            value={email}
-            onChange={(evt) => {
-              setEmail(evt.target.value);
-            }}
-          />
-          <label htmlFor="bio">Tell us a little about yourself</label>
-          <input
-            name="bio"
-            type="text"
-            value={bio}
-            onChange={(evt) => {
-              setBio(evt.target.value);
-            }}
-          />
-          <label htmlFor="website">
-            Enter the URL for your personal website (if you have one)
-          </label>
-          <input
-            name="website"
-            type="text"
-            value={artistWebsite}
-            onChange={(evt) => {
-              setArtistWebsite(evt.target.value);
-            }}
-          />
-          <label htmlFor="fb">Share your facebook if you want</label>
-          <input
-            name="fb"
-            type="text"
-            value={artistFacebook}
-            onChange={(evt) => {
-              setArtistFacebook(evt.target.value);
-            }}
-          />
-          <label htmlFor="insta">
-            Got an instagram? We'd love to link it on your profile!
-          </label>
-          <input
-            name="insta"
-            type="text"
-            value={artistInstagram}
-            onChange={(evt) => {
-              setArtistInstagram(evt.target.value);
-            }}
-          />
-          <label htmlFor="spotify">
-            Share your favorite tunes, link to your Spotify
-          </label>
-          <input
-            name="spotify"
-            type="text"
-            value={artistSpotify}
-            onChange={(evt) => {
-              setArtistSpotify(evt.target.value);
-            }}
-          />
-          <label htmlFor="youtube">
-            Got a youtube channel? We can link that in too...
-          </label>
-          <input
-            type="text"
-            value={artistYouTube}
-            onChange={(evt) => {
-              setArtistYouTube(evt.target.value);
-            }}
-          />
+        )}
+        {/* Show/edit artist info */}
+        <div className="artist-container">
+          <form className="artist-profile-form">
+            <label htmlFor="splash-img">Upload Your Profile Picture *</label>
+            <input
+              className="image-field"
+              type="file"
+              name="splash-img"
+              onChange={(evt) => {
+                const img = evt.target.files[0];
+                setArtistPic(img);
+              }}
+            />
+            <button
+              className={`img-uploader highlight ${
+                artistPic && !picUrl ? "flashing" : ""
+              }`}
+              onClick={(evt) => {
+                evt.preventDefault();
+                imgUploader(artistPic);
+              }}
+            >
+              Upload your image to the Database (please do this <b>before</b>{" "}
+              submitting the form)
+            </button>
+            <label htmlFor="artist">What should we call you? *</label>
+            <input
+              name="artist"
+              type="text"
+              value={artist}
+              onChange={(evt) => {
+                setArtist(evt.target.value);
+              }}
+            />
+            <label htmlFor="phone">
+              What is a good phone number to reach you at (for internal use only)?
+            </label>
+            <input
+              name="phone"
+              type="text"
+              value={phone}
+              onChange={(evt) => {
+                setPhone(evt.target.value);
+              }}
+            />
+            <label htmlFor="email">What's your primary email? *</label>
+            <input
+              name="email"
+              type="email"
+              value={email}
+              onChange={(evt) => {
+                setEmail(evt.target.value);
+              }}
+            />
+            <label htmlFor="bio">Tell us a little about yourself *</label>
+            <input
+              name="bio"
+              type="text"
+              value={bio}
+              onChange={(evt) => {
+                setBio(evt.target.value);
+              }}
+            />
+            <label htmlFor="website">
+              Enter the URL for your personal website (if you have one) *
+            </label>
+            <input
+              name="website"
+              type="text"
+              value={artistWebsite}
+              onChange={(evt) => {
+                setArtistWebsite(evt.target.value);
+              }}
+            />
+            <label htmlFor="fb">Share your facebook if you want *</label>
+            <input
+              name="fb"
+              type="text"
+              value={artistFacebook}
+              onChange={(evt) => {
+                setArtistFacebook(evt.target.value);
+              }}
+            />
+            <label htmlFor="insta">
+              Got an instagram? We'd love to link it on your profile! *
+            </label>
+            <input
+              name="insta"
+              type="text"
+              value={artistInstagram}
+              onChange={(evt) => {
+                setArtistInstagram(evt.target.value);
+              }}
+            />
+            <label htmlFor="spotify">
+              Share your favorite tunes, link to your Spotify *
+            </label>
+            <input
+              name="spotify"
+              type="text"
+              value={artistSpotify}
+              onChange={(evt) => {
+                setArtistSpotify(evt.target.value);
+              }}
+            />
+            <label htmlFor="youtube">
+              Got a youtube channel? We can link that in too... *
+            </label>
+            <input
+              type="text"
+              value={artistYouTube}
+              onChange={(evt) => {
+                setArtistYouTube(evt.target.value);
+              }}
+            />
 
-          <button onClick={updateProfile}>Update your information</button>
-        </form>
+            <button onClick={updateProfile}>Update your information</button>
+          </form>
+        </div>
       </div>
       {/* List all active/archived shows for artist */}
       <div className="spacer"></div>

@@ -26,9 +26,8 @@ function ArtistsList(props) {
         ? allArtists.map((artist, i) => {
             return (
               <div key={i} className="artistsContainer">
-                <h3>{artist.name}</h3>
+                <h3>{artist.artist}</h3>
                 
-
                 <div className="textContainer">
                 <img className="profile-pic" src={artist.picUrl} />
                   <div id="bioFormat">{artist.bio}</div>
