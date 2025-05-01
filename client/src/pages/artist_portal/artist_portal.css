@@ -4,11 +4,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 /* Show edit form */
 
-p.directions {
+.directions {
   color: white;
   text-align: center;
 }

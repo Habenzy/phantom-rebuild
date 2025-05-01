@@ -448,7 +448,7 @@ function ArtistProfile(props) {
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>
-      <h4>Fields with a * are displayed on your profile in the "Artists" section</h4>
+      <h4 className="directions">Fields with a * are displayed on your profile in the "Artists" section</h4>
       <p className="directions">
         If you are copy/pasting info please delete and retype the last character
         so our system recognizes the input.
@@ -473,6 +473,7 @@ function ArtistProfile(props) {
         )}
         {/* Show/edit artist info */}
         <div className="artist-container">
+          <h2 className="directions">Edit Artist Bio</h2>
           <form className="artist-profile-form">
             <label htmlFor="splash-img">Upload Your Profile Picture *</label>
             <input
