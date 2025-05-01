@@ -51,8 +51,15 @@
   margin-bottom: 30px;
 }
 
+.show-img-container {
+  width : 85vw;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
 .season_container img {
-  width: 35vw;
+  max-width: 20vw;
 }
 
 .ticket-card {

@@ -47,9 +47,11 @@ function SeasonEvent(props) {
     <div className="season_container" id={props.id}>
       <h3> {props.title} </h3>
       <br />
-      <img src={props.imageLg} alt="show-image" />
-      {props.image2 && <img src={props.image2} alt="show-image" />}
-      {props.image3 && <img src={props.image3} alt="show-image" />}
+      <div className="show-img-container">
+        <img src={props.imageLg} alt="show-image" />
+        {props.image2 && <img src={props.image2} alt="show-image" />}
+        {props.image3 && <img src={props.image3} alt="show-image" />}
+      </div>
       <br />
       <p>{props.contact}</p>
       {showArtists.map((artist, i) => {
@@ -117,15 +119,13 @@ function Season(props) {
           new Date(a.dates[0].date) > new Date(b.dates[0].date) ? 1 : -1
         );
         setAllShows(allShowsArray);
-        if(location.hash) {
-          
+        if (location.hash) {
           setTimeout(() => {
-            console.log("scrolling to " + location.hash.slice(1))
-            document.getElementById(location.hash.slice(1)).scrollIntoView()
-            
+            console.log("scrolling to " + location.hash.slice(1));
+            document.getElementById(location.hash.slice(1)).scrollIntoView();
+
             //window.scroll({top: location.hash, behavior: "smooth"})
-          }, 1500)
-          
+          }, 1500);
         }
       }
     } catch (err) {
