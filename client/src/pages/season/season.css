@@ -60,6 +60,7 @@
 
 .season_container img {
   max-width: 30vw;
+  max-height: 50vh;
 }
 
 .ticket-card {
