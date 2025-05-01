@@ -92,9 +92,6 @@
     color: white;
   }
 
-  .season_container img {
-    width: 80vw;
-  }
 }
 
 /* Season event styles */
@@ -118,15 +115,9 @@
     margin: 0px 100px;
   }
 
-  .season_container img {
-    width: 30vw;
-  }
 }
 
 @media screen and (min-width: 1000px) {
-  .season_container img {
-    width: 30vw;
-  }
 
   .season_container .blurb {
     margin: 0px 200px;
