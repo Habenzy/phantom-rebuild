@@ -156,7 +156,7 @@ function Season(props) {
 
   return (
     <div className="season_container">
-      <h1>Season 2024</h1>
+      <h1>Season 2025</h1>
       {allShows
         ? allShows.map((show) => {
             return (
