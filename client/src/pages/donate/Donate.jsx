@@ -87,9 +87,8 @@ function Donate(props) {
                 The Phantom Theater Board
                 <br></br>
                 Lucas Bates, Claudia Becker, Beth Binns Schoellkopf, Laura
-                Brines, MC DeBelina, Dan Eckstein, Janet Hubbard-Brown, Sheryl
-                Kurland-Platt, Lexi Leacock, Tracy Martin, Mary Moffroid, Sucosh
-                Norton, Jim Sanford, Bob Stauss, Kate Youngdahl
+                Brines, Ramsey Brown, MC DeBelina, Dan Eckstein, Sheryl
+                Kurland-Platt, Lexi Leacock, Tracy Martin, Mary Moffroid, Jim Sanford, Bob Stauss, Kate Youngdahl
               </p>
             </div>
           </div>
