@@ -49,7 +49,7 @@ function About() {
           <br />
           Claudia Becker
           <br />
-          Ramsey Bolton
+          Ramsey Brown
           <br />
           Laura Brines
           <br />
