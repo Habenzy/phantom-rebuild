@@ -126,24 +126,33 @@ function createApp(options = {}) {
   return app;
 }
 
-function startServer() {
-  const port = process.env.PORT || 5000;
-  const transporter = createTransporter();
+function startServer(options = {}) {
+  const env = options.env || process.env;
+  const port = options.port ?? env.PORT ?? 5000;
+  const logger = options.logger || console;
+  const transporter = options.transporter || createTransporter(env);
 
   transporter.verify((error) => {
     if (error) {
-      console.log(error);
+      logger.log(error);
     } else {
-      console.log("Server ready to take messages");
+      logger.log("Server ready to take messages");
     }
   });
 
-  const app = createApp({ transporter });
-  app.listen(port, () => {
-    console.log(`Listening on port: ${port}`);
+  const app = createApp({
+    env,
+    staticRoot: options.staticRoot,
+    transporter,
   });
+  const server = app.listen(port, () => {
+    logger.log(`Listening on port: ${port}`);
+  });
+
+  return server;
 }
 
+/* node:coverage ignore next 3 */
 if (require.main === module) {
   startServer();
 }

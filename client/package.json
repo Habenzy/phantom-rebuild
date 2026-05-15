@@ -10,6 +10,8 @@
     "preview": "vite preview",
     "seed:emulator": "node scripts/seed-emulator.mjs",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "RUN_FIREBASE_EMULATOR_TESTS=true vitest run src/__tests__/emulatorSmoke.integration.test.jsx",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -27,6 +29,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.6",
     "eslint": "^9.39.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",

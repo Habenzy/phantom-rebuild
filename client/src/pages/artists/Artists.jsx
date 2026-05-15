@@ -21,8 +21,7 @@ function ArtistsList() {
   return (
     <div className="artistsContainer">
       <h1>Artists</h1>
-      {allArtists
-        ? allArtists.map((artist, i) => {
+      {allArtists.map((artist, i) => {
             const website = artist.website || artist.web;
             const facebook = artist.facebook || artist.fb;
             const instagram = artist.instagram || artist.insta;
@@ -124,8 +123,7 @@ function ArtistsList() {
                 <div className="line"></div>
               </div>
             );
-          })
-        : "loading"}
+          })}
     </div>
   );
 }

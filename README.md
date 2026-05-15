@@ -40,10 +40,44 @@ Restart the Vite dev server after changing `.env.local`; Vite only reads env fil
 
 ## Verification
 
+Fast server and client regression tests:
+
 ```sh
 npm test
+npm run test:server
+npm run test:client
+```
+
+Coverage checks:
+
+```sh
+npm run test:coverage
+```
+
+The coverage command runs server and client coverage checks. Both suites enforce 95%+ coverage thresholds, and generated coverage output is ignored by git.
+
+Firebase emulator smoke tests, when emulators are already running:
+
+```sh
+npm run emulators:seed
+npm --prefix client run test:integration
+```
+
+Use this path when the local Auth, Firestore, and Storage emulators are already occupying ports `9099`, `8080`, and `9199`.
+
+To start fresh emulators and run the smoke test in one command:
+
+```sh
+npm run test:emulators
+```
+
+Do not use `npm run test:emulators` while another emulator process is already using ports `9099`, `8080`, and `9199`.
+
+Quality gates:
+
+```sh
 npm --prefix client run lint
 npm --prefix client run build
-npm audit
-npm audit --prefix client
+npm audit --audit-level=high
+npm audit --prefix client --audit-level=high
 ```

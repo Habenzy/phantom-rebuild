@@ -176,8 +176,7 @@ function Season() {
   return (
     <div className="season_container">
       <h1>Season 2025</h1>
-      {allShows
-        ? allShows.map((show) => {
+      {allShows.map((show) => {
             return (
               <SeasonEvent
                 key={show.id}
@@ -193,8 +192,7 @@ function Season() {
                 contact={show.contactName}
               ></SeasonEvent>
             );
-          })
-        : "loading"}
+          })}
     </div>
   );
 }
