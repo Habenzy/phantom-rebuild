@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function ownsArtistProfile(artistId) {
+      return signedIn() && request.auth.uid == artistId;
+    }
+
+    function isShowArtist(show) {
+      return signedIn() && show.artists is list && request.auth.uid in show.artists;
+    }
+
+    match /admins/{adminId} {
+      allow read: if ownsArtistProfile(adminId) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /artists/{artistId} {
+      allow read: if true;
+      allow create, update: if ownsArtistProfile(artistId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /shows/{showId} {
+      allow read: if resource.data.status == "booked" || isShowArtist(resource.data) || isAdmin();
+      allow create: if isAdmin() || (
+        isShowArtist(request.resource.data) &&
+        request.resource.data.status == "proposed"
+      );
+      allow update: if isAdmin() || (
+        isShowArtist(resource.data) &&
+        isShowArtist(request.resource.data) &&
+        request.resource.data.status in ["proposed", "archived"]
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /donors/{donorId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

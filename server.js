@@ -1,80 +1,158 @@
-//---------------------------- imports/server set-up --------------------------//
 const express = require("express");
-const app = express();
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
-const port = process.env.PORT || 5000;
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-//-------------------------------- middleware------------------------------//
-app.use(express.static(path.resolve("./client/dist")));
-//for future self: body-parser is deprecated. 'body just looks like this now
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const DEFAULT_ADMIN_UIDS = [];
 
+function parseList(value) {
+  return value
+    ? value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+}
 
-app.get("/whitelist", (req, res) => {
-  res.json(["9edwDVEW1pQAIetlxUSz6k16bmv2", "iI6jlDK0NAeE6efm8S9mNeYnTIn1", "QIbBmAyJa9OQ64cDJBZj8ej9cgH3", "FBCQzBAltsMLm4bsZl3pmFYcvz93", "aKD6KZYvyRa1IdhVXcKdLAXDfto1", "mK0ahKx3TjSQWsYVaOJGGpTRelQ2", "9KLCbDfcbDTtoQDvVP230VyDTxR2", "bsOt5rfiMYhC3fjuVCSS4P4e0Ob2", "30rYf2KscROfzhwJhDZmeHYbs0F3"])
-})
+function getAdminUids(env = process.env) {
+  const configured = parseList(env.ADMIN_UIDS);
+  const local = parseList(env.LOCAL_ADMIN_UIDS);
+  return configured.concat(local);
+}
 
-//--------------------email sending functionality---------------------//
-const transporter = nodemailer.createTransport({
-  service: "AOL",
-  auth: {
-    user: process.env.NODEMAILER_USER,
-    pass: process.env.NODEMAILER_PASS,
-  },
-});
+function createTransporter(env = process.env) {
+  return nodemailer.createTransport({
+    service: env.NODEMAILER_SERVICE || "AOL",
+    auth: {
+      user: env.NODEMAILER_USER,
+      pass: env.NODEMAILER_PASS,
+    },
+  });
+}
 
-//verify connection config
-transporter.verify((error, success) => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log("Server ready to take messages");
+function normalizeText(value, maxLength) {
+  if (typeof value !== "string") {
+    return "";
   }
-});
 
-//establish route for sending email + stores input values in variables
-app.post("/send", (req, res) => {
-  console.log(req.body);
-  let artist = req.body.artist;
-  let email = req.body.email;
-  let phone = req.body.phone;
-  let description = req.body.description;
+  return value.trim().replace(/[\r\n]+/g, " ").slice(0, maxLength);
+}
 
-  //e-mail body template
-  let mailBody = `Artist Name: ${artist}\nEmail: ${email}\nPhone: ${phone}\nDescription: ${description}`;
-
-  //structure of e-mail sent
-  let sentMsg = {
-    from: process.env.NODEMAILER_USER,
-    to: process.env.NODEMAILER_RECIPIENT,
-    subject: "You have a new show proposal!",
-    text: mailBody,
+function validateProposal(body) {
+  const proposal = {
+    artist: normalizeText(body.artist, 120),
+    email: normalizeText(body.email, 254),
+    phone: normalizeText(body.phone, 40),
+    description: normalizeText(body.description, 3000),
   };
 
-  //e-mail send function + error handling
-  transporter.sendMail(sentMsg, (err, info) => {
-    if (err) {
-      console.log("Error occurred: " + err.message);
-      res.json({ message: "something went wrong" });
-    }
-    res.json({
-      message: "message has been sent",
-    });
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-    console.log("Message sent: %s", info.messageId);
+  if (!proposal.artist || !proposal.description) {
+    return { error: "Artist and description are required." };
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(proposal.email)) {
+    return { error: "A valid email address is required." };
+  }
+
+  return { proposal };
+}
+
+function createApp(options = {}) {
+  const app = express();
+  const env = options.env || process.env;
+  const staticRoot = options.staticRoot || path.resolve("./client/dist");
+  const transporter = options.transporter || createTransporter(env);
+
+  app.disable("x-powered-by");
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  );
+  app.use(express.static(staticRoot));
+  app.use(express.urlencoded({ extended: true, limit: "25kb" }));
+  app.use(express.json({ limit: "25kb" }));
+
+  app.get("/whitelist", (req, res) => {
+    res.json(getAdminUids(env));
   });
-});
 
-// path home
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve("./client/dist/index.html"));
-});
+  app.post(
+    "/send",
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      limit: 10,
+      standardHeaders: true,
+      legacyHeaders: false,
+    }),
+    async (req, res) => {
+      const { proposal, error } = validateProposal(req.body || {});
 
+      if (error) {
+        return res.status(400).json({ message: error });
+      }
 
-// start the server
-app.listen(port, () => {
-  console.log(`Listening on port: ${port}`);
-});
+      const mailBody = [
+        `Artist Name: ${proposal.artist}`,
+        `Email: ${proposal.email}`,
+        `Phone: ${proposal.phone}`,
+        `Description: ${proposal.description}`,
+      ].join("\n");
+
+      const sentMsg = {
+        from: env.NODEMAILER_USER,
+        to: env.NODEMAILER_RECIPIENT,
+        subject: "You have a new show proposal!",
+        text: mailBody,
+      };
+
+      try {
+        const info = await transporter.sendMail(sentMsg);
+        console.log("Message sent: %s", info.messageId);
+        return res.json({ message: "message has been sent" });
+      } catch (err) {
+        console.error("Error occurred sending proposal email:", err.message);
+        return res.status(502).json({ message: "something went wrong" });
+      }
+    }
+  );
+
+  app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(staticRoot, "index.html"));
+  });
+
+  return app;
+}
+
+function startServer() {
+  const port = process.env.PORT || 5000;
+  const transporter = createTransporter();
+
+  transporter.verify((error) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Server ready to take messages");
+    }
+  });
+
+  const app = createApp({ transporter });
+  app.listen(port, () => {
+    console.log(`Listening on port: ${port}`);
+  });
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = {
+  DEFAULT_ADMIN_UIDS,
+  createApp,
+  createTransporter,
+  getAdminUids,
+  startServer,
+  validateProposal,
+};

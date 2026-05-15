@@ -39,6 +39,12 @@ const nullShow = {
   image3Name: "",
 };
 
+function imageRefForUser(img) {
+  const safeName = img.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const uniqueId = globalThis.crypto?.randomUUID?.() || Date.now();
+  return ref(storage, `uploads/${auth.currentUser.uid}/${uniqueId}-${safeName}`);
+}
+
 function LoginPortal(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -145,7 +151,7 @@ function ProposalForm(props) {
   const imgUploader = async (img, targetProp) => {
     console.log("uploading image");
     console.log(img);
-    const imgRef = ref(storage, img.name);
+    const imgRef = imageRefForUser(img);
     try {
       let imgUpload = await uploadBytes(imgRef, img);
       console.log(imgUpload);
@@ -426,7 +432,7 @@ function ArtistProfile(props) {
   const imgUploader = async (img) => {
     console.log("uploading image");
     console.log(img);
-    const imgRef = ref(storage, img.name);
+    const imgRef = imageRefForUser(img);
     try {
       let imgUpload = await uploadBytes(imgRef, img);
       console.log(imgUpload);

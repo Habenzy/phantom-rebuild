@@ -16,6 +16,12 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import "./admin_portal.css";
 
+function imageRefForUser(img) {
+  const safeName = img.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const uniqueId = globalThis.crypto?.randomUUID?.() || Date.now();
+  return ref(storage, `uploads/${auth.currentUser.uid}/${uniqueId}-${safeName}`);
+}
+
 function LoginPortal(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -139,7 +145,7 @@ function ProposalForm(props) {
   const [img3Url, setImg3Url] = useState(props.show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
-    const imgRef = ref(storage, img.name);
+    const imgRef = imageRefForUser(img);
     try {
       let imgUpload = await uploadBytes(imgRef, img);
       console.log(imgUpload);
@@ -405,7 +411,7 @@ function ArtistProfile(props) {
   const imgUploader = async (img) => {
     console.log("uploading image");
     console.log(img);
-    const imgRef = ref(storage, img.name);
+    const imgRef = imageRefForUser(img);
     try {
       let imgUpload = await uploadBytes(imgRef, img);
       console.log(imgUpload);
@@ -588,12 +594,18 @@ function AdminPanel(props) {
   const [donors, setDonors] = useState([]);
 
   useEffect(() => {
-    fetch("/whitelist")
-      .then((res) => res.json())
-      .then((list) => {
-        list.includes(auth.currentUser.uid)
-          ? setAuthorized(true)
-          : setAuthorized(false);
+    if (!auth.currentUser) {
+      setAuthorized(false);
+      return;
+    }
+
+    getDoc(doc(db, "admins", auth.currentUser.uid))
+      .then((adminDoc) => {
+        setAuthorized(adminDoc.exists());
+      })
+      .catch((err) => {
+        console.error(err.message);
+        setAuthorized(false);
       });
   }, []);
 

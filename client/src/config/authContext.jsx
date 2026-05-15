@@ -1,5 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "./firebase.js";
+import {
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 const AuthContext = React.createContext();
 
@@ -19,22 +25,22 @@ export function AuthProvider({ children }) {
   // note: if db other than firebase is ever used,
   // one should just have to change these for things to still work
   function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
+    return signInWithEmailAndPassword(auth, email, password);
   }
 
   function logout() {
-    return auth.signOut();
+    return signOut(auth);
   }
 
   function resetPassword(email) {
-    return auth.sendPasswordResetEmail(email);
+    return sendPasswordResetEmail(auth, email);
   }
   //---------------------------------------------------------//
 
   //sets user once as component mounts
   useEffect(() => {
     //unsubscribe is returned from onAuth method when component unmounts
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       //verify to see if there's a user and sets the user
       setLoggedUser(user);
       //user starts as null & sets itself (firebase property that sets local storage/tokens)
