@@ -4,19 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "heroku-postbuild": "npm install @vitejs/plugin-react && cd client && npm install --only=dev && npm install && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm --prefix client run build",
+    "emulators:start": "npx firebase-tools emulators:start --project demo-phantom-reboot --only auth,firestore,storage --import .firebase-data --export-on-exit .firebase-data",
+    "emulators:seed": "npm --prefix client run seed:emulator",
+    "heroku-postbuild": "npm install --prefix client --include=dev && npm --prefix client run build",
+    "test": "npm run test:server && npm --prefix client test",
+    "test:client": "npm --prefix client test",
+    "test:server": "node --test test/*.test.js",
     "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "client": "^0.0.1",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "firebase": "^10.6.0",
-    "nodemailer": "^6.9.7",
-    "vite": "^5.0.0"
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "nodemailer": "^8.0.7"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.4"
   }
 }
