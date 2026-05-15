@@ -11,11 +11,12 @@ function Footer() {
       <div className="social_images">
         <a
           href="https://www.facebook.com/Phantom-Theater-1730271753886842/?ref=page_internal"
-          target="blank"
+          target="_blank"
+          rel="noreferrer noopener"
         >
           <img className="social" src={Facebook} alt="" />
         </a>
-        <a href="https://www.instagram.com/phantomtheater/" target="blank">
+        <a href="https://www.instagram.com/phantomtheater/" target="_blank" rel="noreferrer noopener">
           <img className="social" id="insta" src={Instagram} alt="" />
         </a>
 

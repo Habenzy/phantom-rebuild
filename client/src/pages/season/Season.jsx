@@ -31,17 +31,12 @@ function SeasonEvent(props) {
   const [showArtists, setShowArtists] = useState([]);
 
   useEffect(() => {
-    console.log(`in show ${props.title}`);
-    console.log("show artists", props.artists);
-    console.log("all artists", props.allArtists);
     let involved = props.allArtists.filter((artist) => {
       return props.artists.includes(artist.id);
     });
 
-    console.log(involved);
-
     setShowArtists(involved);
-  }, []);
+  }, [props.allArtists, props.artists]);
 
   return (
     <div className="season_container" id={props.id}>
@@ -55,7 +50,7 @@ function SeasonEvent(props) {
       <br />
       <p>{props.contact}</p>
       {showArtists.map((artist, i) => {
-        return <h4 key={i}>{artist.name}</h4>;
+        return <h4 key={i}>{artist.artist || artist.name}</h4>;
       })}
       <br />
       <p className="blurb">{props.blurb}</p>
@@ -76,13 +71,13 @@ function SeasonEvent(props) {
             {new Date(date.date) > Date.now() && (
               <a
                 href={
-                  props.ticketUrl
-                    ? props.ticketUrl
+                  date.ticketLink
+                    ? date.ticketLink
                     : `https://theaterengine.com/companies/1`
                 }
                 target="_blank"
                 className="buy-ticket"
-                rel="noreferrer"
+                rel="noreferrer noopener"
               >
                 Buy Tickets
               </a>

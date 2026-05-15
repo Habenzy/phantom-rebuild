@@ -47,12 +47,11 @@ function Home(props) {
 
       const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
       let upcoming = allShowsArray.filter((show) => {
-        //console.log("Dates for", show.title)
-        //console.log(show.dates)
-        console.log(show.dates[show.dates.length - 1].date);
-        // sort dates and put tem in order
+        if (!show.dates?.length) {
+          return false;
+        }
+
         let lastShow = new Date(show.dates[show.dates.length - 1].date);
-        console.log(lastShow);
         return lastShow > Date.now();
       });
 
@@ -62,9 +61,6 @@ function Home(props) {
           new Date(next.dates[next.dates.length - 1].date)
         );
       });
-
-      console.log("upcoming");
-      console.log(upcoming);
 
       setShows(upcoming);
       if (upcoming.length) {
@@ -76,7 +72,6 @@ function Home(props) {
   }
 
   useEffect(() => {
-    console.log("fetching shows");
     getCurrentShows();
   }, []);
 
@@ -130,7 +125,7 @@ function Home(props) {
                         "https://theaterengine.com/companies/1"
                       }
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noreferrer noopener"
                       className="buy-tickets"
                     >
                       Buy Tickets
@@ -157,7 +152,7 @@ function Home(props) {
                 <div className="ticket-time" key={i}>
                   <p>
                     {new Date(date.date).toLocaleString("en-US", {
-                      timezone: "EST",
+                      timeZone: "America/New_York",
                     })}
                   </p>
                   <a
@@ -165,7 +160,7 @@ function Home(props) {
                       date.ticketLink || "https://theaterengine.com/companies/1"
                     }
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noreferrer noopener"
                   >
                     Buy Tickets
                   </a>
