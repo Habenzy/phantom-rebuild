@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { db, auth, storage } from "../../config/firebase";
 import {
   createUserWithEmailAndPassword,
@@ -45,7 +46,26 @@ function imageRefForUser(img) {
   return ref(storage, `uploads/${auth.currentUser.uid}/${uniqueId}-${safeName}`);
 }
 
-function LoginPortal(props) {
+const showDatePropType = PropTypes.shape({
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  ticketLink: PropTypes.string,
+  soldOut: PropTypes.bool,
+});
+
+const showPropType = PropTypes.shape({
+  id: PropTypes.string,
+  title: PropTypes.string,
+  type: PropTypes.string,
+  status: PropTypes.string,
+  description: PropTypes.string,
+  contactName: PropTypes.string,
+  dates: PropTypes.arrayOf(showDatePropType),
+  imageLg: PropTypes.string,
+  image2: PropTypes.string,
+  image3: PropTypes.string,
+});
+
+function LoginPortal({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState(false);
@@ -55,7 +75,7 @@ function LoginPortal(props) {
     try {
       let userCred = await signInWithEmailAndPassword(auth, email, password);
 
-      props.setUser(userCred.user);
+      setUser(userCred.user);
     } catch (err) {
       console.error(err);
       setErr(err.message);
@@ -83,7 +103,7 @@ function LoginPortal(props) {
         spotify: "",
         youtube: "",
       });
-      props.setUser(userCred.user);
+      setUser(userCred.user);
     } catch (err) {
       console.error(err);
       setErr(err.message);
@@ -117,7 +137,7 @@ function LoginPortal(props) {
           </button>
           <p>OR</p>
           <p>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <button className="login-button" onClick={signUp}>
               Sign Up
             </button>
@@ -129,24 +149,28 @@ function LoginPortal(props) {
   );
 }
 
-function ProposalForm(props) {
+LoginPortal.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
+
+function ProposalForm({ show, edit = false, setSubmitProp }) {
   // create state objects to hold values from input form
-  const [title, setTitle] = useState(props.show.title || "");
-  const [type, setType] = useState(props.show.type || "");
-  const [status, setStatus] = useState(props.show.status || "proposed");
-  const [description, setDescription] = useState(props.show.description || "");
-  const [contact, setContact] = useState(props.show.contactName || "");
-  const [artists, setArtist] = useState([auth.currentUser.uid]);
-  const [dates, setDates] = useState(props.show.dates || []);
+  const [title, setTitle] = useState(show.title || "");
+  const [type, setType] = useState(show.type || "");
+  const status = show.status || "proposed";
+  const [description, setDescription] = useState(show.description || "");
+  const [contact, setContact] = useState(show.contactName || "");
+  const artists = [auth.currentUser.uid];
+  const dates = show.dates || [];
 
   //images
-  const [imageLg, setImageLg] = useState(props.show.imageLg || "");
-  const [image2, setImage2] = useState(props.show.image2 || "");
-  const [image3, setImage3] = useState(props.show.image3 || "");
+  const [imageLg, setImageLg] = useState(show.imageLg || "");
+  const [image2, setImage2] = useState(show.image2 || "");
+  const [image3, setImage3] = useState(show.image3 || "");
 
-  const [imgLgUrl, setImgLgUrl] = useState(props.show.imageLg || "");
-  const [img2Url, setImg2Url] = useState(props.show.image2 || "");
-  const [img3Url, setImg3Url] = useState(props.show.image3 || "");
+  const [imgLgUrl, setImgLgUrl] = useState(show.imageLg || "");
+  const [img2Url, setImg2Url] = useState(show.image2 || "");
+  const [img3Url, setImg3Url] = useState(show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
     console.log("uploading image");
@@ -199,8 +223,8 @@ function ProposalForm(props) {
           }}
         />
         <label htmlFor="type">
-          What type of show are you bringing to the barn (e.g. "dance" "theater"
-          "music" etc.)
+          What type of show are you bringing to the barn (e.g. &quot;dance&quot;
+          &quot;theater&quot; &quot;music&quot; etc.)
         </label>
         <input
           type="text"
@@ -211,7 +235,8 @@ function ProposalForm(props) {
           }}
         />
         <label htmlFor="description">
-          Show description for internal use. What's the run time, major themes, target demographic, etc? (REQUIRED)
+          Show description for internal use. What&apos;s the run time, major
+          themes, target demographic, etc? (REQUIRED)
         </label>
         <input
           type="text"
@@ -222,7 +247,8 @@ function ProposalForm(props) {
           }}
         />
         <label htmlFor="splash-img">
-          Add a cover image to be displayed on our homepage, only use wordless images please! (REQUIRED)
+          Add a cover image to be displayed on our homepage, only use wordless
+          images please! (REQUIRED)
         </label>
         <input
           className="image-field"
@@ -313,10 +339,9 @@ function ProposalForm(props) {
               image2: img2Url,
               image3: img3Url,
             };
-            props.edit
-              ? setDoc(doc(db, "shows", props.show.id), showObj)
-                  .then((res) => {
-                    console.log(res);
+            edit
+              ? setDoc(doc(db, "shows", show.id), showObj)
+                  .then(() => {
                     //alert that update was successful
                     alert("Show Updated Successfully");
                   })
@@ -324,10 +349,10 @@ function ProposalForm(props) {
                     console.error(err.message);
                   })
               : addDoc(collection(db, "shows"), showObj)
-                  .then((res) => {
+                  .then(() => {
                     alert("Show added successfully");
-                    props.setSubmitProp
-                      ? props.setSubmitProp(false)
+                    setSubmitProp
+                      ? setSubmitProp(false)
                       : console.log("previous show");
                   })
                   .catch((err) => {
@@ -343,7 +368,13 @@ function ProposalForm(props) {
   );
 }
 
-function ArtistProfile(props) {
+ProposalForm.propTypes = {
+  show: showPropType.isRequired,
+  edit: PropTypes.bool,
+  setSubmitProp: PropTypes.func,
+};
+
+function ArtistProfile({ setUser }) {
   const [submitProp, setSubmitProp] = useState(false);
   const [artist, setArtist] = useState("");
   const [phone, setPhone] = useState("");
@@ -397,7 +428,7 @@ function ArtistProfile(props) {
     try {
       await signOut(auth);
 
-      props.setUser(null);
+      setUser(null);
     } catch (err) {
       console.error(err.message);
     }
@@ -454,7 +485,10 @@ function ArtistProfile(props) {
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>
-      <h4 className="directions">Fields with a * are displayed on your profile in the "Artists" section</h4>
+      <h4 className="directions">
+        Fields with a * are displayed on your profile in the &quot;Artists&quot;
+        section
+      </h4>
       <p className="directions">
         If you are copy/pasting info please delete and retype the last character
         so our system recognizes the input.
@@ -472,7 +506,6 @@ function ArtistProfile(props) {
 
         {submitProp && (
           <ProposalForm
-            user={props.user}
             show={nullShow}
             setSubmitProp={setSubmitProp}
           />
@@ -523,7 +556,7 @@ function ArtistProfile(props) {
                 setPhone(evt.target.value);
               }}
             />
-            <label htmlFor="email">What's your primary email? *</label>
+            <label htmlFor="email">What&apos;s your primary email? *</label>
             <input
               name="email"
               type="email"
@@ -562,7 +595,7 @@ function ArtistProfile(props) {
               }}
             />
             <label htmlFor="insta">
-              Got an instagram? We'd love to link it on your profile! *
+              Got an instagram? We&apos;d love to link it on your profile! *
             </label>
             <input
               name="insta"
@@ -617,7 +650,11 @@ function ArtistProfile(props) {
   );
 }
 
-function ArtistPortal(props) {
+ArtistProfile.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
+
+function ArtistPortal() {
   const [user, setUser] = useState(auth.currentUser || null);
 
   return (
@@ -625,7 +662,7 @@ function ArtistPortal(props) {
       {!user ? (
         <LoginPortal setUser={setUser} />
       ) : (
-        <ArtistProfile user={user} setUser={setUser} />
+        <ArtistProfile setUser={setUser} />
       )}
     </div>
   );

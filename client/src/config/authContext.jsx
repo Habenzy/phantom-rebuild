@@ -1,4 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { AuthContext } from "./authContextValue.js";
 import { auth } from "./firebase.js";
 import {
   onAuthStateChanged,
@@ -6,13 +8,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-
-const AuthContext = React.createContext();
-
-//creates user context to be used elsewhere
-export function useAuth() {
-  return useContext(AuthContext);
-}
 
 //provides context for and sets the user
 export function AuthProvider({ children }) {
@@ -66,3 +61,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+AuthProvider.propTypes = {
+  children: PropTypes.node,
+};

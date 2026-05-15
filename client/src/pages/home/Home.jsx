@@ -29,50 +29,47 @@ const months = [
   "Dec",
 ];
 
-function Home(props) {
+function collectAllIdsAndDocs(doc) {
+  return { id: doc.id, ...doc.data() };
+}
+
+function Home() {
   const [shows, setShows] = useState([]);
   const [featureImg, setFeatureImg] = useState(barnImg);
 
-  function collectAllIdsAndDocs(doc) {
-    return { id: doc.id, ...doc.data() };
-  }
-
-  async function getCurrentShows() {
+  useEffect(() => {
     const showsRef = query(
       collection(db, "shows"),
       where("status", "==", "booked")
     );
-    try {
-      const showSnapshot = await getDocs(showsRef);
 
-      const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
-      let upcoming = allShowsArray.filter((show) => {
-        if (!show.dates?.length) {
-          return false;
+    getDocs(showsRef)
+      .then((showSnapshot) => {
+        const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
+        let upcoming = allShowsArray.filter((show) => {
+          if (!show.dates?.length) {
+            return false;
+          }
+
+          let lastShow = new Date(show.dates[show.dates.length - 1].date);
+          return lastShow > Date.now();
+        });
+
+        upcoming.sort((prev, next) => {
+          return (
+            new Date(prev.dates[prev.dates.length - 1].date) -
+            new Date(next.dates[next.dates.length - 1].date)
+          );
+        });
+
+        setShows(upcoming);
+        if (upcoming.length) {
+          setFeatureImg(upcoming[0].imageLg);
         }
-
-        let lastShow = new Date(show.dates[show.dates.length - 1].date);
-        return lastShow > Date.now();
+      })
+      .catch((err) => {
+        console.error(err.message);
       });
-
-      upcoming.sort((prev, next) => {
-        return (
-          new Date(prev.dates[prev.dates.length - 1].date) -
-          new Date(next.dates[next.dates.length - 1].date)
-        );
-      });
-
-      setShows(upcoming);
-      if (upcoming.length) {
-        setFeatureImg(upcoming[0].imageLg);
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-
-  useEffect(() => {
-    getCurrentShows();
   }, []);
 
   return (

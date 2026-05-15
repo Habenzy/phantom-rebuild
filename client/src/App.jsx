@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./config/authContext";
 import "./App.css";
@@ -27,7 +26,7 @@ function App() {
             <Route path="/About" element={<About />} />
             <Route path="/Artists" element={<ArtistsList />} />
             <Route path="/Donate" element={<Donate />} />
-            <Route path="/ArtistPortal" element={<ArtistPortal />}/>
+            <Route path="/ArtistPortal" element={<ArtistPortal />} />
             <Route path="/adminDash" element={<AdminPortal />} />
           </Routes>
         </AuthProvider>

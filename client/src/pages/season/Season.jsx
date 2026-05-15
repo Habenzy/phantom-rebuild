@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import "./season.css";
 import { db } from "../../config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -27,35 +28,55 @@ const months = [
   "Dec",
 ];
 
-function SeasonEvent(props) {
-  const [showArtists, setShowArtists] = useState([]);
+const showDatePropType = PropTypes.shape({
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  ticketLink: PropTypes.string,
+  soldOut: PropTypes.bool,
+});
 
-  useEffect(() => {
-    let involved = props.allArtists.filter((artist) => {
-      return props.artists.includes(artist.id);
-    });
+const artistPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  artist: PropTypes.string,
+  name: PropTypes.string,
+});
 
-    setShowArtists(involved);
-  }, [props.allArtists, props.artists]);
+function collectAllIdsAndDocs(doc) {
+  return { id: doc.id, ...doc.data() };
+}
+
+function SeasonEvent({
+  id,
+  title,
+  dates,
+  artists,
+  blurb,
+  imageLg,
+  image2,
+  image3,
+  allArtists,
+  contact,
+}) {
+  const [currentTime] = useState(() => Date.now());
+  const showArtists = allArtists.filter((artist) => artists.includes(artist.id));
 
   return (
-    <div className="season_container" id={props.id}>
-      <h3> {props.title} </h3>
+    <div className="season_container" id={id}>
+      <h3> {title} </h3>
       <br />
       <div className="show-img-container">
-        <img src={props.imageLg} alt="show-image" />
-        {props.image2 && <img src={props.image2} alt="show-image" />}
-        {props.image3 && <img src={props.image3} alt="show-image" />}
+        <img src={imageLg} alt="show-image" />
+        {image2 && <img src={image2} alt="show-image" />}
+        {image3 && <img src={image3} alt="show-image" />}
       </div>
       <br />
-      <p>{props.contact}</p>
+      <p>{contact}</p>
       {showArtists.map((artist, i) => {
         return <h4 key={i}>{artist.artist || artist.name}</h4>;
       })}
       <br />
-      <p className="blurb">{props.blurb}</p>
+      <p className="blurb">{blurb}</p>
       <br />
-      {props.dates.map((date, i) => {
+      {dates.map((date, i) => {
         return (
           <div className="ticket-card" key={i}>
             <p>
@@ -68,7 +89,7 @@ function SeasonEvent(props) {
               }:0${new Date(date.date).getMinutes()}`}
             </p>
             <br></br>
-            {new Date(date.date) > Date.now() && (
+            {new Date(date.date).getTime() > currentTime && (
               <a
                 href={
                   date.ticketLink
@@ -91,25 +112,32 @@ function SeasonEvent(props) {
   );
 }
 
-function Season(props) {
-  function collectAllIdsAndDocs(doc) {
-    return { id: doc.id, ...doc.data() };
-  }
+SeasonEvent.propTypes = {
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  dates: PropTypes.arrayOf(showDatePropType).isRequired,
+  artists: PropTypes.arrayOf(PropTypes.string).isRequired,
+  blurb: PropTypes.string,
+  imageLg: PropTypes.string,
+  image2: PropTypes.string,
+  image3: PropTypes.string,
+  allArtists: PropTypes.arrayOf(artistPropType).isRequired,
+  contact: PropTypes.string,
+};
 
+function Season() {
   let [allShows, setAllShows] = useState([]);
   let [allArtists, setAllArtists] = useState([]);
 
-  async function seeAllShows() {
+  useEffect(() => {
     const showsRef = query(
       collection(db, "shows"),
       where("status", "==", "booked")
     );
-    try {
-      const showSnapshot = await getDocs(showsRef);
 
-      const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
-
-      if (!allShows.length) {
+    getDocs(showsRef)
+      .then((showSnapshot) => {
+        const allShowsArray = showSnapshot.docs.map(collectAllIdsAndDocs);
         allShowsArray.sort((a, b) =>
           new Date(a.dates[0].date) > new Date(b.dates[0].date) ? 1 : -1
         );
@@ -122,14 +150,10 @@ function Season(props) {
             //window.scroll({top: location.hash, behavior: "smooth"})
           }, 1500);
         }
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-
-  useEffect(() => {
-    seeAllShows();
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
   }, []);
 
   useEffect(() => {
@@ -160,7 +184,6 @@ function Season(props) {
                 id={show.id}
                 title={show.title}
                 dates={show.dates}
-                type={show.type}
                 artists={show.artists}
                 blurb={show.blurb}
                 imageLg={show.imageLg}

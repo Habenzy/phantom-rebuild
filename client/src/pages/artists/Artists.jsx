@@ -8,7 +8,7 @@ import instagramIcon from "../../assets/instagramColor.png";
 import spotifyIcon from "../../assets/spotify.png";
 import "./artists.css";
 
-function ArtistsList(props) {
+function ArtistsList() {
   const [allArtists, setAllArtists] = useState([]);
 
   useEffect(() => {
@@ -29,14 +29,23 @@ function ArtistsList(props) {
             return (
               <div key={i} className="artistsContainer">
                 <h3>{artist.artist}</h3>
-                
+
                 <div className="textContainer">
-                <img className="profile-pic" src={artist.picUrl} alt={artist.artist} />
+                  <img
+                    className="profile-pic"
+                    src={artist.picUrl}
+                    alt={artist.artist}
+                  />
                   <div id="bioFormat">{artist.bio}</div>
                   <h5> {artist.email}</h5>
                   <div className="artistContact">
                     {website ? (
-                      <a href={website} target="_blank" rel="noreferrer noopener" aria-label="Website">
+                      <a
+                        href={website}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label="Website"
+                      >
                         <img
                           src={websiteIcon}
                           alt=""
@@ -47,7 +56,12 @@ function ArtistsList(props) {
                       ""
                     )}
                     {facebook ? (
-                      <a href={facebook} target="_blank" rel="noreferrer noopener" aria-label="Facebook">
+                      <a
+                        href={facebook}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label="Facebook"
+                      >
                         <img
                           src={facebookIcon}
                           alt=""
@@ -58,7 +72,12 @@ function ArtistsList(props) {
                       ""
                     )}
                     {artist.youtube ? (
-                      <a href={artist.youtube} target="_blank" rel="noreferrer noopener" aria-label="YouTube">
+                      <a
+                        href={artist.youtube}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label="YouTube"
+                      >
                         <img
                           src={youtubeIcon}
                           alt=""
@@ -69,7 +88,12 @@ function ArtistsList(props) {
                       ""
                     )}
                     {instagram ? (
-                      <a href={instagram} target="_blank" rel="noreferrer noopener" aria-label="Instagram">
+                      <a
+                        href={instagram}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label="Instagram"
+                      >
                         <img
                           src={instagramIcon}
                           alt=""
@@ -80,7 +104,12 @@ function ArtistsList(props) {
                       ""
                     )}
                     {artist.spotify ? (
-                      <a href={artist.spotify} target="_blank" rel="noreferrer noopener" aria-label="Spotify">
+                      <a
+                        href={artist.spotify}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label="Spotify"
+                      >
                         <img
                           src={spotifyIcon}
                           alt=""

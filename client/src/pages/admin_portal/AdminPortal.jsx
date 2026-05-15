@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { db, auth, storage } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import {
@@ -8,8 +9,6 @@ import {
   setDoc,
   getDoc,
   updateDoc,
-  addDoc,
-  where,
   getDocs,
   deleteDoc,
 } from "firebase/firestore";
@@ -22,7 +21,42 @@ function imageRefForUser(img) {
   return ref(storage, `uploads/${auth.currentUser.uid}/${uniqueId}-${safeName}`);
 }
 
-function LoginPortal(props) {
+const showDatePropType = PropTypes.shape({
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  ticketLink: PropTypes.string,
+  soldOut: PropTypes.bool,
+});
+
+const showPropType = PropTypes.shape({
+  id: PropTypes.string,
+  title: PropTypes.string,
+  type: PropTypes.string,
+  status: PropTypes.string,
+  description: PropTypes.string,
+  contactName: PropTypes.string,
+  artists: PropTypes.arrayOf(PropTypes.string),
+  dates: PropTypes.arrayOf(showDatePropType),
+  blurb: PropTypes.string,
+  imageLg: PropTypes.string,
+  image2: PropTypes.string,
+  image3: PropTypes.string,
+});
+
+const artistProfilePropType = PropTypes.shape({
+  id: PropTypes.string,
+  artist: PropTypes.string,
+  phone: PropTypes.string,
+  email: PropTypes.string,
+  bio: PropTypes.string,
+  web: PropTypes.string,
+  fb: PropTypes.string,
+  youtube: PropTypes.string,
+  insta: PropTypes.string,
+  spotify: PropTypes.string,
+  picUrl: PropTypes.string,
+});
+
+function LoginPortal({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState(false);
@@ -32,7 +66,7 @@ function LoginPortal(props) {
     try {
       let userCred = await signInWithEmailAndPassword(auth, email, password);
 
-      props.setUser(userCred.user);
+      setUser(userCred.user);
     } catch (err) {
       console.error(err);
       setErr(err.message);
@@ -71,10 +105,14 @@ function LoginPortal(props) {
   );
 }
 
-function DateField(props) {
-  const [dateTime, setDateTime] = useState(props.date.date || "");
-  const [ticketLink, setTicketLink] = useState(props.date.ticketLink || "");
-  const [soldOut, setSoldOut] = useState(false);
+LoginPortal.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
+
+function DateField({ date, allDates, index, update }) {
+  const [dateTime, setDateTime] = useState(date.date || "");
+  const [ticketLink, setTicketLink] = useState(date.ticketLink || "");
+  const [soldOut, setSoldOut] = useState(date.soldOut || false);
 
   return (
     <div className="date-time-field">
@@ -110,12 +148,12 @@ function DateField(props) {
         className="submit highlight"
         onClick={(evt) => {
           evt.preventDefault();
-          const upDate = props.allDates.toSpliced(props.index, 1, {
+          const upDate = allDates.toSpliced(index, 1, {
             date: dateTime,
             ticketLink: ticketLink,
             soldOut: soldOut,
           });
-          props.update(upDate);
+          update(upDate);
         }}
       >
         Confirm Show Time
@@ -124,25 +162,32 @@ function DateField(props) {
   );
 }
 
-function ProposalForm(props) {
+DateField.propTypes = {
+  date: showDatePropType.isRequired,
+  allDates: PropTypes.arrayOf(showDatePropType).isRequired,
+  index: PropTypes.number.isRequired,
+  update: PropTypes.func.isRequired,
+};
+
+function ProposalForm({ show }) {
   // create state objects to hold values from input form
-  const [title, setTitle] = useState(props.show.title || "");
-  const [type, setType] = useState(props.show.type || "");
-  const [status, setStatus] = useState(props.show.status || "proposed");
-  const [description, setDescription] = useState(props.show.description || "");
-  const [contact, setContact] = useState(props.show.contactName || "");
-  const [artists, setArtist] = useState(props.show.artists || []);
-  const [dates, setDates] = useState(props.show.dates || []);
-  const [blurb, setBlurb] = useState(props.show.blurb || "");
+  const [title, setTitle] = useState(show.title || "");
+  const [type, setType] = useState(show.type || "");
+  const [status, setStatus] = useState(show.status || "proposed");
+  const description = show.description || "";
+  const [contact, setContact] = useState(show.contactName || "");
+  const artists = show.artists || [];
+  const [dates, setDates] = useState(show.dates || []);
+  const [blurb, setBlurb] = useState(show.blurb || "");
 
   //images
-  const [imageLg, setImageLg] = useState(props.show.imageLg || "");
-  const [image2, setImage2] = useState(props.show.image2 || "");
-  const [image3, setImage3] = useState(props.show.image3 || "");
+  const [imageLg, setImageLg] = useState(show.imageLg || "");
+  const [image2, setImage2] = useState(show.image2 || "");
+  const [image3, setImage3] = useState(show.image3 || "");
 
-  const [imgLgUrl, setImgLgUrl] = useState(props.show.imageLg || "");
-  const [img2Url, setImg2Url] = useState(props.show.image2 || "");
-  const [img3Url, setImg3Url] = useState(props.show.image3 || "");
+  const [imgLgUrl, setImgLgUrl] = useState(show.imageLg || "");
+  const [img2Url, setImg2Url] = useState(show.image2 || "");
+  const [img3Url, setImg3Url] = useState(show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
     const imgRef = imageRefForUser(img);
@@ -205,7 +250,7 @@ function ProposalForm(props) {
           </button>
           <h3>Show Times</h3>
           <h4>
-            Please hit the "Confirm Show Time" button after choosing a new
+            Please hit the &quot;Confirm Show Time&quot; button after choosing a new
             showtime
           </h4>
           {dates.map((date, i) => {
@@ -250,8 +295,8 @@ function ProposalForm(props) {
           }}
         />
         <label htmlFor="type">
-          What type of show are you bringing to the barn (e.g. "dance" "theater"
-          "music" etc.)
+          What type of show are you bringing to the barn (e.g. &quot;dance&quot;
+          &quot;theater&quot; &quot;music&quot; etc.)
         </label>
         <input
           type="text"
@@ -265,7 +310,7 @@ function ProposalForm(props) {
         <label htmlFor="splash-img">
           Add a cover image to be displayed on our homepage
         </label>
-        {props.show.imageLg && <img src={props.show.imageLg} />}
+        {show.imageLg && <img src={show.imageLg} alt="" />}
         <input
           className="image-field"
           type="file"
@@ -288,7 +333,7 @@ function ProposalForm(props) {
           the form)
         </button>
         <label htmlFor="img-2">Add additional images for show (optional)</label>
-        {props.show.image2 && <img src={props.show.image2} />}
+        {show.image2 && <img src={show.image2} alt="" />}
         <input
           type="file"
           name="img-2"
@@ -311,7 +356,7 @@ function ProposalForm(props) {
           the show details)
         </button>
         <label htmlFor="img-3">Add additional images for show (optional)</label>
-        {props.show.image3 && <img src={props.show.image3} />}
+        {show.image3 && <img src={show.image3} alt="" />}
         <input
           type="file"
           name="img-3"
@@ -350,9 +395,8 @@ function ProposalForm(props) {
               image2: img2Url,
               image3: img3Url,
             };
-            setDoc(doc(db, "shows", props.show.id), showObj)
-              .then((res) => {
-                console.log(res);
+            setDoc(doc(db, "shows", show.id), showObj)
+              .then(() => {
                 alert("Show updated successfully");
                 //alert that update was successful
               })
@@ -370,26 +414,28 @@ function ProposalForm(props) {
   );
 }
 
-function ArtistProfile(props) {
-  const [artist, setArtist] = useState(props.user.artist || "");
-  const [phone, setPhone] = useState(props.user.phone || "");
-  const [email, setEmail] = useState(props.user.email || "");
-  const [bio, setBio] = useState(props.user.bio || "");
-  const [artistWebsite, setArtistWebsite] = useState(props.user.web || "");
-  const [artistFacebook, setArtistFacebook] = useState(props.user.fb || "");
-  const [artistYouTube, setArtistYouTube] = useState(props.user.youtube || "");
-  const [artistInstagram, setArtistInstagram] = useState(
-    props.user.insta || ""
-  );
-  const [artistSpotify, setArtistSpotify] = useState(props.user.spotify || "");
+ProposalForm.propTypes = {
+  show: showPropType.isRequired,
+};
+
+function ArtistProfile({ user }) {
+  const [artist, setArtist] = useState(user.artist || "");
+  const [phone, setPhone] = useState(user.phone || "");
+  const [email, setEmail] = useState(user.email || "");
+  const [bio, setBio] = useState(user.bio || "");
+  const [artistWebsite, setArtistWebsite] = useState(user.web || "");
+  const [artistFacebook, setArtistFacebook] = useState(user.fb || "");
+  const [artistYouTube, setArtistYouTube] = useState(user.youtube || "");
+  const [artistInstagram, setArtistInstagram] = useState(user.insta || "");
+  const [artistSpotify, setArtistSpotify] = useState(user.spotify || "");
   const [artistPic, setArtistPic] = useState("");
-  const [picUrl, setPicUrl] = useState(props.user.picUrl || "");
+  const [picUrl, setPicUrl] = useState(user.picUrl || "");
 
   let updateProfile = async (evt) => {
     evt.preventDefault();
 
     try {
-      let profRef = doc(db, "artists", props.user.id);
+      let profRef = doc(db, "artists", user.id);
 
       await updateDoc(profRef, {
         artist: artist,
@@ -430,7 +476,7 @@ function ArtistProfile(props) {
       <h2>{artist}</h2>
       <img src={picUrl} className="profile-pic" />
       <form className="artist-profile-form">
-        <label htmlFor="splash-img">Upload Artist's Profile Picture</label>
+        <label htmlFor="splash-img">Upload Artist&apos;s Profile Picture</label>
         <input
           className="image-field"
           type="file"
@@ -452,7 +498,7 @@ function ArtistProfile(props) {
           Upload your image to the Database (please do this <b>before</b>{" "}
           submitting the form)
         </button>
-        <label htmlFor="artist">Artist's Name</label>
+        <label htmlFor="artist">Artist&apos;s Name</label>
         <input
           name="artist"
           type="text"
@@ -540,10 +586,14 @@ function ArtistProfile(props) {
   );
 }
 
-function ProfileEditor(props) {
+ArtistProfile.propTypes = {
+  user: artistProfilePropType.isRequired,
+};
+
+function ProfileEditor({ users }) {
   return (
     <div>
-      {props.users.map((user, i) => {
+      {users.map((user, i) => {
         return (
           <div key={i}>
             <ArtistProfile user={user} />
@@ -554,15 +604,16 @@ function ProfileEditor(props) {
   );
 }
 
-function ShowEditor(props) {
-  const [showList, setShowList] = useState(props.shows);
-  const [filter, setFilter] = useState("");
+ProfileEditor.propTypes = {
+  users: PropTypes.arrayOf(artistProfilePropType).isRequired,
+};
 
-  useEffect(() => {
-    filter === "all"
-      ? setShowList(props.shows)
-      : setShowList(props.shows.filter((show) => show.status === filter));
-  }, [filter]);
+function ShowEditor({ shows }) {
+  const [filter, setFilter] = useState("");
+  const showList =
+    filter === "" || filter === "all"
+      ? shows
+      : shows.filter((show) => show.status === filter);
 
   return (
     <div>
@@ -585,7 +636,11 @@ function ShowEditor(props) {
   );
 }
 
-function AdminPanel(props) {
+ShowEditor.propTypes = {
+  shows: PropTypes.arrayOf(showPropType).isRequired,
+};
+
+function AdminPanel() {
   const [authorized, setAuthorized] = useState(false);
   const [view, setView] = useState("shows");
   const [newDonor, setNewDonor] = useState("");
@@ -595,7 +650,6 @@ function AdminPanel(props) {
 
   useEffect(() => {
     if (!auth.currentUser) {
-      setAuthorized(false);
       return;
     }
 
@@ -692,7 +746,7 @@ function AdminPanel(props) {
                     <button
                       onClick={(evt) => {
                         evt.preventDefault();
-                        deleteDoc(doc(db, "donors", donor.id)).then((res) => {
+                        deleteDoc(doc(db, "donors", donor.id)).then(() => {
                           alert(
                             `Donor ${donor.name} removed from database (refresh page to see changes to donor list)`
                           );
@@ -721,7 +775,7 @@ function AdminPanel(props) {
                 let newDoc = doc(collection(db, "donors"));
 
                 setDoc(newDoc, { name: newDonor, id: newDoc.id })
-                  .then((res) => {
+                  .then(() => {
                     setNewDonor("");
                     alert(
                       "New donor added, refresh the page to see the updated list"
@@ -741,7 +795,7 @@ function AdminPanel(props) {
   );
 }
 
-function AdminPortal(props) {
+function AdminPortal() {
   const [user, setUser] = useState(auth.currentUser || null);
 
   return (
@@ -750,7 +804,7 @@ function AdminPortal(props) {
         {!user ? (
           <LoginPortal setUser={setUser} />
         ) : (
-          <AdminPanel user={user} setUser={setUser} />
+          <AdminPanel />
         )}
       </div>
     </div>
