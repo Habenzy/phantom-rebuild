@@ -113,6 +113,26 @@ await db.doc("shows/seed-admin-proposal").set({
   image3: "",
 });
 
+await db.doc("shows/seed-proposed-show").set({
+  title: "Seeded Proposed Show",
+  type: "theater",
+  blurb: "A seeded proposed show for local authorization testing.",
+  status: "proposed",
+  dates: [
+    {
+      date: "2099-07-01T19:30",
+      ticketLink: "https://theaterengine.com/companies/1",
+      soldOut: false,
+    },
+  ],
+  artists: [artist.uid],
+  contactName: "Example Producer",
+  description: "Internal seeded proposed show description.",
+  imageLg: "https://placehold.co/1200x800",
+  image2: "",
+  image3: "",
+});
+
 await db.doc("donors/seed-donor").set({
   name: "Example Donor",
 });

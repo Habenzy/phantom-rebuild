@@ -11,7 +11,7 @@
     "seed:emulator": "node scripts/seed-emulator.mjs",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:integration": "RUN_FIREBASE_EMULATOR_TESTS=true vitest run src/__tests__/emulatorSmoke.integration.test.jsx",
+    "test:integration": "RUN_FIREBASE_EMULATOR_TESTS=true vitest run src/__tests__/emulatorSmoke.integration.test.jsx && RUN_FIREBASE_EMULATOR_TESTS=true vitest run src/__tests__/firebaseRules.integration.test.js",
     "test:watch": "vitest"
   },
   "dependencies": {
