@@ -5,23 +5,6 @@ const path = require("path");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-const DEFAULT_ADMIN_UIDS = [];
-
-function parseList(value) {
-  return value
-    ? value
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean)
-    : [];
-}
-
-function getAdminUids(env = process.env) {
-  const configured = parseList(env.ADMIN_UIDS);
-  const local = parseList(env.LOCAL_ADMIN_UIDS);
-  return configured.concat(local);
-}
-
 function createTransporter(env = process.env) {
   return nodemailer.createTransport({
     service: env.NODEMAILER_SERVICE || "AOL",
@@ -76,7 +59,7 @@ function createApp(options = {}) {
   app.use(express.json({ limit: "25kb" }));
 
   app.get("/whitelist", (req, res) => {
-    res.json(getAdminUids(env));
+    res.status(404).json({ message: "not found" });
   });
 
   app.post(
@@ -158,10 +141,8 @@ if (require.main === module) {
 }
 
 module.exports = {
-  DEFAULT_ADMIN_UIDS,
   createApp,
   createTransporter,
-  getAdminUids,
   startServer,
   validateProposal,
 };

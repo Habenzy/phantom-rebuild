@@ -8,7 +8,6 @@ const request = require("supertest");
 const {
   createApp,
   createTransporter,
-  getAdminUids,
   startServer,
   validateProposal,
 } = require("../server");
@@ -55,27 +54,6 @@ async function withRequest(app, callback) {
     await closeServer(server);
   }
 }
-
-test("getAdminUids uses configured admins and local admins", () => {
-  assert.deepEqual(
-    getAdminUids({
-      ADMIN_UIDS: "admin-1, admin-2",
-      LOCAL_ADMIN_UIDS: "local-admin",
-    }),
-    ["admin-1", "admin-2", "local-admin"]
-  );
-});
-
-test("getAdminUids handles empty env and ignores empty comma entries", () => {
-  assert.deepEqual(getAdminUids({}), []);
-  assert.deepEqual(
-    getAdminUids({
-      ADMIN_UIDS: " admin-1, ,admin-2, ",
-      LOCAL_ADMIN_UIDS: " , local-admin ",
-    }),
-    ["admin-1", "admin-2", "local-admin"]
-  );
-});
 
 test("createTransporter uses AOL by default and supports service override", (t) => {
   const originalCreateTransport = nodemailer.createTransport;
@@ -187,7 +165,7 @@ test("validateProposal normalizes non-strings and trims overlong fields", () => 
   assert.equal(result.proposal.description.length, 3000);
 });
 
-test("GET /whitelist returns configured admin IDs", async () => {
+test("GET /whitelist does not expose admin identifiers", async () => {
   const app = createApp({
     staticRoot: makeStaticRoot(),
     env: {
@@ -198,7 +176,7 @@ test("GET /whitelist returns configured admin IDs", async () => {
   });
 
   await withRequest(app, (agent) =>
-    agent.get("/whitelist").expect(200).expect(["admin-1", "local-admin"])
+    agent.get("/whitelist").expect(404).expect({ message: "not found" })
   );
 });
 
@@ -219,7 +197,7 @@ test("createApp can use process defaults without injected options", async (t) =>
 
   const app = createApp();
 
-  await withRequest(app, (agent) => agent.get("/whitelist").expect(200));
+  await withRequest(app, (agent) => agent.get("/whitelist").expect(404));
 
   assert.equal(createTransportCalls.length, 1);
 });
