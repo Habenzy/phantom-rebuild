@@ -1,6 +1,7 @@
 import "./footer.css";
 import Facebook from "../../assets/facebook.png";
 import Instagram from "../../assets/instagram.png";
+import PayPalDonate from "../../assets/paypal/btn_donate_LG.gif";
 import { Link } from "react-router-dom";
 
 //------------ Footer function returning Footer containing Social Media Links and Copyright Info ---------
@@ -27,19 +28,12 @@ function Footer() {
         >
           <input type="hidden" name="hosted_button_id" value="CU35GHQ4HTM6C" />
           <input
-            type="image"
-            src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif"
+            alt="Donate with PayPal button"
             border="0"
             name="submit"
+            src={PayPalDonate}
             title="PayPal - The safer, easier way to pay online!"
-            alt="Donate with PayPal button"
-          />
-          <img
-            alt=""
-            border="0"
-            src="https://www.paypal.com/en_US/i/scr/pixel.gif"
-            width="1"
-            height="1"
+            type="image"
           />
         </form>
       </div>
