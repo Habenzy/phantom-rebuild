@@ -147,6 +147,26 @@ describe("public pages", () => {
     );
   });
 
+  test("home replaces unsafe ticket links with the ticket fallback", async () => {
+    firestore.docsByCollection.shows = [
+      doc("unsafe-ticket-show", {
+        title: "Unsafe Ticket Show",
+        dates: [{ date: "2099-06-01T19:30", ticketLink: "javascript:alert(1)" }],
+        imageLg: "/unsafe.jpg",
+      }),
+    ];
+
+    renderWithRouter(<Home />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Unsafe Ticket Show" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /buy tickets/i })).toHaveAttribute(
+      "href",
+      "https://theaterengine.com/companies/1"
+    );
+  });
+
   test("home logs Firestore errors without replacing fallback content", async () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     firestore.errorsByCollection.shows = new Error("Firestore unavailable");
@@ -345,6 +365,36 @@ describe("public pages", () => {
       "https://spotify.example.com/legacy"
     );
     expect(screen.getByRole("heading", { name: "No Links Artist" })).toBeInTheDocument();
+  });
+
+  test("artists page hides unsafe social URLs from Firestore", async () => {
+    firestore.docsByCollection.artists = [
+      doc("artist-with-unsafe-links", {
+        artist: "Unsafe Link Artist",
+        bio: "Bio",
+        email: "artist@example.com",
+        picUrl: "/artist.jpg",
+        web: "javascript:alert(1)",
+        fb: "data:text/html,<script>alert(1)</script>",
+        youtube: "http://youtube.example.com/channel",
+        insta: "//instagram.example.com/artist",
+        spotify: "https://open.spotify.com/artist/example",
+      }),
+    ];
+
+    render(<ArtistsList />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Unsafe Link Artist" })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Website" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Facebook" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "YouTube" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Instagram" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Spotify" })).toHaveAttribute(
+      "href",
+      "https://open.spotify.com/artist/example"
+    );
   });
 
   test("donate page sorts donor names from Firestore", async () => {

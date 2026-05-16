@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import "./season.css";
 import { db } from "../../config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { safeTicketUrl } from "../../utils/safeUrl";
 
 const daysOfWeek = [
   "Sunday",
@@ -88,17 +89,13 @@ function SeasonEvent({
                   : new Date(date.date).getHours()
               }:0${new Date(date.date).getMinutes()}`}
             </p>
-            <br></br>
-            {new Date(date.date).getTime() > currentTime && (
-              <a
-                href={
-                  date.ticketLink
-                    ? date.ticketLink
-                    : `https://theaterengine.com/companies/1`
-                }
-                target="_blank"
-                className="buy-ticket"
-                rel="noreferrer noopener"
+              <br></br>
+              {new Date(date.date).getTime() > currentTime && (
+                <a
+                  href={safeTicketUrl(date.ticketLink)}
+                  target="_blank"
+                  className="buy-ticket"
+                  rel="noreferrer noopener"
               >
                 Buy Tickets
               </a>
@@ -144,10 +141,8 @@ function Season() {
         setAllShows(allShowsArray);
         if (location.hash) {
           setTimeout(() => {
-            console.log("scrolling to " + location.hash.slice(1));
-            document.getElementById(location.hash.slice(1)).scrollIntoView();
-
-            //window.scroll({top: location.hash, behavior: "smooth"})
+            const target = document.getElementById(location.hash.slice(1));
+            target?.scrollIntoView();
           }, 1500);
         }
       })

@@ -6,6 +6,7 @@ import facebookIcon from "../../assets/facebookb.png";
 import youtubeIcon from "../../assets/youtube.png";
 import instagramIcon from "../../assets/instagramColor.png";
 import spotifyIcon from "../../assets/spotify.png";
+import { safeOptionalUrl } from "../../utils/safeUrl";
 import "./artists.css";
 
 function ArtistsList() {
@@ -22,9 +23,11 @@ function ArtistsList() {
     <div className="artistsContainer">
       <h1>Artists</h1>
       {allArtists.map((artist, i) => {
-            const website = artist.website || artist.web;
-            const facebook = artist.facebook || artist.fb;
-            const instagram = artist.instagram || artist.insta;
+            const website = safeOptionalUrl(artist.website || artist.web);
+            const facebook = safeOptionalUrl(artist.facebook || artist.fb);
+            const instagram = safeOptionalUrl(artist.instagram || artist.insta);
+            const youtube = safeOptionalUrl(artist.youtube);
+            const spotify = safeOptionalUrl(artist.spotify);
             return (
               <div key={i} className="artistsContainer">
                 <h3>{artist.artist}</h3>
@@ -70,9 +73,9 @@ function ArtistsList() {
                     ) : (
                       ""
                     )}
-                    {artist.youtube ? (
+                    {youtube ? (
                       <a
-                        href={artist.youtube}
+                        href={youtube}
                         target="_blank"
                         rel="noreferrer noopener"
                         aria-label="YouTube"
@@ -102,9 +105,9 @@ function ArtistsList() {
                     ) : (
                       ""
                     )}
-                    {artist.spotify ? (
+                    {spotify ? (
                       <a
-                        href={artist.spotify}
+                        href={spotify}
                         target="_blank"
                         rel="noreferrer noopener"
                         aria-label="Spotify"

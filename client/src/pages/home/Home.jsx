@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { db } from "../../config/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import barnImg from "../../assets/barn3crop.jpg";
+import { safeTicketUrl } from "../../utils/safeUrl";
 import "./home.css";
 
 const daysOfWeek = [
@@ -117,10 +118,7 @@ function Home() {
                         : "0" + new Date(date.date).getMinutes()
                     } ${new Date(date.date).getHours() > 12 ? "pm" : "am"}`}</p>
                     <a
-                      href={
-                        date.ticketLink ||
-                        "https://theaterengine.com/companies/1"
-                      }
+                      href={safeTicketUrl(date.ticketLink)}
                       target="_blank"
                       rel="noreferrer noopener"
                       className="buy-tickets"
@@ -153,9 +151,7 @@ function Home() {
                     })}
                   </p>
                   <a
-                    href={
-                      date.ticketLink || "https://theaterengine.com/companies/1"
-                    }
+                    href={safeTicketUrl(date.ticketLink)}
                     target="_blank"
                     rel="noreferrer noopener"
                   >
