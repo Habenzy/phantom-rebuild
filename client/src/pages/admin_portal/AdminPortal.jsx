@@ -13,42 +13,9 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { uploadUserImage } from "../../utils/imageUpload";
+import { DateField } from "../portals/DateField";
+import { artistProfilePropType, showPropType } from "../portals/portalTypes";
 import "./admin_portal.css";
-
-const showDatePropType = PropTypes.shape({
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  ticketLink: PropTypes.string,
-  soldOut: PropTypes.bool,
-});
-
-const showPropType = PropTypes.shape({
-  id: PropTypes.string,
-  title: PropTypes.string,
-  type: PropTypes.string,
-  status: PropTypes.string,
-  description: PropTypes.string,
-  contactName: PropTypes.string,
-  artists: PropTypes.arrayOf(PropTypes.string),
-  dates: PropTypes.arrayOf(showDatePropType),
-  blurb: PropTypes.string,
-  imageLg: PropTypes.string,
-  image2: PropTypes.string,
-  image3: PropTypes.string,
-});
-
-const artistProfilePropType = PropTypes.shape({
-  id: PropTypes.string,
-  artist: PropTypes.string,
-  phone: PropTypes.string,
-  email: PropTypes.string,
-  bio: PropTypes.string,
-  web: PropTypes.string,
-  fb: PropTypes.string,
-  youtube: PropTypes.string,
-  insta: PropTypes.string,
-  spotify: PropTypes.string,
-  picUrl: PropTypes.string,
-});
 
 function LoginPortal({ setUser }) {
   const [email, setEmail] = useState("");
@@ -101,75 +68,6 @@ function LoginPortal({ setUser }) {
 
 LoginPortal.propTypes = {
   setUser: PropTypes.func.isRequired,
-};
-
-function DateField({ date, allDates, index, update }) {
-  const fieldId = useId();
-  const idFor = (fieldName) => `${fieldId}-${fieldName}`;
-  const [dateTime, setDateTime] = useState(date.date || "");
-  const [ticketLink, setTicketLink] = useState(date.ticketLink || "");
-  const [soldOut, setSoldOut] = useState(date.soldOut || false);
-
-  return (
-    <div className="date-time-field">
-      <label htmlFor={idFor("date-time")}>Choose a showtime</label>
-      <input
-        id={idFor("date-time")}
-        type="datetime-local"
-        name="date-time"
-        data-testid="admin-show-date"
-        value={dateTime}
-        onChange={(evt) => {
-          setDateTime(evt.target.value);
-        }}
-      />
-      <label htmlFor={idFor("ticket-link")}>Link to tickets for this show time</label>
-      <input
-        id={idFor("ticket-link")}
-        name="ticket-link"
-        type="text"
-        data-testid="admin-ticket-link"
-        value={ticketLink}
-        placeholder="Ticket Link"
-        onChange={(evt) => {
-          setTicketLink(evt.target.value);
-        }}
-      />
-      <label htmlFor={idFor("sold-out")}>Show is Sold out</label>
-      <input
-        id={idFor("sold-out")}
-        name="sold-out"
-        type="checkbox"
-        data-testid="admin-sold-out"
-        value={soldOut}
-        onChange={() => {
-          setSoldOut(true);
-        }}
-      />
-      <button
-        data-testid="admin-confirm-show-time"
-        className="submit highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          const upDate = allDates.toSpliced(index, 1, {
-            date: dateTime,
-            ticketLink: ticketLink,
-            soldOut: soldOut,
-          });
-          update(upDate);
-        }}
-      >
-        Confirm Show Time
-      </button>
-    </div>
-  );
-}
-
-DateField.propTypes = {
-  date: showDatePropType.isRequired,
-  allDates: PropTypes.arrayOf(showDatePropType).isRequired,
-  index: PropTypes.number.isRequired,
-  update: PropTypes.func.isRequired,
 };
 
 function ProposalForm({ show }) {

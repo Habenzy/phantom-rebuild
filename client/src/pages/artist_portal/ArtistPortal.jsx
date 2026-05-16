@@ -18,46 +18,8 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { uploadUserImage } from "../../utils/imageUpload";
+import { nullShow, showPropType } from "../portals/portalTypes";
 import "./artist_portal.css";
-
-const nullShow = {
-  title: "title",
-  type: "type",
-  blurb: "blurb",
-  status: "proposed",
-  dates: [],
-  artists: [],
-  contactName: "contactName",
-  phone: "phone",
-  email: "email",
-  bio: "bio",
-  description: "description",
-  imageLg: "",
-  imageLgName: "",
-  image2: "",
-  image2Name: "",
-  image3: "",
-  image3Name: "",
-};
-
-const showDatePropType = PropTypes.shape({
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  ticketLink: PropTypes.string,
-  soldOut: PropTypes.bool,
-});
-
-const showPropType = PropTypes.shape({
-  id: PropTypes.string,
-  title: PropTypes.string,
-  type: PropTypes.string,
-  status: PropTypes.string,
-  description: PropTypes.string,
-  contactName: PropTypes.string,
-  dates: PropTypes.arrayOf(showDatePropType),
-  imageLg: PropTypes.string,
-  image2: PropTypes.string,
-  image3: PropTypes.string,
-});
 
 function LoginPortal({ setUser }) {
   const [email, setEmail] = useState("");
