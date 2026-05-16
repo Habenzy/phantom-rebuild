@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+
+      - name: Install server dependencies
+        run: npm ci
+
+      - name: Install client dependencies
+        run: npm ci --prefix client
+
+      - name: Run server and client tests
+        run: npm test
+
+      - name: Run client lint
+        run: npm --prefix client run lint
+
+      - name: Build client
+        run: npm --prefix client run build
+
+      - name: Audit server dependencies
+        run: npm audit --audit-level=high
+
+      - name: Audit client dependencies
+        run: npm audit --prefix client --audit-level=high
+
+      - name: Run Firebase emulator tests
+        run: npm run test:emulators

@@ -11,6 +11,12 @@ npm install
 npm install --prefix client
 ```
 
+Use Node 22 for local development:
+
+```sh
+nvm use
+```
+
 Create local client env:
 
 ```sh
@@ -102,4 +108,5 @@ npm --prefix client run lint
 npm --prefix client run build
 npm audit --audit-level=high
 npm audit --prefix client --audit-level=high
+npm run test:emulators
 ```
