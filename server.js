@@ -42,6 +42,40 @@ function validateProposal(body) {
   return { proposal };
 }
 
+function createHelmetOptions() {
+  return {
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        objectSrc: ["'none'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "blob:", "https:"],
+        connectSrc: [
+          "'self'",
+          "https://*.googleapis.com",
+          "https://*.firebaseio.com",
+          "https://firebasestorage.googleapis.com",
+          "https://identitytoolkit.googleapis.com",
+          "https://securetoken.googleapis.com",
+        ],
+        fontSrc: ["'self'", "data:"],
+        formAction: ["'self'", "https://www.paypal.com"],
+        frameSrc: ["'self'", "https://www.paypal.com"],
+        frameAncestors: ["'none'"],
+      },
+    },
+    frameguard: {
+      action: "deny",
+    },
+    referrerPolicy: {
+      policy: "strict-origin-when-cross-origin",
+    },
+  };
+}
+
 function createApp(options = {}) {
   const app = express();
   const env = options.env || process.env;
@@ -49,11 +83,7 @@ function createApp(options = {}) {
   const transporter = options.transporter || createTransporter(env);
 
   app.disable("x-powered-by");
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-    })
-  );
+  app.use(helmet(createHelmetOptions()));
   app.use(express.static(staticRoot));
   app.use(express.urlencoded({ extended: true, limit: "25kb" }));
   app.use(express.json({ limit: "25kb" }));
@@ -142,6 +172,7 @@ if (require.main === module) {
 
 module.exports = {
   createApp,
+  createHelmetOptions,
   createTransporter,
   startServer,
   validateProposal,

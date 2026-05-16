@@ -375,6 +375,27 @@ test("GET unknown route serves SPA fallback", async () => {
   );
 });
 
+test("GET / serves production security headers", async () => {
+  const app = createApp({
+    staticRoot: makeStaticRoot(),
+    env: {},
+    transporter: { sendMail: async () => ({ messageId: "unused" }) },
+  });
+
+  await withRequest(app, async (agent) => {
+    const response = await agent.get("/").expect(200);
+    const csp = response.headers["content-security-policy"];
+
+    assert.match(csp, /default-src 'self'/);
+    assert.match(csp, /script-src 'self'/);
+    assert.match(csp, /object-src 'none'/);
+    assert.match(csp, /frame-ancestors 'none'/);
+    assert.doesNotMatch(csp, /unsafe-eval/);
+    assert.equal(response.headers["x-frame-options"], "DENY");
+    assert.equal(response.headers["x-content-type-options"], "nosniff");
+  });
+});
+
 test("startServer verifies transporter and returns the listening server", async () => {
   const logs = [];
   const transporter = {
