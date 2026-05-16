@@ -2,8 +2,10 @@ import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
-process.env.FIREBASE_AUTH_EMULATOR_HOST = process.env.FIREBASE_AUTH_EMULATOR_HOST || "127.0.0.1:9099";
-process.env.FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST || "127.0.0.1:8080";
+process.env.FIREBASE_AUTH_EMULATOR_HOST =
+  process.env.FIREBASE_AUTH_EMULATOR_HOST || "127.0.0.1:9099";
+process.env.FIRESTORE_EMULATOR_HOST =
+  process.env.FIRESTORE_EMULATOR_HOST || "127.0.0.1:8080";
 
 initializeApp({
   projectId: "demo-phantom-reboot",
@@ -12,9 +14,17 @@ initializeApp({
 const auth = getAuth();
 const db = getFirestore();
 
-async function getOrCreateUser(email, password) {
+const password = "password123";
+const seededImage =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
+async function getOrCreateUser(email) {
   try {
-    return await auth.getUserByEmail(email);
+    const user = await auth.getUserByEmail(email);
+    return auth.updateUser(user.uid, {
+      emailVerified: true,
+      password,
+    });
   } catch (err) {
     if (err.code !== "auth/user-not-found") {
       throw err;
@@ -28,8 +38,8 @@ async function getOrCreateUser(email, password) {
   }
 }
 
-const admin = await getOrCreateUser("admin@example.com", "password123");
-const artist = await getOrCreateUser("artist@example.com", "password123");
+const admin = await getOrCreateUser("admin@example.com");
+const artist = await getOrCreateUser("artist@example.com");
 
 await db.doc(`admins/${admin.uid}`).set({
   email: admin.email,
@@ -42,8 +52,11 @@ await db.doc(`artists/${artist.uid}`).set({
   phone: "802-555-1212",
   bio: "A seeded artist profile for local development.",
   web: "https://example.com",
+  fb: "https://facebook.com/example",
   insta: "https://instagram.com/example",
-  picUrl: "https://placehold.co/400x400",
+  youtube: "https://youtube.com/example",
+  spotify: "https://spotify.com/example",
+  picUrl: seededImage,
 });
 
 await db.doc("shows/seed-show").set({
@@ -61,7 +74,41 @@ await db.doc("shows/seed-show").set({
   artists: [artist.uid],
   contactName: "Example Producer",
   description: "Internal seeded show description.",
-  imageLg: "https://placehold.co/1200x800",
+  imageLg: seededImage,
+  image2: "",
+  image3: "",
+});
+
+await db.doc("shows/seed-artist-edit-show").set({
+  title: "Seeded Artist Draft",
+  type: "music",
+  blurb: "An archived artist-owned show for browser edit coverage.",
+  status: "archived",
+  dates: [
+    {
+      date: "2099-08-15T20:00",
+      ticketLink: "",
+      soldOut: false,
+    },
+  ],
+  artists: [artist.uid],
+  contactName: "Example Artist",
+  description: "Seeded artist-owned show description.",
+  imageLg: seededImage,
+  image2: "",
+  image3: "",
+});
+
+await db.doc("shows/seed-admin-proposal").set({
+  title: "Seeded Admin Proposal",
+  type: "dance",
+  blurb: "A proposed show for admin browser coverage.",
+  status: "proposed",
+  dates: [],
+  artists: [artist.uid],
+  contactName: "Admin Proposal Contact",
+  description: "Internal proposed show description.",
+  imageLg: seededImage,
   image2: "",
   image3: "",
 });
@@ -70,6 +117,10 @@ await db.doc("donors/seed-donor").set({
   name: "Example Donor",
 });
 
+await db.doc("donors/seed-delete-donor").set({
+  name: "Delete Me Donor",
+});
+
 console.log("Seeded Firebase emulators.");
-console.log("Admin login: admin@example.com / password123");
-console.log("Artist login: artist@example.com / password123");
+console.log(`Admin login: ${admin.email} / ${password}`);
+console.log(`Artist login: ${artist.email} / ${password}`);

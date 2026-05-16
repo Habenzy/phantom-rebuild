@@ -8,8 +8,12 @@
     "emulators:start": "npx firebase-tools emulators:start --project demo-phantom-reboot --only auth,firestore,storage --import .firebase-data --export-on-exit .firebase-data",
     "emulators:seed": "npm --prefix client run seed:emulator",
     "heroku-postbuild": "npm install --prefix client --include=dev && npm --prefix client run build",
+    "playwright:install": "playwright install chromium",
     "test": "npm run test:server && npm --prefix client test",
     "test:coverage": "npm run test:server:coverage && npm --prefix client run test:coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:emulators": "XDG_CONFIG_HOME=/tmp/firebase-config npm_config_cache=/tmp/npm-cache npx firebase-tools@13 emulators:exec --project demo-phantom-reboot --only auth,firestore,storage \"npm run test:e2e\"",
+    "test:e2e:headed": "playwright test --headed",
     "test:emulators": "XDG_CONFIG_HOME=/tmp/firebase-config npm_config_cache=/tmp/npm-cache npx firebase-tools@13 emulators:exec --project demo-phantom-reboot --only auth,firestore,storage \"npm run emulators:seed && npm --prefix client run test:integration\"",
     "test:client": "npm --prefix client test",
     "test:server:coverage": "node --test --experimental-test-coverage --test-coverage-include=server.js --test-coverage-lines=95 --test-coverage-branches=95 --test-coverage-functions=95 test/*.test.js",
@@ -27,6 +31,7 @@
     "nodemailer": "^8.0.7"
   },
   "devDependencies": {
-    "supertest": "^7.1.4"
+    "@playwright/test": "^1.60.0",
+    "supertest": "7.1.4"
   }
 }

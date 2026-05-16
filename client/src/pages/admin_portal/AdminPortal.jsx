@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import PropTypes from "prop-types";
 import { db, auth, storage } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -110,41 +110,50 @@ LoginPortal.propTypes = {
 };
 
 function DateField({ date, allDates, index, update }) {
+  const fieldId = useId();
+  const idFor = (fieldName) => `${fieldId}-${fieldName}`;
   const [dateTime, setDateTime] = useState(date.date || "");
   const [ticketLink, setTicketLink] = useState(date.ticketLink || "");
   const [soldOut, setSoldOut] = useState(date.soldOut || false);
 
   return (
     <div className="date-time-field">
-      <label htmlFor="date-time">Choose a showtime</label>
+      <label htmlFor={idFor("date-time")}>Choose a showtime</label>
       <input
+        id={idFor("date-time")}
         type="datetime-local"
         name="date-time"
+        data-testid="admin-show-date"
         value={dateTime}
         onChange={(evt) => {
           setDateTime(evt.target.value);
         }}
       />
-      <label htmlFor="ticket-link">Link to tickets for this show time</label>
+      <label htmlFor={idFor("ticket-link")}>Link to tickets for this show time</label>
       <input
+        id={idFor("ticket-link")}
         name="ticket-link"
         type="text"
+        data-testid="admin-ticket-link"
         value={ticketLink}
         placeholder="Ticket Link"
         onChange={(evt) => {
           setTicketLink(evt.target.value);
         }}
       />
-      <label htmlFor="sold-out">Show is Sold out</label>
+      <label htmlFor={idFor("sold-out")}>Show is Sold out</label>
       <input
+        id={idFor("sold-out")}
         name="sold-out"
         type="checkbox"
+        data-testid="admin-sold-out"
         value={soldOut}
         onChange={() => {
           setSoldOut(true);
         }}
       />
       <button
+        data-testid="admin-confirm-show-time"
         className="submit highlight"
         onClick={(evt) => {
           evt.preventDefault();
@@ -170,6 +179,8 @@ DateField.propTypes = {
 };
 
 function ProposalForm({ show }) {
+  const formId = useId();
+  const idFor = (fieldName) => `${formId}-${fieldName}`;
   // create state objects to hold values from input form
   const [title, setTitle] = useState(show.title || "");
   const [type, setType] = useState(show.type || "");
@@ -229,11 +240,15 @@ function ProposalForm({ show }) {
   };
 
   return (
-    <div className="show-form-container">
+    <div className="show-form-container" data-testid={`admin-show-card-${show.id}`}>
       <h2>{title}</h2>
       <form className="show-proposal-form">
         {/* still need fields for "dates" */}
-        <select value={status} onChange={(evt) => setStatus(evt.target.value)}>
+        <select
+          data-testid="admin-show-status"
+          value={status}
+          onChange={(evt) => setStatus(evt.target.value)}
+        >
           <option value="proposed">Proposed</option>
           <option value="booked">Booked</option>
           <option value="archived">Archived</option>
@@ -241,6 +256,7 @@ function ProposalForm({ show }) {
         <div>
           {/* add dates, and set dates in date array when entered */}
           <button
+            data-testid="admin-add-show-time"
             onClick={(evt) => {
               evt.preventDefault();
               addShowTime();
@@ -265,17 +281,19 @@ function ProposalForm({ show }) {
             );
           })}
         </div>
-        <label htmlFor="blurb">
+        <label htmlFor={idFor("blurb")}>
           The Show description that will appear on our site
         </label>
         <input
+          id={idFor("blurb")}
           type="text"
           name="blurb"
           value={blurb}
           onChange={(evt) => setBlurb(evt.target.value)}
         />
-        <label htmlFor="title">Enter the name of show</label>
+        <label htmlFor={idFor("title")}>Enter the name of show</label>
         <input
+          id={idFor("title")}
           type="text"
           name="title"
           value={title}
@@ -283,10 +301,11 @@ function ProposalForm({ show }) {
             setTitle(evt.target.value);
           }}
         />
-        <label htmlFor="contact">
+        <label htmlFor={idFor("contact")}>
           Who is the primary contact for the show?
         </label>
         <input
+          id={idFor("contact")}
           type="text"
           value={contact}
           name="contact"
@@ -294,11 +313,12 @@ function ProposalForm({ show }) {
             setContact(evt.target.value);
           }}
         />
-        <label htmlFor="type">
+        <label htmlFor={idFor("type")}>
           What type of show are you bringing to the barn (e.g. &quot;dance&quot;
           &quot;theater&quot; &quot;music&quot; etc.)
         </label>
         <input
+          id={idFor("type")}
           type="text"
           name="type"
           value={type}
@@ -307,20 +327,23 @@ function ProposalForm({ show }) {
           }}
         />
         <p className="internal-description">{description}</p>
-        <label htmlFor="splash-img">
+        <label htmlFor={idFor("splash-img")}>
           Add a cover image to be displayed on our homepage
         </label>
         {show.imageLg && <img src={show.imageLg} alt="" />}
         <input
+          id={idFor("splash-img")}
           className="image-field"
           type="file"
           name="splash-img"
+          data-testid="admin-cover-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImageLg(img);
           }}
         />
         <button
+          data-testid="admin-cover-upload-button"
           className={`img-uploader highlight ${
             imageLg && !imgLgUrl ? "flashing" : ""
           }`}
@@ -332,18 +355,21 @@ function ProposalForm({ show }) {
           Upload image to the Database (please do this <b>before</b> submitting
           the form)
         </button>
-        <label htmlFor="img-2">Add additional images for show (optional)</label>
+        <label htmlFor={idFor("img-2")}>Add additional images for show (optional)</label>
         {show.image2 && <img src={show.image2} alt="" />}
         <input
+          id={idFor("img-2")}
           type="file"
           name="img-2"
           className="image-field"
+          data-testid="admin-second-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImage2(img);
           }}
         />
         <button
+          data-testid="admin-second-upload-button"
           className={`img-uploader highlight ${
             image2 && !img2Url ? "flashing" : ""
           }`}
@@ -355,18 +381,21 @@ function ProposalForm({ show }) {
           Upload image to the Database (please do this <b>before</b> submitting
           the show details)
         </button>
-        <label htmlFor="img-3">Add additional images for show (optional)</label>
+        <label htmlFor={idFor("img-3")}>Add additional images for show (optional)</label>
         {show.image3 && <img src={show.image3} alt="" />}
         <input
+          id={idFor("img-3")}
           type="file"
           name="img-3"
           className="image-field"
+          data-testid="admin-third-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImage3(img);
           }}
         />
         <button
+          data-testid="admin-third-upload-button"
           className={`img-uploader highlight ${
             image3 && !img3Url ? "flashing" : ""
           }`}
@@ -379,6 +408,7 @@ function ProposalForm({ show }) {
           the show details)
         </button>
         <button
+          data-testid="admin-submit-show"
           className="submit-show"
           onClick={(evt) => {
             evt.preventDefault();
@@ -419,6 +449,8 @@ ProposalForm.propTypes = {
 };
 
 function ArtistProfile({ user }) {
+  const profileFormId = useId();
+  const profileIdFor = (fieldName) => `${profileFormId}-${fieldName}`;
   const [artist, setArtist] = useState(user.artist || "");
   const [phone, setPhone] = useState(user.phone || "");
   const [email, setEmail] = useState(user.email || "");
@@ -449,6 +481,7 @@ function ArtistProfile({ user }) {
         youtube: artistYouTube,
         picUrl: picUrl,
       });
+      alert("Artist profile updated successfully");
     } catch (err) {
       console.error(err.message);
     }
@@ -472,21 +505,24 @@ function ArtistProfile({ user }) {
   };
 
   return (
-    <div className="artist-container">
+    <div className="artist-container" data-testid={`admin-artist-profile-${user.id}`}>
       <h2>{artist}</h2>
-      <img src={picUrl} className="profile-pic" />
+      {picUrl && <img src={picUrl} className="profile-pic" />}
       <form className="artist-profile-form">
-        <label htmlFor="splash-img">Upload Artist&apos;s Profile Picture</label>
+        <label htmlFor={profileIdFor("splash-img")}>Upload Artist&apos;s Profile Picture</label>
         <input
+          id={profileIdFor("splash-img")}
           className="image-field"
           type="file"
           name="splash-img"
+          data-testid="admin-artist-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setArtistPic(img);
           }}
         />
         <button
+          data-testid="admin-artist-upload-button"
           className={`img-uploader highlight ${
             artistPic && !picUrl ? "flashing" : ""
           }`}
@@ -498,8 +534,9 @@ function ArtistProfile({ user }) {
           Upload your image to the Database (please do this <b>before</b>{" "}
           submitting the form)
         </button>
-        <label htmlFor="artist">Artist&apos;s Name</label>
+        <label htmlFor={profileIdFor("artist")}>Artist&apos;s Name</label>
         <input
+          id={profileIdFor("artist")}
           name="artist"
           type="text"
           value={artist}
@@ -507,8 +544,9 @@ function ArtistProfile({ user }) {
             setArtist(evt.target.value);
           }}
         />
-        <label htmlFor="phone">Primary Phone #</label>
+        <label htmlFor={profileIdFor("phone")}>Primary Phone #</label>
         <input
+          id={profileIdFor("phone")}
           name="phone"
           type="text"
           value={phone}
@@ -516,8 +554,9 @@ function ArtistProfile({ user }) {
             setPhone(evt.target.value);
           }}
         />
-        <label htmlFor="email">Primary Email</label>
+        <label htmlFor={profileIdFor("email")}>Primary Email</label>
         <input
+          id={profileIdFor("email")}
           name="email"
           type="email"
           value={email}
@@ -525,8 +564,9 @@ function ArtistProfile({ user }) {
             setEmail(evt.target.value);
           }}
         />
-        <label htmlFor="bio">Artist Bio</label>
+        <label htmlFor={profileIdFor("bio")}>Artist Bio</label>
         <input
+          id={profileIdFor("bio")}
           name="bio"
           type="text"
           value={bio}
@@ -534,8 +574,9 @@ function ArtistProfile({ user }) {
             setBio(evt.target.value);
           }}
         />
-        <label htmlFor="website">Artist Website</label>
+        <label htmlFor={profileIdFor("website")}>Artist Website</label>
         <input
+          id={profileIdFor("website")}
           name="website"
           type="text"
           value={artistWebsite}
@@ -543,8 +584,9 @@ function ArtistProfile({ user }) {
             setArtistWebsite(evt.target.value);
           }}
         />
-        <label htmlFor="fb">Artist Facebook</label>
+        <label htmlFor={profileIdFor("fb")}>Artist Facebook</label>
         <input
+          id={profileIdFor("fb")}
           name="fb"
           type="text"
           value={artistFacebook}
@@ -552,8 +594,9 @@ function ArtistProfile({ user }) {
             setArtistFacebook(evt.target.value);
           }}
         />
-        <label htmlFor="insta">Artist Instagram</label>
+        <label htmlFor={profileIdFor("insta")}>Artist Instagram</label>
         <input
+          id={profileIdFor("insta")}
           name="insta"
           type="text"
           value={artistInstagram}
@@ -561,8 +604,9 @@ function ArtistProfile({ user }) {
             setArtistInstagram(evt.target.value);
           }}
         />
-        <label htmlFor="spotify">Artist Spotify</label>
+        <label htmlFor={profileIdFor("spotify")}>Artist Spotify</label>
         <input
+          id={profileIdFor("spotify")}
           name="spotify"
           type="text"
           value={artistSpotify}
@@ -570,8 +614,10 @@ function ArtistProfile({ user }) {
             setArtistSpotify(evt.target.value);
           }}
         />
-        <label htmlFor="youtube">Artist Youtube</label>
+        <label htmlFor={profileIdFor("youtube")}>Artist Youtube</label>
         <input
+          id={profileIdFor("youtube")}
+          name="youtube"
           type="text"
           value={artistYouTube}
           onChange={(evt) => {
@@ -618,6 +664,7 @@ function ShowEditor({ shows }) {
   return (
     <div>
       <select
+        data-testid="admin-show-filter"
         value={filter}
         onChange={(evt) => {
           setFilter(evt.target.value);
@@ -741,7 +788,7 @@ function AdminPanel() {
               {donors.map((donor, i) => {
                 console.log(donor);
                 return (
-                  <li className="donor" key={i}>
+                  <li className="donor" data-testid={`admin-donor-${donor.id}`} key={i}>
                     <p>{donor.name}</p>
                     <button
                       onClick={(evt) => {
@@ -761,6 +808,7 @@ function AdminPanel() {
             </ul>
             <label htmlFor="add-donor">New Donor</label>
             <input
+              id="add-donor"
               type="text"
               name="add-donor"
               value={newDonor}

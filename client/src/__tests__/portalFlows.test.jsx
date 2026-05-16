@@ -227,8 +227,8 @@ describe("portal flows", () => {
     await user.type(container.querySelector('input[name="insta"]'), "https://instagram.example.com/updated");
     await user.clear(container.querySelector('input[name="spotify"]'));
     await user.type(container.querySelector('input[name="spotify"]'), "https://spotify.example.com/updated");
-    await user.clear(container.querySelector('input:not([name])'));
-    await user.type(container.querySelector('input:not([name])'), "https://youtube.example.com/updated");
+    await user.clear(container.querySelector('input[name="youtube"]'));
+    await user.type(container.querySelector('input[name="youtube"]'), "https://youtube.example.com/updated");
 
     await user.upload(
       container.querySelector('input[name="splash-img"]'),
@@ -574,8 +574,8 @@ describe("portal flows", () => {
     await user.type(container.querySelector('input[name="insta"]'), "https://instagram.example.com/managed");
     await user.clear(container.querySelector('input[name="spotify"]'));
     await user.type(container.querySelector('input[name="spotify"]'), "https://spotify.example.com/managed");
-    await user.clear(container.querySelector('input:not([name])'));
-    await user.type(container.querySelector('input:not([name])'), "https://youtube.example.com/managed");
+    await user.clear(container.querySelector('input[name="youtube"]'));
+    await user.type(container.querySelector('input[name="youtube"]'), "https://youtube.example.com/managed");
     await user.click(screen.getAllByRole("button", { name: "Update artist information" })[0]);
 
     await waitFor(() => {

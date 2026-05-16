@@ -62,7 +62,7 @@ const Burger = () => {
       </Link>
 
       <div className="burgerDiv">
-        <button id="burger" onClick={handleModal}>
+        <button id="burger" aria-label="Open menu" onClick={handleModal}>
           <img src={BurgerIcon} alt="" />
         </button>
 

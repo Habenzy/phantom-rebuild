@@ -14,8 +14,25 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == artistId;
     }
 
+    function hasShowStatus(show) {
+      return show.keys().hasAny(["status"]);
+    }
+
+    function isBookedShow(show) {
+      return hasShowStatus(show) && show.status == "booked";
+    }
+
     function isShowArtist(show) {
-      return signedIn() && show.artists is list && request.auth.uid in show.artists;
+      return signedIn() &&
+        show.keys().hasAny(["artists"]) &&
+        show.artists is list &&
+        show.artists.hasAny([request.auth.uid]);
+    }
+
+    function isEditableArtistShow(show) {
+      return isShowArtist(show) &&
+        hasShowStatus(show) &&
+        (show.status == "proposed" || show.status == "archived");
     }
 
     match /admins/{adminId} {
@@ -30,15 +47,21 @@ service cloud.firestore {
     }
 
     match /shows/{showId} {
-      allow read: if resource.data.status == "booked" || isShowArtist(resource.data) || isAdmin();
+      allow get: if isBookedShow(resource.data) || isEditableArtistShow(resource.data) || isAdmin();
+      allow list: if signedIn() || isBookedShow(resource.data) || isAdmin();
       allow create: if isAdmin() || (
         isShowArtist(request.resource.data) &&
+        hasShowStatus(request.resource.data) &&
         request.resource.data.status == "proposed"
       );
       allow update: if isAdmin() || (
         isShowArtist(resource.data) &&
         isShowArtist(request.resource.data) &&
-        request.resource.data.status in ["proposed", "archived"]
+        hasShowStatus(request.resource.data) &&
+        (
+          request.resource.data.status == "proposed" ||
+          request.resource.data.status == "archived"
+        )
       );
       allow delete: if isAdmin();
     }

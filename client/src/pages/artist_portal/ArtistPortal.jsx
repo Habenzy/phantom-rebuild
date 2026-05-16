@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import PropTypes from "prop-types";
 import { db, auth, storage } from "../../config/firebase";
 import {
@@ -154,6 +154,8 @@ LoginPortal.propTypes = {
 };
 
 function ProposalForm({ show, edit = false, setSubmitProp }) {
+  const formId = useId();
+  const idFor = (fieldName) => `${formId}-${fieldName}`;
   // create state objects to hold values from input form
   const [title, setTitle] = useState(show.title || "");
   const [type, setType] = useState(show.type || "");
@@ -201,9 +203,13 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
   return (
     <div className="show-form-container">
       <div className="spacer"></div>
-      <form className="show-proposal-form">
-        <label htmlFor="title">Enter the name of your show (REQUIRED)</label>
+      <form
+        className="show-proposal-form"
+        data-testid={edit ? `artist-edit-show-form-${show.id}` : "artist-proposal-form"}
+      >
+        <label htmlFor={idFor("title")}>Enter the name of your show (REQUIRED)</label>
         <input
+          id={idFor("title")}
           type="text"
           name="title"
           value={title}
@@ -211,10 +217,11 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
             setTitle(evt.target.value);
           }}
         />
-        <label htmlFor="contact">
+        <label htmlFor={idFor("contact")}>
           Who is the primary contact for the show?
         </label>
         <input
+          id={idFor("contact")}
           type="text"
           value={contact}
           name="contact"
@@ -222,11 +229,12 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
             setContact(evt.target.value);
           }}
         />
-        <label htmlFor="type">
+        <label htmlFor={idFor("type")}>
           What type of show are you bringing to the barn (e.g. &quot;dance&quot;
           &quot;theater&quot; &quot;music&quot; etc.)
         </label>
         <input
+          id={idFor("type")}
           type="text"
           name="type"
           value={type}
@@ -234,11 +242,12 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
             setType(evt.target.value);
           }}
         />
-        <label htmlFor="description">
+        <label htmlFor={idFor("description")}>
           Show description for internal use. What&apos;s the run time, major
           themes, target demographic, etc? (REQUIRED)
         </label>
         <input
+          id={idFor("description")}
           type="text"
           name="description"
           value={description}
@@ -246,20 +255,25 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
             setDescription(evt.target.value);
           }}
         />
-        <label htmlFor="splash-img">
+        <label htmlFor={idFor("splash-img")}>
           Add a cover image to be displayed on our homepage, only use wordless
           images please! (REQUIRED)
         </label>
         <input
+          id={idFor("splash-img")}
           className="image-field"
           type="file"
           name="splash-img"
+          data-testid={edit ? "artist-edit-cover-upload" : "artist-proposal-cover-upload"}
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImageLg(img);
           }}
         />
         <button
+          data-testid={
+            edit ? "artist-edit-cover-upload-button" : "artist-proposal-cover-upload-button"
+          }
           className={`img-uploader highlight ${
             imageLg && !imgLgUrl ? "flashing" : ""
           }`}
@@ -271,19 +285,24 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           Upload your image to the Database (please do this <b>before</b>{" "}
           submitting the form)
         </button>
-        <label htmlFor="img-2">
+        <label htmlFor={idFor("img-2")}>
           Add additional images for your show (optional)
         </label>
         <input
+          id={idFor("img-2")}
           className="image-field"
           type="file"
           name="img-2"
+          data-testid={edit ? "artist-edit-second-upload" : "artist-proposal-second-upload"}
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImage2(img);
           }}
         />
         <button
+          data-testid={
+            edit ? "artist-edit-second-upload-button" : "artist-proposal-second-upload-button"
+          }
           className={`img-uploader highlight ${
             image2 && !img2Url ? "flashing" : ""
           }`}
@@ -295,19 +314,24 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           Upload your image to the Database (please do this <b>before</b>{" "}
           submitting the form)
         </button>
-        <label htmlFor="img-3">
+        <label htmlFor={idFor("img-3")}>
           Add additional images for your show (optional)
         </label>
         <input
+          id={idFor("img-3")}
           className="image-field"
           type="file"
           name="img-3"
+          data-testid={edit ? "artist-edit-third-upload" : "artist-proposal-third-upload"}
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImage3(img);
           }}
         />
         <button
+          data-testid={
+            edit ? "artist-edit-third-upload-button" : "artist-proposal-third-upload-button"
+          }
           className={`img-uploader highlight ${
             image3 && !img3Url ? "flashing" : ""
           }`}
@@ -320,6 +344,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           submitting the form)
         </button>
         <button
+          data-testid={edit ? "artist-edit-submit" : "artist-proposal-submit"}
           className={`submit-show ${
             title && description && imgLgUrl && "flashing"
           }`}
@@ -375,6 +400,8 @@ ProposalForm.propTypes = {
 };
 
 function ArtistProfile({ setUser }) {
+  const profileFormId = useId();
+  const profileIdFor = (fieldName) => `${profileFormId}-${fieldName}`;
   const [submitProp, setSubmitProp] = useState(false);
   const [artist, setArtist] = useState("");
   const [phone, setPhone] = useState("");
@@ -410,7 +437,8 @@ function ArtistProfile({ setUser }) {
     // get all shows with artist ID attached for editing purposes
     let showsRef = query(
       collection(db, "shows"),
-      where("artists", "array-contains", auth.currentUser.uid)
+      where("artists", "array-contains", auth.currentUser.uid),
+      where("status", "in", ["proposed", "archived"])
     );
     getDocs(showsRef).then((shows) => {
       const userShows = shows.docs.map((showData) => {
@@ -481,7 +509,7 @@ function ArtistProfile({ setUser }) {
     <div>
       <button onClick={logOut}>Log Out</button>
       <h1>Welcome {artist} to your Phantom Theater Artist portal</h1>
-      <img src={picUrl} className="profile-pic" />
+      {picUrl && <img src={picUrl} className="profile-pic" />}
       <h3>
         Here you can manage your artist profile, and submit show proposals!
       </h3>
@@ -513,18 +541,21 @@ function ArtistProfile({ setUser }) {
         {/* Show/edit artist info */}
         <div className="artist-container">
           <h2 className="directions">Edit Artist Bio</h2>
-          <form className="artist-profile-form">
-            <label htmlFor="splash-img">Upload Your Profile Picture *</label>
+          <form className="artist-profile-form" data-testid="artist-profile-form">
+            <label htmlFor={profileIdFor("splash-img")}>Upload Your Profile Picture *</label>
             <input
+              id={profileIdFor("splash-img")}
               className="image-field"
               type="file"
               name="splash-img"
+              data-testid="artist-profile-upload"
               onChange={(evt) => {
                 const img = evt.target.files[0];
                 setArtistPic(img);
               }}
             />
             <button
+              data-testid="artist-profile-upload-button"
               className={`img-uploader highlight ${
                 artistPic && !picUrl ? "flashing" : ""
               }`}
@@ -536,8 +567,9 @@ function ArtistProfile({ setUser }) {
               Upload your image to the Database (please do this <b>before</b>{" "}
               submitting the form)
             </button>
-            <label htmlFor="artist">Displayed name *</label>
+            <label htmlFor={profileIdFor("artist")}>Displayed name *</label>
             <input
+              id={profileIdFor("artist")}
               name="artist"
               type="text"
               value={artist}
@@ -545,10 +577,11 @@ function ArtistProfile({ setUser }) {
                 setArtist(evt.target.value);
               }}
             />
-            <label htmlFor="phone">
+            <label htmlFor={profileIdFor("phone")}>
               What is a good phone number to reach you at (for internal use only)?
             </label>
             <input
+              id={profileIdFor("phone")}
               name="phone"
               type="text"
               value={phone}
@@ -556,8 +589,9 @@ function ArtistProfile({ setUser }) {
                 setPhone(evt.target.value);
               }}
             />
-            <label htmlFor="email">What&apos;s your primary email? *</label>
+            <label htmlFor={profileIdFor("email")}>What&apos;s your primary email? *</label>
             <input
+              id={profileIdFor("email")}
               name="email"
               type="email"
               value={email}
@@ -565,8 +599,9 @@ function ArtistProfile({ setUser }) {
                 setEmail(evt.target.value);
               }}
             />
-            <label htmlFor="bio">Tell us a little about yourself *</label>
+            <label htmlFor={profileIdFor("bio")}>Tell us a little about yourself *</label>
             <input
+              id={profileIdFor("bio")}
               name="bio"
               type="text"
               value={bio}
@@ -574,10 +609,11 @@ function ArtistProfile({ setUser }) {
                 setBio(evt.target.value);
               }}
             />
-            <label htmlFor="website">
+            <label htmlFor={profileIdFor("website")}>
               Enter the URL for your personal website (if you have one) *
             </label>
             <input
+              id={profileIdFor("website")}
               name="website"
               type="text"
               value={artistWebsite}
@@ -585,8 +621,9 @@ function ArtistProfile({ setUser }) {
                 setArtistWebsite(evt.target.value);
               }}
             />
-            <label htmlFor="fb">Share your facebook if you want *</label>
+            <label htmlFor={profileIdFor("fb")}>Share your facebook if you want *</label>
             <input
+              id={profileIdFor("fb")}
               name="fb"
               type="text"
               value={artistFacebook}
@@ -594,10 +631,11 @@ function ArtistProfile({ setUser }) {
                 setArtistFacebook(evt.target.value);
               }}
             />
-            <label htmlFor="insta">
+            <label htmlFor={profileIdFor("insta")}>
               Got an instagram? We&apos;d love to link it on your profile! *
             </label>
             <input
+              id={profileIdFor("insta")}
               name="insta"
               type="text"
               value={artistInstagram}
@@ -605,10 +643,11 @@ function ArtistProfile({ setUser }) {
                 setArtistInstagram(evt.target.value);
               }}
             />
-            <label htmlFor="spotify">
+            <label htmlFor={profileIdFor("spotify")}>
               Share your favorite tunes, link to your Spotify *
             </label>
             <input
+              id={profileIdFor("spotify")}
               name="spotify"
               type="text"
               value={artistSpotify}
@@ -616,10 +655,12 @@ function ArtistProfile({ setUser }) {
                 setArtistSpotify(evt.target.value);
               }}
             />
-            <label htmlFor="youtube">
+            <label htmlFor={profileIdFor("youtube")}>
               Got a youtube channel? We can link that in too... *
             </label>
             <input
+              id={profileIdFor("youtube")}
+              name="youtube"
               type="text"
               value={artistYouTube}
               onChange={(evt) => {
@@ -637,7 +678,7 @@ function ArtistProfile({ setUser }) {
       <div className="spacer"></div>
       {shows.map((show, i) => {
         return (
-          <div key={i} className="show-container">
+          <div key={i} className="show-container" data-testid={`artist-show-${show.id}`}>
             <h1 className="show-title">
               {show.title} - {show.status}
             </h1>

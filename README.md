@@ -73,6 +73,28 @@ npm run test:emulators
 
 Do not use `npm run test:emulators` while another emulator process is already using ports `9099`, `8080`, and `9199`.
 
+Install the Chromium browser used by Playwright once per machine:
+
+```sh
+npm run playwright:install
+```
+
+End-to-end browser tests, when emulators are already running:
+
+```sh
+npm run test:e2e
+```
+
+The Playwright suite starts the Vite dev server, seeds the local demo Firebase emulators, blocks non-local browser requests, and runs Chromium-only browser workflows against Auth, Firestore, and Storage. Use this path when emulator ports `9099`, `8080`, and `9199` are already occupied.
+
+To start fresh emulators and run the browser suite in one command:
+
+```sh
+npm run test:e2e:emulators
+```
+
+Do not use `npm run test:e2e:emulators` while another emulator process is already using ports `9099`, `8080`, and `9199`.
+
 Quality gates:
 
 ```sh

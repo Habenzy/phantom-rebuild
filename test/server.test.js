@@ -45,6 +45,17 @@ function closeServer(server) {
   });
 }
 
+async function withRequest(app, callback) {
+  const server = app.listen(0);
+
+  try {
+    await waitForListening(server);
+    return await callback(request(server));
+  } finally {
+    await closeServer(server);
+  }
+}
+
 test("getAdminUids uses configured admins and local admins", () => {
   assert.deepEqual(
     getAdminUids({
@@ -186,10 +197,9 @@ test("GET /whitelist returns configured admin IDs", async () => {
     transporter: { sendMail: async () => ({ messageId: "unused" }) },
   });
 
-  await request(app)
-    .get("/whitelist")
-    .expect(200)
-    .expect(["admin-1", "local-admin"]);
+  await withRequest(app, (agent) =>
+    agent.get("/whitelist").expect(200).expect(["admin-1", "local-admin"])
+  );
 });
 
 test("createApp can use process defaults without injected options", async (t) => {
@@ -209,7 +219,7 @@ test("createApp can use process defaults without injected options", async (t) =>
 
   const app = createApp();
 
-  await request(app).get("/whitelist").expect(200);
+  await withRequest(app, (agent) => agent.get("/whitelist").expect(200));
 
   assert.equal(createTransportCalls.length, 1);
 });
@@ -227,11 +237,13 @@ test("POST /send validates input before sending email", async () => {
     },
   });
 
-  await request(app)
-    .post("/send")
-    .send({ artist: "", email: "bad", description: "" })
-    .expect(400)
-    .expect({ message: "Artist and description are required." });
+  await withRequest(app, (agent) =>
+    agent
+      .post("/send")
+      .send({ artist: "", email: "bad", description: "" })
+      .expect(400)
+      .expect({ message: "Artist and description are required." })
+  );
 
   assert.equal(calls.length, 0);
 });
@@ -243,10 +255,12 @@ test("POST /send treats a missing body as an invalid proposal", async () => {
     transporter: { sendMail: async () => ({ messageId: "unused" }) },
   });
 
-  await request(app)
-    .post("/send")
-    .expect(400)
-    .expect({ message: "Artist and description are required." });
+  await withRequest(app, (agent) =>
+    agent
+      .post("/send")
+      .expect(400)
+      .expect({ message: "Artist and description are required." })
+  );
 });
 
 test("POST /send sends sanitized proposal email", async () => {
@@ -265,16 +279,18 @@ test("POST /send sends sanitized proposal email", async () => {
     },
   });
 
-  await request(app)
-    .post("/send")
-    .send({
-      artist: "Example Artist",
-      email: "artist@example.com",
-      phone: "802-555-1212",
-      description: "Example proposal",
-    })
-    .expect(200)
-    .expect({ message: "message has been sent" });
+  await withRequest(app, (agent) =>
+    agent
+      .post("/send")
+      .send({
+        artist: "Example Artist",
+        email: "artist@example.com",
+        phone: "802-555-1212",
+        description: "Example proposal",
+      })
+      .expect(200)
+      .expect({ message: "message has been sent" })
+  );
 
   assert.equal(calls.length, 1);
   assert.equal(calls[0].from, "sender@example.com");
@@ -311,16 +327,18 @@ test("POST /send uses default transporter when none is injected", async (t) => {
     },
   });
 
-  await request(app)
-    .post("/send")
-    .send({
-      artist: "Default Transport",
-      email: "artist@example.com",
-      phone: "",
-      description: "Uses createTransport",
-    })
-    .expect(200)
-    .expect({ message: "message has been sent" });
+  await withRequest(app, (agent) =>
+    agent
+      .post("/send")
+      .send({
+        artist: "Default Transport",
+        email: "artist@example.com",
+        phone: "",
+        description: "Uses createTransport",
+      })
+      .expect(200)
+      .expect({ message: "message has been sent" })
+  );
 
   assert.deepEqual(createTransportCalls[0], {
     service: "Gmail",
@@ -351,15 +369,17 @@ test("POST /send returns a safe error when email delivery fails", async (t) => {
     },
   });
 
-  await request(app)
-    .post("/send")
-    .send({
-      artist: "Example Artist",
-      email: "artist@example.com",
-      description: "Example proposal",
-    })
-    .expect(502)
-    .expect({ message: "something went wrong" });
+  await withRequest(app, (agent) =>
+    agent
+      .post("/send")
+      .send({
+        artist: "Example Artist",
+        email: "artist@example.com",
+        description: "Example proposal",
+      })
+      .expect(502)
+      .expect({ message: "something went wrong" })
+  );
 
   assert.match(errors[0][0], /Error occurred sending proposal email/);
   assert.equal(errors[0][1], "smtp offline");
@@ -372,7 +392,9 @@ test("GET unknown route serves SPA fallback", async () => {
     transporter: { sendMail: async () => ({ messageId: "unused" }) },
   });
 
-  await request(app).get("/Season").expect(200).expect("Content-Type", /html/);
+  await withRequest(app, (agent) =>
+    agent.get("/Season").expect(200).expect("Content-Type", /html/)
+  );
 });
 
 test("startServer verifies transporter and returns the listening server", async () => {
