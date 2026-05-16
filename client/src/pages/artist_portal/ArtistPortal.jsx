@@ -17,7 +17,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { uploadUserImage } from "../../utils/imageUpload";
 import "./artist_portal.css";
 
 const nullShow = {
@@ -39,12 +39,6 @@ const nullShow = {
   image3: "",
   image3Name: "",
 };
-
-function imageRefForUser(img) {
-  const safeName = img.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const uniqueId = globalThis.crypto?.randomUUID?.() || Date.now();
-  return ref(storage, `uploads/${auth.currentUser.uid}/${uniqueId}-${safeName}`);
-}
 
 const showDatePropType = PropTypes.shape({
   date: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -166,23 +160,22 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
   const dates = show.dates || [];
 
   //images
-  const [imageLg, setImageLg] = useState(show.imageLg || "");
-  const [image2, setImage2] = useState(show.image2 || "");
-  const [image3, setImage3] = useState(show.image3 || "");
+  const [imageLg, setImageLg] = useState("");
+  const [image2, setImage2] = useState("");
+  const [image3, setImage3] = useState("");
 
   const [imgLgUrl, setImgLgUrl] = useState(show.imageLg || "");
   const [img2Url, setImg2Url] = useState(show.image2 || "");
   const [img3Url, setImg3Url] = useState(show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
-    console.log("uploading image");
-    console.log(img);
-    const imgRef = imageRefForUser(img);
     try {
-      let imgUpload = await uploadBytes(imgRef, img);
-      console.log(imgUpload);
-      let imgUrl = await getDownloadURL(imgUpload.ref);
-      console.log(imgUrl);
+      const imgUrl = await uploadUserImage({
+        storage,
+        uid: auth.currentUser?.uid,
+        file: img,
+      });
+
       switch (targetProp) {
         case "splash":
           setImgLgUrl(imgUrl);
@@ -197,6 +190,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
       alert("Image uploaded to Database");
     } catch (err) {
       console.error(err.message);
+      alert(err.message);
     }
   };
 
@@ -263,6 +257,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           id={idFor("splash-img")}
           className="image-field"
           type="file"
+          accept="image/*"
           name="splash-img"
           data-testid={edit ? "artist-edit-cover-upload" : "artist-proposal-cover-upload"}
           onChange={(evt) => {
@@ -277,6 +272,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           className={`img-uploader highlight ${
             imageLg && !imgLgUrl ? "flashing" : ""
           }`}
+          disabled={!imageLg}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(imageLg, "splash");
@@ -292,6 +288,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           id={idFor("img-2")}
           className="image-field"
           type="file"
+          accept="image/*"
           name="img-2"
           data-testid={edit ? "artist-edit-second-upload" : "artist-proposal-second-upload"}
           onChange={(evt) => {
@@ -306,6 +303,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           className={`img-uploader highlight ${
             image2 && !img2Url ? "flashing" : ""
           }`}
+          disabled={!image2}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image2, "2");
@@ -321,6 +319,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           id={idFor("img-3")}
           className="image-field"
           type="file"
+          accept="image/*"
           name="img-3"
           data-testid={edit ? "artist-edit-third-upload" : "artist-proposal-third-upload"}
           onChange={(evt) => {
@@ -335,6 +334,7 @@ function ProposalForm({ show, edit = false, setSubmitProp }) {
           className={`img-uploader highlight ${
             image3 && !img3Url ? "flashing" : ""
           }`}
+          disabled={!image3}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image3, "3");
@@ -489,19 +489,18 @@ function ArtistProfile({ setUser }) {
   };
 
   const imgUploader = async (img) => {
-    console.log("uploading image");
-    console.log(img);
-    const imgRef = imageRefForUser(img);
     try {
-      let imgUpload = await uploadBytes(imgRef, img);
-      console.log(imgUpload);
-      let imgUrl = await getDownloadURL(imgUpload.ref);
-      console.log(imgUrl);
+      const imgUrl = await uploadUserImage({
+        storage,
+        uid: auth.currentUser?.uid,
+        file: img,
+      });
+
       setPicUrl(imgUrl);
       alert("Image uploaded to Database");
     } catch (err) {
       console.error(err.message);
-      alert("Something went wrong. Tell Bob...");
+      alert(err.message);
     }
   };
 
@@ -547,6 +546,7 @@ function ArtistProfile({ setUser }) {
               id={profileIdFor("splash-img")}
               className="image-field"
               type="file"
+              accept="image/*"
               name="splash-img"
               data-testid="artist-profile-upload"
               onChange={(evt) => {
@@ -559,6 +559,7 @@ function ArtistProfile({ setUser }) {
               className={`img-uploader highlight ${
                 artistPic && !picUrl ? "flashing" : ""
               }`}
+              disabled={!artistPic}
               onClick={(evt) => {
                 evt.preventDefault();
                 imgUploader(artistPic);

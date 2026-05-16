@@ -283,6 +283,14 @@ describe("portal flows", () => {
     });
     await user.click(screen.getByRole("button", { name: "Create Show Proposal" }));
 
+    expect(container.querySelector('input[name="splash-img"]')).toHaveAttribute(
+      "accept",
+      "image/*"
+    );
+    expect(
+      screen.getAllByRole("button", { name: /Upload your image to the Database/i })[0]
+    ).toBeDisabled();
+
     await user.clear(container.querySelector('input[name="title"]'));
     await user.type(container.querySelector('input[name="title"]'), "New Proposal");
     await user.clear(container.querySelector('input[name="contact"]'));
@@ -387,7 +395,7 @@ describe("portal flows", () => {
     await user.click(screen.getAllByRole("button", { name: /Upload your image/i })[0]);
 
     await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith("Something went wrong. Tell Bob...");
+      expect(window.alert).toHaveBeenCalledWith("upload failed");
     });
   });
 
@@ -471,6 +479,14 @@ describe("portal flows", () => {
 
     expect(await screen.findByRole("button", { name: "Edit Shows" })).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Admin Show" })).toBeInTheDocument();
+
+    expect(container.querySelector('input[name="splash-img"]')).toHaveAttribute(
+      "accept",
+      "image/*"
+    );
+    expect(
+      screen.getAllByRole("button", { name: /Upload image to the Database/i })[0]
+    ).toBeDisabled();
 
     await user.selectOptions(container.querySelector("select"), "booked");
     expect(screen.getByRole("heading", { name: "Admin Show" })).toBeInTheDocument();
