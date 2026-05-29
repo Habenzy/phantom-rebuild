@@ -1,0 +1,147 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function ownsArtistProfile(artistId) {
+      return signedIn() && request.auth.uid == artistId;
+    }
+
+    function isShowArtist(show) {
+      return signedIn() && show.artists is list && request.auth.uid in show.artists;
+    }
+
+    function hasKey(data, key) {
+      return data.keys().hasAll([key]);
+    }
+
+    function optionalString(data, key, maxLength) {
+      return !hasKey(data, key) || (data[key] is string && data[key].size() <= maxLength);
+    }
+
+    function optionalUrl(data, key) {
+      return !hasKey(data, key) || (
+        data[key] is string &&
+        data[key].size() <= 2048 &&
+        (data[key] == "" || data[key].matches('https://.*'))
+      );
+    }
+
+    function validArtistProfile(data) {
+      return data.keys().hasOnly([
+          "artist",
+          "contact",
+          "phone",
+          "email",
+          "bio",
+          "web",
+          "website",
+          "fb",
+          "facebook",
+          "youtube",
+          "insta",
+          "instagram",
+          "spotify",
+          "picUrl"
+        ]) &&
+        optionalString(data, "artist", 120) &&
+        optionalString(data, "contact", 120) &&
+        optionalString(data, "phone", 40) &&
+        optionalString(data, "email", 254) &&
+        optionalString(data, "bio", 4000) &&
+        optionalUrl(data, "web") &&
+        optionalUrl(data, "website") &&
+        optionalUrl(data, "fb") &&
+        optionalUrl(data, "facebook") &&
+        optionalUrl(data, "youtube") &&
+        optionalUrl(data, "insta") &&
+        optionalUrl(data, "instagram") &&
+        optionalUrl(data, "spotify") &&
+        optionalUrl(data, "picUrl");
+    }
+
+    function validShow(data) {
+      return data.keys().hasOnly([
+          "title",
+          "type",
+          "blurb",
+          "status",
+          "dates",
+          "artists",
+          "contactName",
+          "description",
+          "imageLg",
+          "image2",
+          "image3"
+        ]) &&
+        data.title is string &&
+        data.title.size() > 0 &&
+        data.title.size() <= 160 &&
+        optionalString(data, "type", 80) &&
+        optionalString(data, "blurb", 4000) &&
+        optionalString(data, "contactName", 160) &&
+        optionalString(data, "description", 8000) &&
+        data.status in ["proposed", "booked", "archived"] &&
+        data.artists is list &&
+        data.artists.size() > 0 &&
+        data.artists.size() <= 20 &&
+        data.dates is list &&
+        data.dates.size() <= 50 &&
+        optionalUrl(data, "imageLg") &&
+        optionalUrl(data, "image2") &&
+        optionalUrl(data, "image3");
+    }
+
+    function validDonor(data) {
+      return data.keys().hasOnly(["name", "id"]) &&
+        data.name is string &&
+        data.name.size() > 0 &&
+        data.name.size() <= 160 &&
+        optionalString(data, "id", 160);
+    }
+
+    match /admins/{adminId} {
+      allow read: if ownsArtistProfile(adminId) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /artists/{artistId} {
+      allow read: if true;
+      allow create, update: if (ownsArtistProfile(artistId) || isAdmin()) &&
+        validArtistProfile(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /shows/{showId} {
+      allow read: if resource.data.status == "booked" || isShowArtist(resource.data) || isAdmin();
+      allow create: if validShow(request.resource.data) && (
+        isAdmin() || (
+          isShowArtist(request.resource.data) &&
+          request.resource.data.status == "proposed"
+        )
+      );
+      allow update: if validShow(request.resource.data) && (
+        isAdmin() || (
+          isShowArtist(resource.data) &&
+          isShowArtist(request.resource.data) &&
+          resource.data.status == "proposed" &&
+          request.resource.data.status == "proposed"
+        )
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /donors/{donorId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validDonor(request.resource.data);
+      allow delete: if isAdmin();
+    }
+  }
+}

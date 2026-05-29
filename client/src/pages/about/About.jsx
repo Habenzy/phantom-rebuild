@@ -36,7 +36,7 @@ function About() {
         <h4 className="barn">THE EDGCOMB BARN</h4>
         <div className="text">
           Direct from a Sears Roebuck catalog kit, the historic Edgcomb Barn is
-          Phantom Theater's home. A space at once intimate and gracious, it
+          Phantom Theater&apos;s home. A space at once intimate and gracious, it
           brings the flavor of Vermont to all of our productions. (The
           occasional cat or bat has been known to steal a scene.) The
           surrounding grounds make an excellent place for a pre-show picnic.
@@ -93,7 +93,7 @@ function About() {
           </div>
           <br />
           PHANTOM THEATER IS LOCATED AT THE CORNER OF AIRPORT and DUMP ROADS IN
-          WARREN, VERMONT. Please respect our neighbors' wishes and access
+          WARREN, VERMONT. Please respect our neighbors&apos; wishes and access
           Phantom Theater from East Warren Road.
           <br />
           <br />

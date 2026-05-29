@@ -1,31 +1,42 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import Logo from "../../assets/Logo.jpg"
-import BurgerIcon from "../../assets/burgericon.jpg"
-import "./burger.css"
+import PropTypes from "prop-types";
+import Logo from "../../assets/Logo.jpg";
+import BurgerIcon from "../../assets/burgericon.jpg";
+import "./burger.css";
 
 
 
 // Nav Bar functionality with links to home, about , artists, season and reserve components
 
-const BurgerNav = (props) => {
- 
-
-  return(
+const BurgerNav = ({ handleModal }) => {
+  return (
     <div className="burgerNavBar">
-          {/*menu */}
-            <nav
-            className='menu'
-          >
-            <li onClick={props.handleModal}><Link to="/">Home</Link></li>
-            <li onClick={props.handleModal}><Link to="/About">About</Link></li>
-            <li onClick={props.handleModal}><Link to="/Donate">Donate</Link></li>
-            <li onClick={props.handleModal}><Link to="/Season">Season</Link></li>
-            <li onClick={props.handleModal}><Link to="/Artists">Artists</Link></li>
-            </nav>
-          </div >
-  )
-}
+      {/*menu */}
+      <nav className="menu">
+        <li onClick={handleModal}>
+          <Link to="/">Home</Link>
+        </li>
+        <li onClick={handleModal}>
+          <Link to="/About">About</Link>
+        </li>
+        <li onClick={handleModal}>
+          <Link to="/Donate">Donate</Link>
+        </li>
+        <li onClick={handleModal}>
+          <Link to="/Season">Season</Link>
+        </li>
+        <li onClick={handleModal}>
+          <Link to="/Artists">Artists</Link>
+        </li>
+      </nav>
+    </div>
+  );
+};
+
+BurgerNav.propTypes = {
+  handleModal: PropTypes.func.isRequired,
+};
 
 // ------burger component creation
 const Burger = () => {
@@ -45,17 +56,17 @@ const Burger = () => {
     <div id="burgerbar">
       {/*logo */}
       <Link to="/">
-      <div className='burgerLogo'>
-           <img className="burgerLogoImg" src={Logo} alt="" />
-      </div></Link>
+        <div className="burgerLogo">
+          <img className="burgerLogoImg" src={Logo} alt="" />
+        </div>
+      </Link>
 
       <div className="burgerDiv">
-        <button id="burger" onClick={handleModal}>
-              <img src={BurgerIcon} alt=""/>
+        <button id="burger" aria-label="Open menu" onClick={handleModal}>
+          <img src={BurgerIcon} alt="" />
         </button>
 
-        {modal && <BurgerNav
-        handleModal={handleModal} />}
+        {modal && <BurgerNav handleModal={handleModal} />}
       </div>
     </div>
   );
@@ -63,4 +74,3 @@ const Burger = () => {
 
 //------export the component---------
 export default Burger;
-

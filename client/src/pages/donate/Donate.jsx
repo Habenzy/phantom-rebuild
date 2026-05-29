@@ -1,18 +1,19 @@
 import "./donate.css";
 import { useState, useEffect } from "react";
 import { db } from "../../config/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, getDocs } from "firebase/firestore";
 
-function Donate(props) {
+function Donate() {
   let [donorList, setDonorList] = useState([]);
 
   useEffect(() => {
     const donorsRef = query(collection(db, "donors"));
     getDocs(donorsRef).then((allDonors) => {
-      console.log(allDonors.docs[0].data());
-      let allDonorsArr = allDonors.docs.map((donor) => donor.data().name).sort((curr, next) => {
-        return curr > next ? 1 : -1
-      });
+      let allDonorsArr = allDonors.docs
+        .map((donor) => donor.data().name)
+        .sort((curr, next) => {
+          return curr > next ? 1 : -1;
+        });
       setDonorList(allDonorsArr);
     });
   }, []);
@@ -23,7 +24,7 @@ function Donate(props) {
         <a
           href="https://www.paypal.com/donate/?hosted_button_id=CU35GHQ4HTM6C"
           target="_blank"
-          rel="noreferrer"
+          rel="noreferrer noopener"
         >
           <h1 className="donate-link">Donate</h1>
         </a>
@@ -66,7 +67,11 @@ function Donate(props) {
         <div className="sponsorsWrapper">
           <h1>Friends of the Artists</h1>
           <br />
-          <div className="sponsorsList">{donorList.map((donorName, i) => <p key={i}>{donorName}</p>)}</div>
+          <div className="sponsorsList" data-testid="donor-list">
+            {donorList.map((donorName, i) => (
+              <p key={i}>{donorName}</p>
+            ))}
+          </div>
           <div className="line"></div>
           <div className="sponsorHowTo">
             <div>
@@ -88,7 +93,8 @@ function Donate(props) {
                 <br></br>
                 Lucas Bates, Claudia Becker, Beth Binns Schoellkopf, Laura
                 Brines, Ramsey Brown, MC DeBelina, Dan Eckstein, Sheryl
-                Kurland-Platt, Lexi Leacock, Tracy Martin, Mary Moffroid, Jim Sanford, Bob Stauss, Kate Youngdahl
+                Kurland-Platt, Lexi Leacock, Tracy Martin, Mary Moffroid, Jim
+                Sanford, Bob Stauss, Kate Youngdahl
               </p>
             </div>
           </div>

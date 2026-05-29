@@ -6,24 +6,41 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "lint": "eslint . --max-warnings 0",
+    "preview": "vite preview",
+    "seed:emulator": "node scripts/seed-emulator.mjs",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "RUN_FIREBASE_EMULATOR_TESTS=true vitest run src/__tests__/emulatorSmoke.integration.test.jsx && RUN_FIREBASE_EMULATOR_TESTS=true vitest run src/__tests__/firebaseRules.integration.test.js",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-bootstrap": "^2.9.1",
-    "react-dom": "^18.2.0",
-    "react-router": "^6.19.0",
-    "react-router-dom": "^6.19.0"
+    "firebase": "^12.13.0",
+    "prop-types": "^15.8.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.15.0"
   },
   "devDependencies": {
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
-    "@vitejs/plugin-react": "^4.2.0",
-    "eslint": "^8.53.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.4",
-    "vite": "^5.0.0"
+    "@eslint/js": "^9.39.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.6",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "firebase-admin": "^13.9.0",
+    "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
+    "vite": "^8.0.12",
+    "vitest": "^4.1.6"
+  },
+  "overrides": {
+    "brace-expansion": "^1.1.13"
   }
 }

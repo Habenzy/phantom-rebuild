@@ -1,12 +1,13 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { AuthContext } from "./authContextValue.js";
 import { auth } from "./firebase.js";
-
-const AuthContext = React.createContext();
-
-//creates user context to be used elsewhere
-export function useAuth() {
-  return useContext(AuthContext);
-}
+import {
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 //provides context for and sets the user
 export function AuthProvider({ children }) {
@@ -19,22 +20,22 @@ export function AuthProvider({ children }) {
   // note: if db other than firebase is ever used,
   // one should just have to change these for things to still work
   function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
+    return signInWithEmailAndPassword(auth, email, password);
   }
 
   function logout() {
-    return auth.signOut();
+    return signOut(auth);
   }
 
   function resetPassword(email) {
-    return auth.sendPasswordResetEmail(email);
+    return sendPasswordResetEmail(auth, email);
   }
   //---------------------------------------------------------//
 
   //sets user once as component mounts
   useEffect(() => {
     //unsubscribe is returned from onAuth method when component unmounts
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       //verify to see if there's a user and sets the user
       setLoggedUser(user);
       //user starts as null & sets itself (firebase property that sets local storage/tokens)
@@ -60,3 +61,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+AuthProvider.propTypes = {
+  children: PropTypes.node,
+};

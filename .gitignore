@@ -1,4 +1,14 @@
 node_modules
 .env
+.env.local
 /client/build
-/client/src/config
+/client/dist
+/coverage
+/client/coverage
+/output/playwright
+/playwright-report
+/test-results
+.firebase-data
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

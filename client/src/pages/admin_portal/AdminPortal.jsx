@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
+import PropTypes from "prop-types";
 import { db, auth, storage } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import {
@@ -8,15 +9,15 @@ import {
   setDoc,
   getDoc,
   updateDoc,
-  addDoc,
-  where,
   getDocs,
   deleteDoc,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { uploadUserImage } from "../../utils/imageUpload";
+import { DateField } from "../portals/DateField";
+import { artistProfilePropType, showPropType } from "../portals/portalTypes";
 import "./admin_portal.css";
 
-function LoginPortal(props) {
+function LoginPortal({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState(false);
@@ -26,7 +27,7 @@ function LoginPortal(props) {
     try {
       let userCred = await signInWithEmailAndPassword(auth, email, password);
 
-      props.setUser(userCred.user);
+      setUser(userCred.user);
     } catch (err) {
       console.error(err);
       setErr(err.message);
@@ -65,86 +66,40 @@ function LoginPortal(props) {
   );
 }
 
-function DateField(props) {
-  const [dateTime, setDateTime] = useState(props.date.date || "");
-  const [ticketLink, setTicketLink] = useState(props.date.ticketLink || "");
-  const [soldOut, setSoldOut] = useState(false);
+LoginPortal.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
 
-  return (
-    <div className="date-time-field">
-      <label htmlFor="date-time">Choose a showtime</label>
-      <input
-        type="datetime-local"
-        name="date-time"
-        value={dateTime}
-        onChange={(evt) => {
-          setDateTime(evt.target.value);
-        }}
-      />
-      <label htmlFor="ticket-link">Link to tickets for this show time</label>
-      <input
-        name="ticket-link"
-        type="text"
-        value={ticketLink}
-        placeholder="Ticket Link"
-        onChange={(evt) => {
-          setTicketLink(evt.target.value);
-        }}
-      />
-      <label htmlFor="sold-out">Show is Sold out</label>
-      <input
-        name="sold-out"
-        type="checkbox"
-        value={soldOut}
-        onChange={() => {
-          setSoldOut(true);
-        }}
-      />
-      <button
-        className="submit highlight"
-        onClick={(evt) => {
-          evt.preventDefault();
-          const upDate = props.allDates.toSpliced(props.index, 1, {
-            date: dateTime,
-            ticketLink: ticketLink,
-            soldOut: soldOut,
-          });
-          props.update(upDate);
-        }}
-      >
-        Confirm Show Time
-      </button>
-    </div>
-  );
-}
-
-function ProposalForm(props) {
+function ProposalForm({ show }) {
+  const formId = useId();
+  const idFor = (fieldName) => `${formId}-${fieldName}`;
   // create state objects to hold values from input form
-  const [title, setTitle] = useState(props.show.title || "");
-  const [type, setType] = useState(props.show.type || "");
-  const [status, setStatus] = useState(props.show.status || "proposed");
-  const [description, setDescription] = useState(props.show.description || "");
-  const [contact, setContact] = useState(props.show.contactName || "");
-  const [artists, setArtist] = useState(props.show.artists || []);
-  const [dates, setDates] = useState(props.show.dates || []);
-  const [blurb, setBlurb] = useState(props.show.blurb || "");
+  const [title, setTitle] = useState(show.title || "");
+  const [type, setType] = useState(show.type || "");
+  const [status, setStatus] = useState(show.status || "proposed");
+  const description = show.description || "";
+  const [contact, setContact] = useState(show.contactName || "");
+  const artists = show.artists || [];
+  const [dates, setDates] = useState(show.dates || []);
+  const [blurb, setBlurb] = useState(show.blurb || "");
 
   //images
-  const [imageLg, setImageLg] = useState(props.show.imageLg || "");
-  const [image2, setImage2] = useState(props.show.image2 || "");
-  const [image3, setImage3] = useState(props.show.image3 || "");
+  const [imageLg, setImageLg] = useState("");
+  const [image2, setImage2] = useState("");
+  const [image3, setImage3] = useState("");
 
-  const [imgLgUrl, setImgLgUrl] = useState(props.show.imageLg || "");
-  const [img2Url, setImg2Url] = useState(props.show.image2 || "");
-  const [img3Url, setImg3Url] = useState(props.show.image3 || "");
+  const [imgLgUrl, setImgLgUrl] = useState(show.imageLg || "");
+  const [img2Url, setImg2Url] = useState(show.image2 || "");
+  const [img3Url, setImg3Url] = useState(show.image3 || "");
 
   const imgUploader = async (img, targetProp) => {
-    const imgRef = ref(storage, img.name);
     try {
-      let imgUpload = await uploadBytes(imgRef, img);
-      console.log(imgUpload);
-      let imgUrl = await getDownloadURL(imgUpload.ref);
-      console.log(imgUrl);
+      const imgUrl = await uploadUserImage({
+        storage,
+        uid: auth.currentUser?.uid,
+        file: img,
+      });
+
       switch (targetProp) {
         case "splash":
           setImgLgUrl(imgUrl);
@@ -159,7 +114,7 @@ function ProposalForm(props) {
       alert("Image uploaded to the Database");
     } catch (err) {
       console.error(err.message);
-      alert("something went wrong");
+      alert(err.message);
     }
   };
 
@@ -178,11 +133,15 @@ function ProposalForm(props) {
   };
 
   return (
-    <div className="show-form-container">
+    <div className="show-form-container" data-testid={`admin-show-card-${show.id}`}>
       <h2>{title}</h2>
       <form className="show-proposal-form">
         {/* still need fields for "dates" */}
-        <select value={status} onChange={(evt) => setStatus(evt.target.value)}>
+        <select
+          data-testid="admin-show-status"
+          value={status}
+          onChange={(evt) => setStatus(evt.target.value)}
+        >
           <option value="proposed">Proposed</option>
           <option value="booked">Booked</option>
           <option value="archived">Archived</option>
@@ -190,6 +149,7 @@ function ProposalForm(props) {
         <div>
           {/* add dates, and set dates in date array when entered */}
           <button
+            data-testid="admin-add-show-time"
             onClick={(evt) => {
               evt.preventDefault();
               addShowTime();
@@ -199,7 +159,7 @@ function ProposalForm(props) {
           </button>
           <h3>Show Times</h3>
           <h4>
-            Please hit the "Confirm Show Time" button after choosing a new
+            Please hit the &quot;Confirm Show Time&quot; button after choosing a new
             showtime
           </h4>
           {dates.map((date, i) => {
@@ -214,17 +174,19 @@ function ProposalForm(props) {
             );
           })}
         </div>
-        <label htmlFor="blurb">
+        <label htmlFor={idFor("blurb")}>
           The Show description that will appear on our site
         </label>
         <input
+          id={idFor("blurb")}
           type="text"
           name="blurb"
           value={blurb}
           onChange={(evt) => setBlurb(evt.target.value)}
         />
-        <label htmlFor="title">Enter the name of show</label>
+        <label htmlFor={idFor("title")}>Enter the name of show</label>
         <input
+          id={idFor("title")}
           type="text"
           name="title"
           value={title}
@@ -232,10 +194,11 @@ function ProposalForm(props) {
             setTitle(evt.target.value);
           }}
         />
-        <label htmlFor="contact">
+        <label htmlFor={idFor("contact")}>
           Who is the primary contact for the show?
         </label>
         <input
+          id={idFor("contact")}
           type="text"
           value={contact}
           name="contact"
@@ -243,11 +206,12 @@ function ProposalForm(props) {
             setContact(evt.target.value);
           }}
         />
-        <label htmlFor="type">
-          What type of show are you bringing to the barn (e.g. "dance" "theater"
-          "music" etc.)
+        <label htmlFor={idFor("type")}>
+          What type of show are you bringing to the barn (e.g. &quot;dance&quot;
+          &quot;theater&quot; &quot;music&quot; etc.)
         </label>
         <input
+          id={idFor("type")}
           type="text"
           name="type"
           value={type}
@@ -256,23 +220,28 @@ function ProposalForm(props) {
           }}
         />
         <p className="internal-description">{description}</p>
-        <label htmlFor="splash-img">
+        <label htmlFor={idFor("splash-img")}>
           Add a cover image to be displayed on our homepage
         </label>
-        {props.show.imageLg && <img src={props.show.imageLg} />}
+        {show.imageLg && <img src={show.imageLg} alt="" />}
         <input
+          id={idFor("splash-img")}
           className="image-field"
           type="file"
+          accept="image/*"
           name="splash-img"
+          data-testid="admin-cover-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImageLg(img);
           }}
         />
         <button
+          data-testid="admin-cover-upload-button"
           className={`img-uploader highlight ${
             imageLg && !imgLgUrl ? "flashing" : ""
           }`}
+          disabled={!imageLg}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(imageLg, "splash");
@@ -281,21 +250,26 @@ function ProposalForm(props) {
           Upload image to the Database (please do this <b>before</b> submitting
           the form)
         </button>
-        <label htmlFor="img-2">Add additional images for show (optional)</label>
-        {props.show.image2 && <img src={props.show.image2} />}
+        <label htmlFor={idFor("img-2")}>Add additional images for show (optional)</label>
+        {show.image2 && <img src={show.image2} alt="" />}
         <input
+          id={idFor("img-2")}
           type="file"
+          accept="image/*"
           name="img-2"
           className="image-field"
+          data-testid="admin-second-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImage2(img);
           }}
         />
         <button
+          data-testid="admin-second-upload-button"
           className={`img-uploader highlight ${
             image2 && !img2Url ? "flashing" : ""
           }`}
+          disabled={!image2}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image2, "2");
@@ -304,21 +278,26 @@ function ProposalForm(props) {
           Upload image to the Database (please do this <b>before</b> submitting
           the show details)
         </button>
-        <label htmlFor="img-3">Add additional images for show (optional)</label>
-        {props.show.image3 && <img src={props.show.image3} />}
+        <label htmlFor={idFor("img-3")}>Add additional images for show (optional)</label>
+        {show.image3 && <img src={show.image3} alt="" />}
         <input
+          id={idFor("img-3")}
           type="file"
+          accept="image/*"
           name="img-3"
           className="image-field"
+          data-testid="admin-third-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setImage3(img);
           }}
         />
         <button
+          data-testid="admin-third-upload-button"
           className={`img-uploader highlight ${
             image3 && !img3Url ? "flashing" : ""
           }`}
+          disabled={!image3}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(image3, "3");
@@ -328,6 +307,7 @@ function ProposalForm(props) {
           the show details)
         </button>
         <button
+          data-testid="admin-submit-show"
           className="submit-show"
           onClick={(evt) => {
             evt.preventDefault();
@@ -344,9 +324,8 @@ function ProposalForm(props) {
               image2: img2Url,
               image3: img3Url,
             };
-            setDoc(doc(db, "shows", props.show.id), showObj)
-              .then((res) => {
-                console.log(res);
+            setDoc(doc(db, "shows", show.id), showObj)
+              .then(() => {
                 alert("Show updated successfully");
                 //alert that update was successful
               })
@@ -364,26 +343,30 @@ function ProposalForm(props) {
   );
 }
 
-function ArtistProfile(props) {
-  const [artist, setArtist] = useState(props.user.artist || "");
-  const [phone, setPhone] = useState(props.user.phone || "");
-  const [email, setEmail] = useState(props.user.email || "");
-  const [bio, setBio] = useState(props.user.bio || "");
-  const [artistWebsite, setArtistWebsite] = useState(props.user.web || "");
-  const [artistFacebook, setArtistFacebook] = useState(props.user.fb || "");
-  const [artistYouTube, setArtistYouTube] = useState(props.user.youtube || "");
-  const [artistInstagram, setArtistInstagram] = useState(
-    props.user.insta || ""
-  );
-  const [artistSpotify, setArtistSpotify] = useState(props.user.spotify || "");
+ProposalForm.propTypes = {
+  show: showPropType.isRequired,
+};
+
+function ArtistProfile({ user }) {
+  const profileFormId = useId();
+  const profileIdFor = (fieldName) => `${profileFormId}-${fieldName}`;
+  const [artist, setArtist] = useState(user.artist || "");
+  const [phone, setPhone] = useState(user.phone || "");
+  const [email, setEmail] = useState(user.email || "");
+  const [bio, setBio] = useState(user.bio || "");
+  const [artistWebsite, setArtistWebsite] = useState(user.web || "");
+  const [artistFacebook, setArtistFacebook] = useState(user.fb || "");
+  const [artistYouTube, setArtistYouTube] = useState(user.youtube || "");
+  const [artistInstagram, setArtistInstagram] = useState(user.insta || "");
+  const [artistSpotify, setArtistSpotify] = useState(user.spotify || "");
   const [artistPic, setArtistPic] = useState("");
-  const [picUrl, setPicUrl] = useState(props.user.picUrl || "");
+  const [picUrl, setPicUrl] = useState(user.picUrl || "");
 
   let updateProfile = async (evt) => {
     evt.preventDefault();
 
     try {
-      let profRef = doc(db, "artists", props.user.id);
+      let profRef = doc(db, "artists", user.id);
 
       await updateDoc(profRef, {
         artist: artist,
@@ -397,47 +380,52 @@ function ArtistProfile(props) {
         youtube: artistYouTube,
         picUrl: picUrl,
       });
+      alert("Artist profile updated successfully");
     } catch (err) {
       console.error(err.message);
     }
   };
 
   const imgUploader = async (img) => {
-    console.log("uploading image");
-    console.log(img);
-    const imgRef = ref(storage, img.name);
     try {
-      let imgUpload = await uploadBytes(imgRef, img);
-      console.log(imgUpload);
-      let imgUrl = await getDownloadURL(imgUpload.ref);
-      console.log(imgUrl);
+      const imgUrl = await uploadUserImage({
+        storage,
+        uid: auth.currentUser?.uid,
+        file: img,
+      });
+
       setPicUrl(imgUrl);
       alert("Image uploaded to Database");
     } catch (err) {
       console.error(err.message);
-      alert("Something went wrong. Tell Bob...");
+      alert(err.message);
     }
   };
 
   return (
-    <div className="artist-container">
+    <div className="artist-container" data-testid={`admin-artist-profile-${user.id}`}>
       <h2>{artist}</h2>
-      <img src={picUrl} className="profile-pic" />
+      {picUrl && <img src={picUrl} className="profile-pic" />}
       <form className="artist-profile-form">
-        <label htmlFor="splash-img">Upload Artist's Profile Picture</label>
+        <label htmlFor={profileIdFor("splash-img")}>Upload Artist&apos;s Profile Picture</label>
         <input
+          id={profileIdFor("splash-img")}
           className="image-field"
           type="file"
+          accept="image/*"
           name="splash-img"
+          data-testid="admin-artist-upload"
           onChange={(evt) => {
             const img = evt.target.files[0];
             setArtistPic(img);
           }}
         />
         <button
+          data-testid="admin-artist-upload-button"
           className={`img-uploader highlight ${
             artistPic && !picUrl ? "flashing" : ""
           }`}
+          disabled={!artistPic}
           onClick={(evt) => {
             evt.preventDefault();
             imgUploader(artistPic);
@@ -446,8 +434,9 @@ function ArtistProfile(props) {
           Upload your image to the Database (please do this <b>before</b>{" "}
           submitting the form)
         </button>
-        <label htmlFor="artist">Artist's Name</label>
+        <label htmlFor={profileIdFor("artist")}>Artist&apos;s Name</label>
         <input
+          id={profileIdFor("artist")}
           name="artist"
           type="text"
           value={artist}
@@ -455,8 +444,9 @@ function ArtistProfile(props) {
             setArtist(evt.target.value);
           }}
         />
-        <label htmlFor="phone">Primary Phone #</label>
+        <label htmlFor={profileIdFor("phone")}>Primary Phone #</label>
         <input
+          id={profileIdFor("phone")}
           name="phone"
           type="text"
           value={phone}
@@ -464,8 +454,9 @@ function ArtistProfile(props) {
             setPhone(evt.target.value);
           }}
         />
-        <label htmlFor="email">Primary Email</label>
+        <label htmlFor={profileIdFor("email")}>Primary Email</label>
         <input
+          id={profileIdFor("email")}
           name="email"
           type="email"
           value={email}
@@ -473,8 +464,9 @@ function ArtistProfile(props) {
             setEmail(evt.target.value);
           }}
         />
-        <label htmlFor="bio">Artist Bio</label>
+        <label htmlFor={profileIdFor("bio")}>Artist Bio</label>
         <input
+          id={profileIdFor("bio")}
           name="bio"
           type="text"
           value={bio}
@@ -482,8 +474,9 @@ function ArtistProfile(props) {
             setBio(evt.target.value);
           }}
         />
-        <label htmlFor="website">Artist Website</label>
+        <label htmlFor={profileIdFor("website")}>Artist Website</label>
         <input
+          id={profileIdFor("website")}
           name="website"
           type="text"
           value={artistWebsite}
@@ -491,8 +484,9 @@ function ArtistProfile(props) {
             setArtistWebsite(evt.target.value);
           }}
         />
-        <label htmlFor="fb">Artist Facebook</label>
+        <label htmlFor={profileIdFor("fb")}>Artist Facebook</label>
         <input
+          id={profileIdFor("fb")}
           name="fb"
           type="text"
           value={artistFacebook}
@@ -500,8 +494,9 @@ function ArtistProfile(props) {
             setArtistFacebook(evt.target.value);
           }}
         />
-        <label htmlFor="insta">Artist Instagram</label>
+        <label htmlFor={profileIdFor("insta")}>Artist Instagram</label>
         <input
+          id={profileIdFor("insta")}
           name="insta"
           type="text"
           value={artistInstagram}
@@ -509,8 +504,9 @@ function ArtistProfile(props) {
             setArtistInstagram(evt.target.value);
           }}
         />
-        <label htmlFor="spotify">Artist Spotify</label>
+        <label htmlFor={profileIdFor("spotify")}>Artist Spotify</label>
         <input
+          id={profileIdFor("spotify")}
           name="spotify"
           type="text"
           value={artistSpotify}
@@ -518,8 +514,10 @@ function ArtistProfile(props) {
             setArtistSpotify(evt.target.value);
           }}
         />
-        <label htmlFor="youtube">Artist Youtube</label>
+        <label htmlFor={profileIdFor("youtube")}>Artist Youtube</label>
         <input
+          id={profileIdFor("youtube")}
+          name="youtube"
           type="text"
           value={artistYouTube}
           onChange={(evt) => {
@@ -534,10 +532,14 @@ function ArtistProfile(props) {
   );
 }
 
-function ProfileEditor(props) {
+ArtistProfile.propTypes = {
+  user: artistProfilePropType.isRequired,
+};
+
+function ProfileEditor({ users }) {
   return (
     <div>
-      {props.users.map((user, i) => {
+      {users.map((user, i) => {
         return (
           <div key={i}>
             <ArtistProfile user={user} />
@@ -548,19 +550,21 @@ function ProfileEditor(props) {
   );
 }
 
-function ShowEditor(props) {
-  const [showList, setShowList] = useState(props.shows);
-  const [filter, setFilter] = useState("");
+ProfileEditor.propTypes = {
+  users: PropTypes.arrayOf(artistProfilePropType).isRequired,
+};
 
-  useEffect(() => {
-    filter === "all"
-      ? setShowList(props.shows)
-      : setShowList(props.shows.filter((show) => show.status === filter));
-  }, [filter]);
+function ShowEditor({ shows }) {
+  const [filter, setFilter] = useState("");
+  const showList =
+    filter === "" || filter === "all"
+      ? shows
+      : shows.filter((show) => show.status === filter);
 
   return (
     <div>
       <select
+        data-testid="admin-show-filter"
         value={filter}
         onChange={(evt) => {
           setFilter(evt.target.value);
@@ -579,7 +583,11 @@ function ShowEditor(props) {
   );
 }
 
-function AdminPanel(props) {
+ShowEditor.propTypes = {
+  shows: PropTypes.arrayOf(showPropType).isRequired,
+};
+
+function AdminPanel() {
   const [authorized, setAuthorized] = useState(false);
   const [view, setView] = useState("shows");
   const [newDonor, setNewDonor] = useState("");
@@ -588,12 +596,17 @@ function AdminPanel(props) {
   const [donors, setDonors] = useState([]);
 
   useEffect(() => {
-    fetch("/whitelist")
-      .then((res) => res.json())
-      .then((list) => {
-        list.includes(auth.currentUser.uid)
-          ? setAuthorized(true)
-          : setAuthorized(false);
+    if (!auth.currentUser) {
+      return;
+    }
+
+    getDoc(doc(db, "admins", auth.currentUser.uid))
+      .then((adminDoc) => {
+        setAuthorized(adminDoc.exists());
+      })
+      .catch((err) => {
+        console.error(err.message);
+        setAuthorized(false);
       });
   }, []);
 
@@ -675,12 +688,12 @@ function AdminPanel(props) {
               {donors.map((donor, i) => {
                 console.log(donor);
                 return (
-                  <li className="donor" key={i}>
+                  <li className="donor" data-testid={`admin-donor-${donor.id}`} key={i}>
                     <p>{donor.name}</p>
                     <button
                       onClick={(evt) => {
                         evt.preventDefault();
-                        deleteDoc(doc(db, "donors", donor.id)).then((res) => {
+                        deleteDoc(doc(db, "donors", donor.id)).then(() => {
                           alert(
                             `Donor ${donor.name} removed from database (refresh page to see changes to donor list)`
                           );
@@ -695,6 +708,7 @@ function AdminPanel(props) {
             </ul>
             <label htmlFor="add-donor">New Donor</label>
             <input
+              id="add-donor"
               type="text"
               name="add-donor"
               value={newDonor}
@@ -709,7 +723,7 @@ function AdminPanel(props) {
                 let newDoc = doc(collection(db, "donors"));
 
                 setDoc(newDoc, { name: newDonor, id: newDoc.id })
-                  .then((res) => {
+                  .then(() => {
                     setNewDonor("");
                     alert(
                       "New donor added, refresh the page to see the updated list"
@@ -729,7 +743,7 @@ function AdminPanel(props) {
   );
 }
 
-function AdminPortal(props) {
+function AdminPortal() {
   const [user, setUser] = useState(auth.currentUser || null);
 
   return (
@@ -738,7 +752,7 @@ function AdminPortal(props) {
         {!user ? (
           <LoginPortal setUser={setUser} />
         ) : (
-          <AdminPanel user={user} setUser={setUser} />
+          <AdminPanel />
         )}
       </div>
     </div>
